@@ -9,7 +9,7 @@ Generates:
 - fig11_probability_contours.png: Probability ellipses vs Euclidean circle
 - fig11_geometric_preview.png: Side-by-side circles vs ellipses
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 """
 
 import numpy as np
