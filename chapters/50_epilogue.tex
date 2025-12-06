@@ -1,0 +1,149 @@
+\chapter{Epilogue: The Shape of Things}
+
+
+We began with a point in a paddock and a question about distance. We end
+with ellipsoids in high-dimensional space and a framework for understanding
+evolutionary constraint. The journey has been long, but the core idea has
+remained simple: \emph{symmetric matrices describe shapes}.
+
+This is worth dwelling on. A matrix is just a table of numbers---rows and
+columns, entries that can be added and multiplied. Yet when that matrix is
+symmetric and positive definite\index[subject]{matrix!positive definite}, it becomes something more. It becomes a
+geometry. The eigenvalue\index[subject]{eigenvalue}s measure how far the shape extends; the
+eigenvector\index[subject]{eigenvector}s point along its natural axes. The determinant captures the
+volume; the trace captures the total extent. Invert the matrix, and you
+flip the geometry inside out---what was long becomes short, what was wide
+becomes narrow.
+
+Once you see matrices as shapes, the tools of multivariate statistics
+become intuitive. PCA is not a mysterious algorithm; it is the simple act
+of finding the axes of an ellipse. MANOVA\index[subject]{MANOVA} is not an arbitrary test
+statistic; it is a comparison of two shapes---one describing variation
+among groups, the other describing variation within. The Mahalanobis distance\index[subject]{distance!Mahalanobis}
+distance is not a formula to memorise; it is Euclidean distance\index[subject]{distance!Euclidean} distance measured
+after reshaping the space to match the data.
+
+And the G matrix---that central object of evolutionary quantitative
+genetics---is not merely a summary of breeding values. It is the shape of
+what evolution can do. Its long axes are the directions of easy change;
+its short axes are the directions of constraint. When we ask whether a
+population can respond to selection, we are asking whether the selection
+gradient points along a long axis or a short one. When we compare G
+matrices across species, we are comparing the shapes of evolutionary
+possibility.
+
+\section*{What geometry gives us}
+
+The geometric perspective offers three gifts.
+
+The first is \textbf{intuition}. Equations can be opaque; shapes are
+visible. When you read that the response to selection is
+$\Delta\bar{\vect{z}} = \mat{G}\boldsymbol{\beta}$, you might see symbols.
+But when you visualise G as an ellipse and $\boldsymbol{\beta}$ as an
+arrow, you see immediately that the response will be deflected toward
+the long axis. The algebra confirms what the picture reveals.
+
+The second gift is \textbf{unification}. The methods scattered across
+textbooks---PCA\index[subject]{PCA}, discriminant analysis, canonical correlation, MANOVA\index[subject]{MANOVA},
+Mahalanobis distance\index[subject]{distance!Mahalanobis} distance, the breeder's equation\index[subject]{breeder's equation} equation---are not separate techniques
+requiring separate intuitions. They are all eigendecompositions, all ways
+of finding the natural axes of some ellipsoid. Learn the geometry once,
+and you understand them all.
+
+The third gift is \textbf{new questions}. Once you see G as a shape, you
+can ask: how does this shape vary across environments? How does it change
+over evolutionary time? How does it compare to the shape of the fitness
+surface? These questions were always implicit in the formalism, but the
+geometric perspective makes them vivid. It turns parameter estimation into
+shape description, and shape description invites comparison.
+
+\section*{The limits of ellipses}
+
+I have told a particular story in these notes---one centred on symmetric
+matrices and their ellipsoids. This is not the only story that could be
+told.
+
+Ellipses assume linearity. The covariance matrix\index[subject]{covariance matrix} captures only the linear
+relationships among traits; it misses curvature, thresholds, and
+interactions. When the true relationships are nonlinear, the ellipse is an
+approximation---sometimes good, sometimes misleading.
+
+Ellipses assume multivariate normality, or at least that the second moments
+are sufficient statistics. For heavy-tailed distributions or multimodal
+populations, the covariance matrix\index[subject]{covariance matrix} tells only part of the story.
+
+And ellipses assume stationarity. The G matrix is not fixed; it evolves.
+Mutation introduces new variation, selection erodes it, drift reshapes it.
+The geometry we estimate today may not be the geometry of tomorrow. The
+ellipse is a snapshot, not a law.
+
+These limitations are real, but they do not diminish the value of the
+geometric perspective. They define its scope. Linearity is often a good
+first approximation. Normality is often reasonable for quantitative traits.
+And stationarity, while imperfect, is often sufficient for the timescales
+we study. The ellipse is a model, and like all models, it is useful
+precisely because it is simpler than reality.
+
+\section*{The view from here}
+
+If you have followed these notes from the beginning, you now possess a
+way of seeing. When you encounter a covariance matrix\index[subject]{covariance matrix}, you see an ellipse.
+When you read an eigenvalue\index[subject]{eigenvalue}, you see an axis length. When you compute a
+Mahalanobis distance\index[subject]{distance!Mahalanobis} distance, you see a rescaling of space. This way of seeing is
+not a trick or a shortcut; it is the thing itself. The geometry is not a
+metaphor for the mathematics---it is the mathematics, visualised.
+
+This perspective will serve you in many contexts. In quantitative genetics,
+it illuminates the breeder's equation\index[subject]{breeder's equation} equation and the geometry of constraint. In
+multivariate statistics, it unifies PCA\index[subject]{PCA}, MANOVA\index[subject]{MANOVA}, and discriminant analysis\index[subject]{discriminant analysis}.
+In machine learning, it underlies principal component regression,
+regularisation, and the geometry of high-dimensional data. In physics, it
+connects to quadratic form\index[subject]{quadratic form}s, moment of inertia tensors, and the geometry
+of configuration spaces.
+
+The same ideas, the same shapes, appearing across fields. This is not
+coincidence. It is the deep structure of linear algebra asserting itself
+wherever quantities vary together.
+
+\section*{An invitation}
+
+These notes are an invitation, not an endpoint. I have shown you how to
+see matrices as shapes; I have not shown you everything those shapes can
+reveal.
+
+There are questions I have not addressed. How do we estimate G matrices
+reliably when sample sizes are small? How do we test whether two G matrices
+differ? How do we model the evolution of G itself? How do we connect the
+geometry of genetic variation to the molecular mechanisms that generate it?
+
+These are research questions, not textbook exercises. They are the frontier.
+And if these notes have done their job, you are now equipped to approach
+that frontier with geometric intuition as your guide.
+
+\section*{A final image}
+
+Picture a high-dimensional ellipsoid---the G matrix of some population,
+suspended in the space of all possible phenotypes. Its axes point in
+directions we cannot visualise directly, but we can measure their lengths.
+Some are long: abundant genetic variation, easy evolutionary change. Some
+are short: scarce variation, constrained response.
+
+Now imagine a selection gradient---an arrow pointing toward some optimum,
+some direction that would increase fitness. The arrow may point anywhere.
+It may align with a long axis, and evolution will be swift. It may point
+toward a short axis, and evolution will be slow, frustrated, deflected.
+
+The shape of the ellipsoid and the direction of the arrow---these two
+things, together, determine what will happen. The G matrix is potential;
+selection is actuality. Their interaction is evolution.
+
+This is the image I hope you carry forward. Not a formula to be memorised,
+but a shape to be seen. Not a technique to be applied, but a geometry to
+be understood.
+
+The ellipse has been our guide. May it serve you well.
+
+\vspace{2em}
+\hfill\emph{Daniel Ortiz-Barrientos}
+
+\hfill\emph{Brisbane, 2025}

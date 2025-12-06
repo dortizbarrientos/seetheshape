@@ -1,0 +1,143 @@
+% =============================================================================
+% LaTeX Figure Placeholders for "Seeing the Shape"
+% High-Priority Figures (6 total)
+%
+% Instructions:
+% 1. Upload the PDF files to Overleaf (in a "figures/" subdirectory)
+% 2. Copy-paste each figure block into the appropriate chapter
+% 3. Adjust placement specifiers [htbp] as needed
+% 4. Adjust figure sizes (\textwidth scaling) to taste
+%
+% Files needed:
+%   - fig_ch2_projection.pdf
+%   - fig_ch3_four_transformations.pdf
+%   - fig_ch3_columns_unit_vectors.pdf
+%   - fig_ch7_rotate_stretch_rotate.pdf
+%   - fig_ch9_evolvability_vs_respondability.pdf
+%   - fig_ch10_saddle_correlational.pdf
+% =============================================================================
+
+
+% =============================================================================
+% FIGURE 1: Dot Product and Projection Geometry
+% Chapter 2, Section 2.5 (after introducing the projection formula)
+% =============================================================================
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/fig_ch2_projection.pdf}
+    \caption{\textbf{Projection as shadow.} The projection of $\vect{v}$ onto 
+    direction $\hat{\vect{u}}$ is the component of $\vect{v}$ lying along 
+    $\hat{\vect{u}}$. The dashed line shows the perpendicular (residual) 
+    component. The length of the projection is $\vect{v}^\top\hat{\vect{u}} = 
+    \|\vect{v}\| \cos \theta$. In evolutionary terms, if $\hat{\vect{u}}$ is 
+    an eigenvector of $\mat{G}$, then $\boldsymbol{\beta}^\top\hat{\vect{u}}$ 
+    measures how strongly selection aligns with that genetic axis.}
+    \label{fig:projection}
+\end{figure}
+
+
+% =============================================================================
+% FIGURE 2: The Four Basic Linear Transformations
+% Chapter 3, Section 3.4 (after describing scaling, rotation, shear, reflection)
+% =============================================================================
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch3_four_transformations.pdf}
+    \caption{\textbf{The four basic linear transformations.} Each panel shows 
+    the unit square (dashed gray) and its image (solid colour) under a different 
+    transformation. (a)~\textbf{Scaling} stretches each axis independently. 
+    (b)~\textbf{Rotation} preserves lengths and angles. (c)~\textbf{Shear} 
+    slides points parallel to one axis---note the parallelogram. 
+    (d)~\textbf{Reflection} reverses orientation. Covariance matrices, being 
+    symmetric and positive definite, produce only scaling along rotated 
+    axes---no shear or reflection.}
+    \label{fig:four-transformations}
+\end{figure}
+
+
+% =============================================================================
+% FIGURE 3: Columns Are Images of Unit Vectors
+% Chapter 3, Section 3.3 (after the Key Idea box)
+% =============================================================================
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch3_columns_unit_vectors.pdf}
+    \caption{\textbf{The columns of a matrix are the images of the unit 
+    vectors.} Left: The standard unit vectors $\vect{e}_1$ and $\vect{e}_2$. 
+    Right: Their images under the matrix $\mat{A}$. Notice that 
+    $\mat{A}\vect{e}_1 = (2,1)^\top$ is exactly the first column of $\mat{A}$ 
+    (red), and $\mat{A}\vect{e}_2 = (1,3)^\top$ is the second column (blue). 
+    This is always true: column~$j$ tells you where $\vect{e}_j$ lands.}
+    \label{fig:columns-unit-vectors}
+\end{figure}
+
+
+% =============================================================================
+% FIGURE 4: The Rotate-Stretch-Rotate Interpretation
+% Chapter 7, Section 7.4 (after introducing A = VΛV^T)
+% =============================================================================
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch7_rotate_stretch_rotate.pdf}
+    \caption{\textbf{The eigendecomposition as rotate--stretch--rotate.} The 
+    matrix $\mat{A} = \mat{V}\mat{\Lambda}\mat{V}^\top$ acts in three stages. 
+    (a)~Original unit circle with eigenvectors marked (dashed). 
+    (b)~Multiply by $\mat{V}^\top$: rotate the coordinate system so that the 
+    eigenvectors align with the axes. (c)~Multiply by $\mat{\Lambda}$: stretch 
+    by $\lambda_1 = 4$ along the first axis and $\lambda_2 = 2$ along the 
+    second. (d)~Multiply by $\mat{V}$: rotate back to the original coordinates. 
+    The unit circle becomes an ellipse whose axes align with the eigenvectors 
+    and whose semi-axis lengths are $\sqrt{\lambda_1}$ and $\sqrt{\lambda_2}$.}
+    \label{fig:rotate-stretch-rotate}
+\end{figure}
+
+
+% =============================================================================
+% FIGURE 5: Evolvability vs. Respondability
+% Chapter 9, between Sections 9.5 and 9.6
+% =============================================================================
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/fig_ch9_evolvability_vs_respondability.pdf}
+    \caption{\textbf{Evolvability versus respondability.} Direction 
+    $\vect{u}_1$ (red) has high evolvability (genetic variance = 1.21) but 
+    lower heritability ($h^2 = 0.30$) because phenotypic variance is even 
+    higher. Direction $\vect{u}_2$ (blue) has lower evolvability (genetic 
+    variance = 0.40) but higher heritability ($h^2 = 0.37$). Evolvability 
+    tells you how much genetic variance is available; respondability 
+    (heritability) tells you what fraction of phenotypic variance is genetic. 
+    Both matter for predicting response to selection.}
+    \label{fig:evolvability-respondability}
+\end{figure}
+
+
+% =============================================================================
+% FIGURE 6: Saddle Point / Correlational Selection
+% Chapter 10, Section 10.5 (after discussing correlational selection)
+% =============================================================================
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch10_saddle_correlational.pdf}
+    \caption{\textbf{A fitness saddle from correlational selection.} When 
+    $\boldsymbol{\gamma}$ has both positive and negative eigenvalues, the 
+    fitness surface is a saddle. (a)~Three-dimensional view: fitness increases 
+    along one axis (the ridge, $\lambda = 0.3 > 0$, disruptive) and decreases 
+    along the other (the valley, $\lambda = -0.7 < 0$, stabilising). 
+    (b)~Contour view from above: hyperbolic level curves indicate a saddle 
+    point. The eigenvectors of $\boldsymbol{\gamma}$ (dashed lines) point 
+    along the ridge and valley directions. Correlational selection 
+    ($\gamma_{12} \neq 0$) rotates these directions away from the original 
+    trait axes.}
+    \label{fig:saddle-correlational}
+\end{figure}
+
+
+% =============================================================================
+% END OF FIGURE PLACEHOLDERS
+% =============================================================================

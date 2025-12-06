@@ -1,0 +1,598 @@
+\chapter{Covariance and Mahalanobis \index[subject]{distance!Mahalanobis} Distance}
+
+The previous chapter showed three ways that Euclidean\index[subject]{distance!Euclidean} distance fails: it
+depends on measurement units, it ignores correlations, and it does not
+correspond to probability. We previewed the solution---ellipses that match
+the shape of the data---but did not derive it.
+
+This chapter develops that solution. We will see how the covariance matrix
+enters the distance formula, why the \emph{inverse} of the covariance matrix\index[subject]{covariance matrix}
+appears, and what it means geometrically. By the end, you will understand
+the Mahalanobis \index[subject]{distance!Mahalanobis} distance not as an arbitrary formula but as the natural way
+to measure ``how unusual'' a phenotype is.
+
+\section{The key insight: a matrix between the vectors}
+
+Recall from Chapter~1 that the squared Euclidean\index[subject]{distance!Euclidean} distance between two
+points $\vect{z}_i$ and $\vect{z}_j$ can be written as
+\[
+  d^2_{\text{Euc}} 
+    = (\vect{z}_j - \vect{z}_i)^\top (\vect{z}_j - \vect{z}_i).
+\]
+
+This is just the dot product of the difference vector with itself---the
+sum of squared components.
+
+Now consider what happens if we insert a matrix $\mat{M}$ between the
+transpose and the vector:
+\[
+  d^2_{\mat{M}} 
+    = (\vect{z}_j - \vect{z}_i)^\top \mat{M} (\vect{z}_j - \vect{z}_i).
+\]
+
+This is still a quadratic form\index[subject]{quadratic form}. It still takes a vector and returns a
+non-negative number (provided $\mat{M}$ is positive definite\index[subject]{matrix!positive definite}). But the
+matrix $\mat{M}$ changes how different directions are weighted.
+
+\begin{keyidea}
+Inserting a matrix into the distance formula changes the shape of the
+``unit ball.'' With the identity matrix, the unit ball is a sphere. With
+a general positive definite\index[subject]{matrix!positive definite} matrix, the unit ball becomes an ellipsoid.
+\end{keyidea}
+
+The question is: which matrix $\mat{M}$ should we use?
+
+\section{The covariance matrix\index[subject]{covariance matrix} and its inverse}
+
+If the problem with Euclidean\index[subject]{distance!Euclidean} distance is that it ignores the covariance
+structure of the data, then the solution should involve the covariance
+matrix ${\Sigma}$.
+
+But should we use ${\Sigma}$ itself, or its inverse ${\Sigma}^{-1}$?
+
+Consider what we want. We want deviations in high-variance directions to
+count \emph{less} (because they are common) and deviations in low-variance
+directions to count \emph{more} (because they are rare). This means we want
+to \emph{downweight} directions of large variance and \emph{upweight}
+directions of small variance.
+
+The covariance matrix\index[subject]{covariance matrix} ${\Sigma}$ has large eigenvalue\index[subject]{eigenvalue}s in directions of
+large variance. Its inverse ${\Sigma}^{-1}$ has \emph{small} eigenvalue\index[subject]{eigenvalue}s
+in those same directions (since the eigenvalue\index[subject]{eigenvalue}s of the inverse are the
+reciprocals of the original eigenvalue\index[subject]{eigenvalue}s).
+
+Therefore, to downweight high-variance directions, we use the inverse:
+\[
+  d^2_{\text{Mah}} 
+    = (\vect{z} - \boldsymbol{\mu})^\top {\Sigma}^{-1} (\vect{z} - \boldsymbol{\mu}).
+\]
+
+This is the \textbf{Mahalanobis distance\index[subject]{distance!Mahalanobis} distance} (squared) from the point
+$\vect{z}$ to the mean $\boldsymbol{\mu}$.
+
+\begin{keyidea}
+The Mahalanobis distance\index[subject]{distance!Mahalanobis} distance uses the \emph{inverse} covariance matrix\index[subject]{covariance matrix} because
+we want to penalise deviations in low-variance directions more heavily than
+deviations in high-variance directions.
+\end{keyidea}
+
+\section{A one-dimensional sanity check}
+
+Before tackling multiple traits, let us verify that the formula makes sense
+in one dimension.
+
+With a single trait, the covariance matrix\index[subject]{covariance matrix} is just the variance:
+${\Sigma} = \sigma^2$. Its inverse is $1/\sigma^2$. The Mahalanobis distance\index[subject]{distance!Mahalanobis}
+distance from a value $z$ to the mean $\mu$ is
+\[
+  d^2_{\text{Mah}} 
+    = (z - \mu)^\top \cdot \frac{1}{\sigma^2} \cdot (z - \mu)
+    = \frac{(z - \mu)^2}{\sigma^2}.
+\]
+
+Taking the square root:
+\[
+  d_{\text{Mah}} = \frac{|z - \mu|}{\sigma}.
+\]
+
+This is simply the number of standard deviations from the mean---the
+familiar $z$-score! The Mahalanobis distance\index[subject]{distance!Mahalanobis} distance generalises the $z$-score to
+multiple dimensions.
+
+\begin{keyidea}
+In one dimension, the Mahalanobis distance\index[subject]{distance!Mahalanobis} distance equals the absolute $z$-score.
+In multiple dimensions, it generalises this idea by accounting for both
+variances and covariances.
+\end{keyidea}
+
+\section{Geometry: how the inverse reshapes space}
+
+Let us see geometrically why the inverse covariance matrix\index[subject]{covariance matrix} produces
+ellipses that match the data.
+
+Suppose the covariance matrix\index[subject]{covariance matrix} is
+\[
+  {\Sigma} =
+  \begin{pmatrix}
+    4 & 0 \\
+    0 & 1
+  \end{pmatrix}.
+\]
+
+Trait~1 has variance 4 (standard deviation 2), and trait~2 has variance 1
+(standard deviation 1). There is no correlation, so the ellipse is aligned
+with the axes (\cref{fig:inverse-geometry}).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig12_inverse_geometry.png}
+  \caption[Geometry of the inverse]{
+    Left: The covariance ellipse shows the shape of variation. Trait~1
+    (horizontal) has more variance. Right: Using ${\Sigma}^{-1}$ in
+    the distance formula produces contours that are circles in the
+    \emph{standardised} space---ellipses matching the data in the original
+    space.
+  }
+  \label{fig:inverse-geometry}
+\end{figure}
+
+The inverse covariance matrix\index[subject]{covariance matrix} is
+\[
+  {\Sigma}^{-1} =
+  \begin{pmatrix}
+    1/4 & 0 \\
+    0 & 1
+  \end{pmatrix}.
+\]
+
+When we compute $\vect{v}^\top {\Sigma}^{-1} \vect{v}$, the component
+along trait~1 is divided by 4, while the component along trait~2 is left
+unchanged. This shrinks distances in the high-variance direction and
+leaves distances in the low-variance direction alone.
+
+The result: a deviation of 2 units in trait~1 contributes the same to the
+Mahalanobis distance\index[subject]{distance!Mahalanobis} distance as a deviation of 1 unit in trait~2. Both represent
+one standard deviation from the mean.
+
+\section{The formula in components}
+
+For two traits with covariance matrix\index[subject]{covariance matrix}
+\[
+  {\Sigma} =
+  \begin{pmatrix}
+    \sigma_1^2 & \rho\sigma_1\sigma_2 \\
+    \rho\sigma_1\sigma_2 & \sigma_2^2
+  \end{pmatrix},
+\]
+the inverse is
+\[
+  {\Sigma}^{-1} =
+  \frac{1}{\sigma_1^2\sigma_2^2(1-\rho^2)}
+  \begin{pmatrix}
+    \sigma_2^2 & -\rho\sigma_1\sigma_2 \\
+    -\rho\sigma_1\sigma_2 & \sigma_1^2
+  \end{pmatrix}.
+\]
+
+The squared Mahalanobis distance\index[subject]{distance!Mahalanobis} distance from a point $(z_1, z_2)$ to the mean
+$(\mu_1, \mu_2)$ is
+\[
+  d^2_{\text{Mah}} =
+  \frac{1}{1 - \rho^2}
+  \left[
+    \left(\frac{z_1 - \mu_1}{\sigma_1}\right)^2
+    - 2\rho \left(\frac{z_1 - \mu_1}{\sigma_1}\right)
+            \left(\frac{z_2 - \mu_2}{\sigma_2}\right)
+    + \left(\frac{z_2 - \mu_2}{\sigma_2}\right)^2
+  \right].
+\]
+
+This formula has three parts:
+
+\begin{enumerate}
+  \item The squared $z$-scores for each trait: 
+        $\left(\frac{z_1 - \mu_1}{\sigma_1}\right)^2$ and
+        $\left(\frac{z_2 - \mu_2}{\sigma_2}\right)^2$.
+  \item A cross-term that subtracts when the correlation\index[subject]{correlation}is positive and
+        both deviations have the same sign (reducing distance for points
+        along the correlation) or adds when they have opposite signs
+        (increasing distance for points against the correlation).
+  \item A factor $\frac{1}{1-\rho^2}$ that inflates everything when
+        correlation\index[subject]{correlation}is high, reflecting the reduced ``effective
+        dimensionality'' of the data.
+\end{enumerate}
+
+When $\rho = 0$, the cross-term vanishes and we get
+\[
+  d^2_{\text{Mah}} =
+    \left(\frac{z_1 - \mu_1}{\sigma_1}\right)^2
+    + \left(\frac{z_2 - \mu_2}{\sigma_2}\right)^2,
+\]
+which is just the sum of squared $z$-scores---Euclidean\index[subject]{distance!Euclidean} distance in
+standardised space.
+
+\section{Mahalanobis distance\index[subject]{distance!Mahalanobis} distance and probability}
+
+For multivariate normal data, the Mahalanobis distance\index[subject]{distance!Mahalanobis} distance has a direct
+connection to probability.
+
+If $\vect{z}$ follows a $p$-variate normal distribution with mean
+$\boldsymbol{\mu}$ and covariance ${\Sigma}$, then the squared
+Mahalanobis distance\index[subject]{distance!Mahalanobis} distance
+\[
+  d^2_{\text{Mah}} 
+    = (\vect{z} - \boldsymbol{\mu})^\top {\Sigma}^{-1} (\vect{z} - \boldsymbol{\mu})
+\]
+follows a chi-squared distribution with $p$ degrees of freedom.
+
+This means:
+
+\begin{itemize}
+  \item Points with $d^2_{\text{Mah}} < \chi^2_{p,0.95}$ lie within the
+        95\% probability ellipse.
+  \item The probability of observing a point at least as extreme as
+        $\vect{z}$ can be computed directly from the chi-squared
+        distribution.
+  \item Contours of equal Mahalanobis distance\index[subject]{distance!Mahalanobis} distance are contours of equal
+        probability density.
+\end{itemize}
+
+\begin{keyidea}
+For multivariate normal data, Mahalanobis distance\index[subject]{distance!Mahalanobis} distance is directly tied to
+probability. Equal Mahalanobis distance\index[subject]{distance!Mahalanobis} distance means equal probability density.
+This is exactly what we wanted from a ``proper'' distance metric.
+\end{keyidea}
+
+\section{A worked example}
+
+Let us compute Mahalanobis distance\index[subject]{distance!Mahalanobis} distances for the three points from
+Chapter~11. The covariance matrix\index[subject]{covariance matrix} was
+\[
+  {\Sigma} =
+  \begin{pmatrix}
+    1.0 & 0.8 \\
+    0.8 & 1.0
+  \end{pmatrix},
+  \qquad
+  {\Sigma}^{-1} =
+  \begin{pmatrix}
+    2.778 & -2.222 \\
+    -2.222 & 2.778
+  \end{pmatrix}.
+\]
+
+Consider three points, all at Euclidean\index[subject]{distance!Euclidean} distance 1 from the origin:
+
+\paragraph{Point E: $(1/\sqrt{2}, 1/\sqrt{2}) \approx (0.707, 0.707)$.}
+This point lies along the major axis of the ellipse (both traits elevated
+together).
+
+\begin{align*}
+  d^2_{\text{Mah}} &= 
+    \begin{pmatrix} 0.707 & 0.707 \end{pmatrix}
+    \begin{pmatrix} 2.778 & -2.222 \\ -2.222 & 2.778 \end{pmatrix}
+    \begin{pmatrix} 0.707 \\ 0.707 \end{pmatrix} \\
+  &= \begin{pmatrix} 0.707 & 0.707 \end{pmatrix}
+     \begin{pmatrix} 0.393 \\ 0.393 \end{pmatrix} \\
+  &= 0.556.
+\end{align*}
+
+So $d_{\text{Mah}} = \sqrt{0.556} \approx 0.75$.
+
+\paragraph{Point F: $(1/\sqrt{2}, -1/\sqrt{2}) \approx (0.707, -0.707)$.}
+This point lies along the minor axis (traits in opposition).
+
+\begin{align*}
+  d^2_{\text{Mah}} &= 
+    \begin{pmatrix} 0.707 & -0.707 \end{pmatrix}
+    \begin{pmatrix} 2.778 & -2.222 \\ -2.222 & 2.778 \end{pmatrix}
+    \begin{pmatrix} 0.707 \\ -0.707 \end{pmatrix} \\
+  &= \begin{pmatrix} 0.707 & -0.707 \end{pmatrix}
+     \begin{pmatrix} 3.536 \\ -3.536 \end{pmatrix} \\
+  &= 5.0.
+\end{align*}
+
+So $d_{\text{Mah}} = \sqrt{5.0} \approx 2.24$.
+
+\paragraph{Point G: $(1, 0)$.}
+This point lies along the first trait axis.
+
+\begin{align*}
+  d^2_{\text{Mah}} &= 
+    \begin{pmatrix} 1 & 0 \end{pmatrix}
+    \begin{pmatrix} 2.778 & -2.222 \\ -2.222 & 2.778 \end{pmatrix}
+    \begin{pmatrix} 1 \\ 0 \end{pmatrix} \\
+  &= 2.778.
+\end{align*}
+
+So $d_{\text{Mah}} = \sqrt{2.778} \approx 1.67$.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.75\textwidth]{fig12_worked_example.png}
+  \caption[Worked example]{
+    Three points at Euclidean\index[subject]{distance!Euclidean} distance 1 from the origin have very
+    different Mahalanobis distance\index[subject]{distance!Mahalanobis} distances: E (along correlation) is closest,
+    F (against correlation) is farthest, G is intermediate.
+  }
+  \label{fig:worked-example}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{lccc}
+  \hline
+  Point & Direction & Euclidean\index[subject]{distance!Euclidean} & Mahalanobis distance\index[subject]{distance!Mahalanobis} \\
+  \hline
+  E & Along correlation\index[subject]{correlation}& 1.0 & 0.75 \\
+  F & Against correlation\index[subject]{correlation}& 1.0 & 2.24 \\
+  G & Trait 1 only & 1.0 & 1.67 \\
+  \hline
+\end{tabular}
+\end{center}
+
+Point E, lying in the direction of maximum variance, is the \emph{least}
+unusual---Mahalanobis distance\index[subject]{distance!Mahalanobis} distance is less than 1. Point F, lying in the
+direction of minimum variance, is the \emph{most} unusual---Mahalanobis distance\index[subject]{distance!Mahalanobis}
+distance exceeds 2. The Mahalanobis distance\index[subject]{distance!Mahalanobis} distance correctly identifies which
+points are rare and which are common.
+
+\section{The Mahalanobis \index[subject]{distance!Mahalanobis} distance as a transformation}
+
+There is another way to understand Mahalanobis distance\index[subject]{distance!Mahalanobis} distance: as Euclidean\index[subject]{distance!Euclidean}
+distance after a particular transformation.
+
+Any positive definite\index[subject]{matrix!positive definite} matrix ${\Sigma}$ can be factored as
+\[
+  {\Sigma} = {\Sigma}^{1/2} {\Sigma}^{1/2},
+\]
+where ${\Sigma}^{1/2}$ is the matrix square root (the unique positive
+definite matrix whose square is ${\Sigma}$).
+
+Define the transformed variable
+\[
+  \vect{w} = {\Sigma}^{-1/2} (\vect{z} - \boldsymbol{\mu}).
+\]
+
+This transformation does two things:
+
+\begin{enumerate}
+  \item Centres the data at the origin.
+  \item Rescales and rotates so that the covariance matrix\index[subject]{covariance matrix} of $\vect{w}$
+        is the identity matrix $\mat{I}$.
+\end{enumerate}
+
+In the $\vect{w}$ space, the data form a spherical cloud with unit variance
+in all directions and no correlations. This is called ``whitening\index[subject]{whitening transformation}'' or
+``sphering'' the data.
+
+Now compute the squared Euclidean\index[subject]{distance!Euclidean} length of $\vect{w}$:
+\begin{align*}
+  \|\vect{w}\|^2 
+    &= \vect{w}^\top \vect{w} \\
+    &= \left[ {\Sigma}^{-1/2} (\vect{z} - \boldsymbol{\mu}) \right]^\top
+       \left[ {\Sigma}^{-1/2} (\vect{z} - \boldsymbol{\mu}) \right] \\
+    &= (\vect{z} - \boldsymbol{\mu})^\top 
+       {\Sigma}^{-1/2} {\Sigma}^{-1/2}
+       (\vect{z} - \boldsymbol{\mu}) \\
+    &= (\vect{z} - \boldsymbol{\mu})^\top {\Sigma}^{-1} 
+       (\vect{z} - \boldsymbol{\mu}) \\
+    &= d^2_{\text{Mah}}.
+\end{align*}
+
+\begin{keyidea}
+Mahalanobis distance\index[subject]{distance!Mahalanobis} distance is ordinary Euclidean\index[subject]{distance!Euclidean} distance in ``whitened'' space
+---the space where the data have been transformed to have identity
+covariance. The transformation that achieves this is ${\Sigma}^{-1/2}$.
+\end{keyidea}
+
+This insight will be central to Part~III, where we develop whitening\index[subject]{whitening transformation} and
+the ``P-sphere\index[subject]{P-sphere}'' as tools for understanding evolutionary constraints.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch6_whitening_steps.pdf}
+    \caption{The whitening transformation step by step. (a) Original data with 
+    correlated traits; the covariance ellipse ($\mathbf{P}$) is tilted. 
+    (b) After rotation by $\mathbf{V}^\top$: data align with eigenvector axes; 
+    covariance is now diagonal ($\boldsymbol{\Lambda}$). (c) After scaling by 
+    $\boldsymbol{\Lambda}^{-1/2}$: variances are equalized; covariance becomes 
+    identity. (d) The full transformation $\mathbf{P}^{-1/2}\mathbf{z}$ produces 
+    spherical data. In this whitened space, the $\mathbf{P}$-sphere becomes 
+    the unit circle, and Mahalanobis distance equals Euclidean distance.}
+    \label{fig:whitening_steps}
+\end{figure}
+
+\section{Mahalanobis distance\index[subject]{distance!Mahalanobis} distance between two points}
+
+So far we have measured distance from a point to the mean. But we can
+also measure the Mahalanobis distance\index[subject]{distance!Mahalanobis} distance between any two points:
+\[
+  d^2_{\text{Mah}}(\vect{z}_i, \vect{z}_j) =
+    (\vect{z}_j - \vect{z}_i)^\top {\Sigma}^{-1} (\vect{z}_j - \vect{z}_i).
+\]
+
+This asks: how different are these two phenotypes, measured in units that
+account for the population's variance structure?
+
+When comparing phenotypes, this is often more appropriate than asking how
+far each is from the mean. It tells us whether the difference between two
+individuals is large or small relative to typical variation in the
+population.
+
+\section{Connection to discriminant analysis\index[subject]{discriminant analysis}}
+
+Mahalanobis \index[subject]{distance!Mahalanobis} distance has a natural application in classification. Suppose
+we have two groups (e.g., two species, or survivors versus non-survivors)
+with means $\boldsymbol{\mu}_1$ and $\boldsymbol{\mu}_2$ and a common
+within-group covariance matrix\index[subject]{covariance matrix} ${\Sigma}_W$.
+
+To classify a new individual with phenotype $\vect{z}$, we compute the
+Mahalanobis \index[subject]{distance!Mahalanobis} distance from $\vect{z}$ to each group mean:
+\begin{align*}
+  d^2_1 &= (\vect{z} - \boldsymbol{\mu}_1)^\top {\Sigma}_W^{-1} 
+           (\vect{z} - \boldsymbol{\mu}_1), \\
+  d^2_2 &= (\vect{z} - \boldsymbol{\mu}_2)^\top {\Sigma}_W^{-1} 
+           (\vect{z} - \boldsymbol{\mu}_2),
+\end{align*}
+and assign the individual to the closer group.
+
+This is the basis of linear discriminant analysis\index[subject]{discriminant analysis} (LDA). The Mahalanobis distance\index[subject]{distance!Mahalanobis}
+distance ensures that classification respects the shape of within-group
+variation: a large difference along a high-variance direction counts less
+than a small difference along a low-variance direction.
+
+\section{Biological interpretation}
+
+In evolutionary biology, the Mahalanobis \index[subject]{distance!Mahalanobis} distance has a natural
+interpretation. If we use the phenotypic covariance matrix\index[subject]{covariance matrix} $\mat{P}$, then
+\[
+  d^2_{\mat{P}} = (\vect{z} - \boldsymbol{\mu})^\top \mat{P}^{-1} 
+                  (\vect{z} - \boldsymbol{\mu})
+\]
+measures how unusual a phenotype is relative to the variation present in
+the population.
+
+If we use the genetic covariance matrix\index[subject]{covariance matrix} $\mat{G}$, then
+\[
+  d^2_{\mat{G}} = (\vect{z} - \boldsymbol{\mu})^\top \mat{G}^{-1} 
+                  (\vect{z} - \boldsymbol{\mu})
+\]
+measures how unusual a phenotype is relative to the \emph{genetic}
+variation available. This is relevant for asking: how difficult would it
+be to evolve to this phenotype? Phenotypes far from the mean in
+low-genetic-variance directions are harder to reach by selection than
+phenotypes far from the mean in high-genetic-variance directions.
+
+\begin{keyidea}
+The choice of covariance matrix\index[subject]{covariance matrix} changes the question being asked:
+\begin{itemize}
+  \item $\mat{P}^{-1}$: How unusual is this phenotype given the total
+        variation in the population?
+  \item $\mat{G}^{-1}$: How unusual is this phenotype given the genetic
+        variation available for selection to act on?
+\end{itemize}
+\end{keyidea}
+
+\section{What Mahalanobis \index[subject]{distance!Mahalanobis} distance requires}
+
+The Mahalanobis \index[subject]{distance!Mahalanobis} distance is well-defined only when the covariance matrix\index[subject]{covariance matrix}
+is invertible. This fails when:
+
+\begin{itemize}
+  \item The covariance matrix\index[subject]{covariance matrix} is singular (has zero eigenvalue\index[subject]{eigenvalue}s), meaning
+        some linear combination of traits has zero variance.
+  \item The sample size is smaller than the number of traits, making the
+        sample covariance matrix\index[subject]{covariance matrix} rank-deficient.
+\end{itemize}
+
+In practice, researchers often use regularised covariance estimates or
+reduce dimensionality (e.g., via PCA\index[subject]{PCA}) before computing Mahalanobis \index[subject]{distance!Mahalanobis}
+distances. We will discuss these issues further in Part~IV.
+
+\section{Summary}
+
+In this chapter we have:
+
+\begin{itemize}
+  \item Derived the Mahalanobis \index[subject]{distance!Mahalanobis} distance by inserting the inverse covariance
+        matrix into the distance formula.
+  \item Verified that in one dimension, Mahalanobis \index[subject]{distance!Mahalanobis} distance reduces to the
+        absolute $z$-score.
+  \item Seen geometrically how the inverse covariance matrix\index[subject]{covariance matrix} reshapes the
+        unit ball from a sphere to an ellipsoid matching the data.
+  \item Connected Mahalanobis \index[subject]{distance!Mahalanobis} distance to probability: for multivariate normal data, equal Mahalanobis \index[subject]{distance!Mahalanobis} distance means equal probability density.
+  \item Computed a worked example showing how points at the same Euclidean \index[subject]{distance!Euclidean}
+        distance have very different Mahalanobis \index[subject]{distance!Mahalanobis} distances.
+  \item Understood Mahalanobis \index[subject]{distance!Mahalanobis} distance as Euclidean \index[subject]{distance!Euclidean} distance in whitened
+        space---space where the covariance has been transformed to the
+        identity.
+  \item Noted the biological interpretations: $\mat{P}^{-1}$ measures
+        phenotypic unusualness, $\mat{G}^{-1}$ measures genetic
+        ``difficulty to reach.''
+\end{itemize}
+
+We now have the conceptual foundation for Part~III. The covariance matrix\index[subject]{covariance matrix}
+encodes the shape of the data cloud; its inverse defines a natural distance.
+But we have not yet said how to \emph{find} the axes of the ellipse or
+compute the eigenvalue\index[subject]{eigenvalue}s that determine its shape. That is the work of
+diagonalisation\index[subject]{diagonalisation}, which we take up next.
+
+\section*{Exercises}
+
+\paragraph{Exercise 12.1 (Computing a covariance matrix).}
+Five individuals are measured for two traits:
+
+\begin{center}
+\begin{tabular}{ccc}
+\hline
+Individual & $X$ & $Y$ \\
+\hline
+1 & 2 & 4 \\
+2 & 3 & 5 \\
+3 & 5 & 7 \\
+4 & 4 & 6 \\
+5 & 6 & 8 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{enumerate}
+  \item Compute the mean of $X$ and the mean of $Y$.
+  \item Compute the variance of $X$ and the variance of $Y$.
+  \item Compute the covariance of $X$ and $Y$ using
+        $\Cov(X,Y) = \frac{1}{n-1}\sum_i (x_i - \bar{x})(y_i - \bar{y})$.
+  \item Assemble the $2 \times 2$ covariance matrix $\mat{S}$.
+  \item Verify that $\mat{S}$ is symmetric.
+\end{enumerate}
+
+\paragraph{Exercise 12.2 (Covariance matrix properties).}
+Consider the covariance matrix
+\[
+  \mat{S} = \begin{pmatrix} 4 & 2 \\ 2 & 5 \end{pmatrix}.
+\]
+
+\begin{enumerate}
+  \item What is the variance of trait 1? Of trait 2?
+  \item What is the covariance between the traits?
+  \item Compute the correlation: $r = \Cov(X,Y) / (s_X s_Y)$.
+  \item Is this matrix positive definite? (Hint: compute its eigenvalues
+        or check that $\det(\mat{S}) > 0$ and $\tr(\mat{S}) > 0$.)
+\end{enumerate}
+
+\paragraph{Exercise 12.3 (Mahalanobis distance by hand).}
+Using the covariance matrix from Exercise 12.2, compute the Mahalanobis
+distance from the mean $(0, 0)$ to the point $(2, 1)$.
+
+\begin{enumerate}
+  \item First, compute the inverse of $\mat{S}$.
+  \item Then compute $D^2 = \vect{x}^\top \mat{S}^{-1} \vect{x}$ where
+        $\vect{x} = (2, 1)^\top$.
+  \item Take the square root to get $D$.
+  \item Compare to the Euclidean $\|\vect{x}\| = \sqrt{2^2 + 1^2}$.
+\end{enumerate}
+
+\paragraph{Exercise 12.4 (Mahalanobis equals Euclidean when\ldots).}
+Show that Mahalanobis distance equals Euclidean distance when the
+covariance matrix is the identity matrix $\mat{I}$.
+
+\begin{enumerate}
+  \item Write down the $2 \times 2$ identity matrix.
+  \item What does $\mat{S} = \mat{I}$ imply about the variances and
+        covariance?
+  \item Compute $D^2 = \vect{x}^\top \mat{I}^{-1} \vect{x}$ and simplify.
+  \item Under what biological conditions might $\mat{S} \approx \mat{I}$?
+\end{enumerate}
+
+\paragraph{Exercise 12.5 (Ellipses and probability).}
+The set of points with Mahalanobis distance $D = 1$ from the mean forms
+an ellipse.
+
+\begin{enumerate}
+  \item For a bivariate normal distribution, approximately what percentage
+        of points lie within the $D = 1$ ellipse? (Hint: it's not 68\%.)
+  \item How does this compare to the univariate case where about 68\% of
+        observations lie within 1 SD of the mean?
+  \item The $D = \sqrt{2}$ ellipse contains about 63\% of observations
+        for a bivariate normal. Why does the ``1 SD'' intuition not
+        transfer directly to multiple dimensions?
+\end{enumerate}

@@ -1,0 +1,379 @@
+\chapter{The G Matrix and the Genetic Ellipsoid}
+
+We now have a complete geometric toolkit: vectors, matrices, eigenvalue\index[subject]{eigenvalue}s,
+the Mahalanobis distance\index[subject]{distance!Mahalanobis} distance, and the whitening transformation. In this chapter
+we apply these tools to the central object of multivariate quantitative
+genetics: the additive genetic covariance matrix\index[subject]{covariance matrix}, $\mat{G}$.
+
+The G matrix is not merely a table of numbers. It is a shape---an ellipsoid
+in trait space that determines how populations can and cannot evolve. By
+understanding G geometrically, we gain insight into evolutionary constraint,
+the ``line of least resistance,'' and why some trait combinations respond
+readily to selection while others do not.
+
+\section{What the G matrix represents}
+
+The additive genetic covariance matrix\index[subject]{covariance matrix} $\mat{G}$ summarises the heritable
+variation in a population. Its entries are:
+
+\begin{itemize}
+  \item \textbf{Diagonal entries} $G_{ii} = V_{A,i}$: the additive genetic
+        variance of trait $i$.
+  \item \textbf{Off-diagonal entries} $G_{ij} = \text{Cov}_A(z_i, z_j)$:
+        the additive genetic covariance between traits $i$ and $j$.
+\end{itemize}
+
+These covariances arise from pleiotropy (single genes affecting multiple
+traits) and linkage disequilibrium (non-random association of alleles at
+different loci). When $G_{ij} > 0$, alleles that increase trait $i$ tend
+also to increase trait $j$. When $G_{ij} < 0$, they tend to have opposite
+effects.
+
+\begin{keyidea}
+The G matrix encodes the genetic architecture underlying multiple traits.
+It determines which trait combinations can be easily assembled by selection
+and which cannot.
+\end{keyidea}
+
+\section{The genetic ellipsoid}
+
+Like any symmetric positive semi-definite\index[subject]{matrix!positive semi-definite} matrix, $\mat{G}$ defines an
+ellipsoid. In two traits, this is an ellipse; in three traits, an
+ellipsoid; in $p$ traits, a $p$-dimensional hyperellipsoid.
+
+The ellipsoid has a concrete interpretation: it shows where genetic
+variation extends in trait space. Directions along the long axes of the
+ellipsoid have high genetic variance; directions along the short axes have
+low genetic variance.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig30_genetic_ellipsoid.png}
+  \caption[The genetic ellipsoid]{
+    The G matrix defines an ellipsoid in trait space. The eigenvector\index[subject]{eigenvector}s
+    point along the principal axes; the eigenvalue\index[subject]{eigenvalue}s are the genetic
+    variances along those axes. The shape reveals which directions have
+    abundant genetic variation and which are constrained.
+  }
+  \label{fig:genetic-ellipsoid}
+\end{figure}
+
+Formally, if we diagonalise $\mat{G} = \mat{V}\mat{\Lambda}\mat{V}^\top$:
+
+\begin{itemize}
+  \item The eigenvector\index[subject]{eigenvector}s $\vect{g}_1, \vect{g}_2, \ldots, \vect{g}_p$ are
+        the principal axes of the genetic ellipsoid.
+  \item The eigenvalue\index[subject]{eigenvalue}s $\lambda_1 \ge \lambda_2 \ge \cdots \ge \lambda_p$
+        are the genetic variances along those axes.
+  \item The semi-axis lengths are $\sqrt{\lambda_1}, \sqrt{\lambda_2},
+        \ldots, \sqrt{\lambda_p}$.
+\end{itemize}
+
+\section[gmax: the line of least evolutionary resistance]{\texorpdfstring{$\mathbf{g}_{\max}$}{gmax}: the line of least evolutionary resistance}
+
+The first eigenvector\index[subject]{eigenvector} of $\mat{G}$, denoted $\mathbf{g}_{\max}$, points in
+the direction of maximum genetic variance. This direction has been called
+the ``line of least evolutionary resistance'' because:
+
+\begin{enumerate}
+  \item Selection along $\mathbf{g}_{\max}$ produces the largest possible
+        response per unit of selection intensity.
+  \item Even when selection targets a different direction, the response
+        tends to be deflected toward $\mathbf{g}_{\max}$.
+  \item Over evolutionary time, populations may diverge primarily along
+        $\mathbf{g}_{\max}$, not along the direction of selection.
+\end{enumerate}
+
+\begin{keyidea}
+$\mathbf{g}_{\max}$ is the direction of maximum genetic variance. It
+represents the path of least resistance for evolutionary change---the
+direction the population ``wants'' to go, regardless of where selection
+points.
+\end{keyidea}
+
+The smallest eigenvector\index[subject]{eigenvector}, $\mathbf{g}_{\min}$, represents the direction of
+minimum genetic variance. Evolution in this direction is difficult: even
+strong selection produces little response because the necessary genetic
+variation is scarce.
+
+\section{The multivariate breeder's equation\index[subject]{breeder's equation} equation revisited}
+
+The importance of G geometry becomes clear through the breeder's equation\index[subject]{breeder's equation} equation.
+In its multivariate form:
+\[
+  \Delta\bar{\vect{z}} = \mat{G}\boldsymbol{\beta},
+\]
+where $\boldsymbol{\beta} = \mat{P}^{-1}\vect{S}$ is the selection gradient
+and $\vect{S}$ is the selection differential.
+
+The response $\Delta\bar{\vect{z}}$ is not parallel to $\boldsymbol{\beta}$
+unless $\mat{G}$ is a scalar multiple of the identity (equal variances, no
+covariances). In general, $\mat{G}$ rotates and stretches the selection
+gradient, deflecting the response toward directions of high genetic
+variance.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig30_deflection.png}
+  \caption[Selection deflected by G]{
+    Selection (red arrow) aims in one direction, but the response (blue
+    arrow) is deflected toward $\mathbf{g}_{\max}$. The more eccentric the
+    G ellipse, the stronger the deflection.
+  }
+  \label{fig:deflection}
+\end{figure}
+
+\subsection*{A worked example}
+
+Consider a G matrix with strong positive genetic correlation:
+\[
+  \mat{G} =
+  \begin{pmatrix}
+    1.0 & 0.8 \\
+    0.8 & 1.0
+  \end{pmatrix}.
+\]
+
+The eigenvalue\index[subject]{eigenvalue}s are $\lambda_1 = 1.8$ and $\lambda_2 = 0.2$. The first
+eigenvector\index[subject]{eigenvector} points at 45° (both traits increasing together); the second
+points at 135° (traits in opposition).
+
+Suppose selection favours increased trait 2 only:
+$\boldsymbol{\beta} = (0, 1)^\top$.
+
+The response is:
+\[
+  \Delta\bar{\vect{z}} = \mat{G}\boldsymbol{\beta}
+  = \begin{pmatrix} 1.0 & 0.8 \\ 0.8 & 1.0 \end{pmatrix}
+    \begin{pmatrix} 0 \\ 1 \end{pmatrix}
+  = \begin{pmatrix} 0.8 \\ 1.0 \end{pmatrix}.
+\]
+
+Selection targeted only trait 2, but the response includes an increase in
+trait 1 as well. The genetic correlation\index[subject]{correlation}has ``dragged'' trait 1 along.
+The response vector $(0.8, 1.0)$ is deflected toward the 45° direction of
+$\mathbf{g}_{\max}$.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/fig_ch9_evolvability_vs_respondability.pdf}
+    \caption{\textbf{Evolvability versus respondability.} Direction 
+    $\vect{u}_1$ (red) has high evolvability (genetic variance = 1.21) but 
+    lower heritability ($h^2 = 0.30$) because phenotypic variance is even 
+    higher. Direction $\vect{u}_2$ (blue) has lower evolvability (genetic 
+    variance = 0.40) but higher heritability ($h^2 = 0.37$). Evolvability 
+    tells you how much genetic variance is available; respondability 
+    (heritability) tells you what fraction of phenotypic variance is genetic. 
+    Both matter for predicting response to selection.}
+    \label{fig:evolvability-respondability}
+\end{figure}
+
+\section{Evolvability: genetic variance in the direction of selection}
+
+Hansen and Houle introduced \textbf{evolvability\index[subject]{evolvability}} as the genetic variance
+in the direction of selection, scaled appropriately. For a selection
+gradient $\boldsymbol{\beta}$, the evolvability\index[subject]{evolvability} is:
+\[
+  e(\boldsymbol{\beta}) = \boldsymbol{\beta}^\top \mat{G} \boldsymbol{\beta}.
+\]
+
+When $\boldsymbol{\beta}$ is a unit vector, this is simply the genetic
+variance in that direction. When $\boldsymbol{\beta}$ is standardised by
+trait means (for mean-scaled evolvability\index[subject]{evolvability}), it measures the proportional
+response to proportional selection.
+
+\begin{keyidea}
+evolvability\index[subject]{evolvability} $e(\boldsymbol{\beta}) = \boldsymbol{\beta}^\top\mat{G}\boldsymbol{\beta}$
+measures the genetic variance available in the direction selection is
+pushing. High evolvability\index[subject]{evolvability} means large response; low evolvability\index[subject]{evolvability} means
+the population is constrained in that direction.
+\end{keyidea}
+
+From Chapter~20, we know that:
+\[
+  \lambda_{\min} \le \boldsymbol{\beta}^\top\mat{G}\boldsymbol{\beta} \le \lambda_{\max}.
+\]
+
+evolvability\index[subject]{evolvability} ranges from the smallest to the largest eigenvalue\index[subject]{eigenvalue} of $\mat{G}$.
+The ratio $\lambda_{\max}/\lambda_{\min}$ quantifies how much evolvability\index[subject]{evolvability}
+varies across directions---how ``eccentric'' the genetic ellipsoid is.
+
+\section{Respondability and the comparison with P}
+
+evolvability\index[subject]{evolvability} measures genetic variance alone. But response to selection
+also depends on how much of the phenotypic variance is genetic. This leads
+to \textbf{respondability}:
+\[
+  r(\boldsymbol{\beta}) 
+    = \frac{\boldsymbol{\beta}^\top \mat{G} \boldsymbol{\beta}}
+           {\boldsymbol{\beta}^\top \mat{P} \boldsymbol{\beta}}
+    = h^2(\boldsymbol{\beta}),
+\]
+which is the directional heritability\index[subject]{heritability} from Chapter~21.
+
+Respondability asks: of the phenotypic variance in direction
+$\boldsymbol{\beta}$, what fraction is genetic? A direction can have high
+evolvability\index[subject]{evolvability} (lots of genetic variance) but low respondability (even more
+environmental variance), or vice versa.
+
+The P-whitening\index[subject]{whitening transformation} framework from Chapter~21 lets us study respondability
+systematically. The eigenvalue\index[subject]{eigenvalue}s of
+$\mat{G}^* = \mat{P}^{-1/2}\mat{G}\mat{P}^{-1/2}$
+are the respondabilities along the principal axes.
+
+\section{Constraint: when G limits evolution}
+
+The G matrix constrains evolution when:
+
+\begin{enumerate}
+  \item \textbf{Low eigenvalue\index[subject]{eigenvalue}s exist.} Some directions have little genetic
+        variance. Evolution in those directions is slow or impossible.
+  \item \textbf{eigenvalue\index[subject]{eigenvalue}s are unequal.} The genetic ellipsoid is
+        eccentric. Response is channelled along $\mathbf{g}_{\max}$ even
+        when selection points elsewhere.
+  \item \textbf{G and selection are misaligned.} If selection targets a
+        direction near $\mathbf{g}_{\min}$, response will be weak.
+\end{enumerate}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig30_constraint_scenarios.png}
+  \caption[Constraint scenarios]{
+    Three scenarios. Left: G nearly spherical---little constraint, response
+    tracks selection. Centre: G eccentric but aligned with selection---
+    response is strong. Right: G eccentric and misaligned---response is
+    weak and deflected.
+  }
+  \label{fig:constraint-scenarios}
+\end{figure}
+
+A useful summary statistic is the \textbf{eccentricity} of G, measured by
+the relative variance of its eigenvalue\index[subject]{eigenvalue}s:
+\[
+  V_{\text{rel}}(\mat{G}) 
+    = \frac{\Var(\lambda)}{\bar{\lambda}^2}
+    = \frac{\sum_i (\lambda_i - \bar{\lambda})^2 / p}
+           {\left(\sum_i \lambda_i / p\right)^2}.
+\]
+
+When $V_{\text{rel}} = 0$, all eigenvalue\index[subject]{eigenvalue}s are equal and G is spherical
+(no constraint). When $V_{\text{rel}}$ is large, G is highly eccentric
+(strong constraint).
+
+\section{Effective dimensionality}
+
+Another way to quantify constraint is through \textbf{effective
+dimensionality}---how many independent directions of genetic variation
+exist.
+
+If all eigenvalue\index[subject]{eigenvalue}s were equal, $\lambda_i = \bar{\lambda}$, we would have
+$p$ effective dimensions. If one eigenvalue\index[subject]{eigenvalue} dominates, the effective
+dimensionality is closer to 1.
+
+One common measure is:
+\[
+  n_{\text{eff}} = \frac{(\tr \mat{G})^2}{\tr(\mat{G}^2)}
+                 = \frac{\left(\sum_i \lambda_i\right)^2}{\sum_i \lambda_i^2}.
+\]
+
+This equals $p$ when all eigenvalue\index[subject]{eigenvalue}s are equal and approaches 1 when one
+eigenvalue\index[subject]{eigenvalue} dominates.
+
+\begin{keyidea}
+Effective dimensionality measures how many ``independent'' directions of
+genetic variation the population has. Low effective dimensionality means
+genetic variation is concentrated in a few directions---the population is
+genetically constrained.
+\end{keyidea}
+
+\section{Empirical G matrices: what do they look like?}
+
+Decades of empirical work have revealed some patterns:
+
+\begin{itemize}
+  \item \textbf{G matrices are often eccentric.} In many studies, the first
+        few eigenvalue\index[subject]{eigenvalue}s account for most of the genetic variance.
+        Effective dimensionality is typically much less than $p$.
+  \item \textbf{$\mathbf{g}_{\max}$ often aligns with body size.} For
+        morphological traits, the direction of maximum genetic variance
+        frequently corresponds to overall size---all traits scaling
+        together.
+  \item \textbf{Genetic correlations can be strong.} Off-diagonal elements
+        of G are often substantial, reflecting pervasive pleiotropy.
+  \item \textbf{G varies among populations.} The G matrix is not fixed; it
+        evolves and can differ between populations, species, and
+        environments.
+\end{itemize}
+
+These patterns suggest that genetic constraint is common. Populations do
+not have equal access to all directions in trait space; evolution is
+channelled along particular paths.
+
+\section{Stability and estimation of G}
+
+Estimating G requires breeding designs (parent-offspring regression,
+half-sib designs, animal models) or genomic data. Estimation is
+challenging because:
+
+\begin{itemize}
+  \item \textbf{Sample sizes are often small.} Estimating a $p \times p$
+        matrix requires estimating $p(p+1)/2$ unique elements. With many
+        traits, sampling error can be severe.
+  \item \textbf{G can be singular or nearly singular.} If some trait
+        combinations have near-zero genetic variance, the estimated G may
+        have zero or negative eigenvalue\index[subject]{eigenvalue}s due to sampling error.
+  \item \textbf{G may not be stable.} If genetic architecture changes
+        over time or differs among environments, a single G matrix may
+        not capture the population's evolutionary potential.
+\end{itemize}
+
+These issues motivate careful statistical treatment: regularisation,
+Bayesian estimation, and sensitivity analyses. We should interpret G
+matrices with appropriate caution, especially their smaller eigenvalue\index[subject]{eigenvalue}s.
+
+\section{G in the context of P}
+
+Throughout these notes we have emphasised comparing G and P. The P matrix
+describes total phenotypic variation; G describes the heritable component.
+Their relationship determines:
+
+\begin{itemize}
+  \item \textbf{heritability\index[subject]{heritability}:} The ratio of G to P, generalised to multiple
+        traits through directional heritability\index[subject]{heritability} $h^2(\boldsymbol{\beta})$.
+  \item \textbf{Selection response:} The breeder's equation\index[subject]{breeder's equation} equation
+        $\Delta\bar{\vect{z}} = \mat{G}\mat{P}^{-1}\vect{S}$ involves both.
+  \item \textbf{Constraint traps:} Directions where G is small relative to
+        P---phenotypic variation exists, but it is mostly environmental.
+\end{itemize}
+
+The P-whitening\index[subject]{whitening transformation} transformation $\mat{G}^* = \mat{P}^{-1/2}\mat{G}\mat{P}^{-1/2}$
+places G and P on a common footing. In whitened space, P is the identity,
+and G* directly reveals the heritability\index[subject]{heritability} structure.
+
+\section{Summary}
+
+In this chapter we have:
+
+\begin{itemize}
+  \item Interpreted the G matrix as an ellipsoid in trait space, with
+        eigenvector\index[subject]{eigenvector}s as principal axes and eigenvalue\index[subject]{eigenvalue}s as genetic
+        variances along those axes.
+  \item Identified $\mathbf{g}_{\max}$ as the direction of maximum genetic
+        variance---the line of least evolutionary resistance.
+  \item Shown how the breeder's equation\index[subject]{breeder's equation} equation $\Delta\bar{\vect{z}} = \mat{G}\boldsymbol{\beta}$
+        deflects selection response toward $\mathbf{g}_{\max}$.
+  \item Defined evolvability\index[subject]{evolvability} as $\boldsymbol{\beta}^\top\mat{G}\boldsymbol{\beta}$
+        and respondability (directional heritability\index[subject]{heritability}) as its ratio to
+        phenotypic variance.
+  \item Discussed constraint in terms of eigenvalue\index[subject]{eigenvalue} eccentricity and
+        effective dimensionality.
+  \item Summarised empirical patterns: G matrices are often eccentric,
+        with $\mathbf{g}_{\max}$ frequently aligned with body size.
+  \item Noted challenges in estimating G and the importance of comparing
+        G to P through P-whitening\index[subject]{whitening transformation}.
+\end{itemize}
+
+The G matrix is the engine of evolutionary response. Its shape determines
+which paths are open and which are blocked. In the next chapter, we turn
+to the other side of the equation: the fitness surface, encoded in the
+$\boldsymbol{\gamma}$ matrix, which determines where selection is pushing.

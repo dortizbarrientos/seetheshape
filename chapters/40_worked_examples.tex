@@ -1,0 +1,685 @@
+\chapter{Worked Examples: Complete Analyses}
+\label{ch:worked-examples}
+
+This chapter brings together everything we have learned. We work through
+complete analyses from raw data to biological interpretation, showing each
+step explicitly. The goal is not just to demonstrate techniques, but to
+illustrate the thought process: when to use each tool, how to check
+assumptions, and how to connect mathematical results to biological meaning.
+
+We present three examples of increasing complexity:
+\begin{enumerate}
+  \item A two-trait analysis of a G matrix, computing directional
+        heritabilities by hand.
+  \item A four-trait analysis comparing G and P, with P-whitening.
+  \item A selection analysis combining $\boldsymbol{\beta}$ and
+        $\boldsymbol{\gamma}$ with the G matrix.
+\end{enumerate}
+
+Each example follows the same arc: state the data, check assumptions,
+compute the relevant eigendecompositions, and interpret the results
+biologically.
+
+%-------------------------------------------------------------------
+\section{Example 1: Two-trait G matrix analysis}
+\index[subject]{worked example!two-trait G matrix}
+%-------------------------------------------------------------------
+
+\subsection*{The data}
+
+A plant breeding program has estimated the following additive genetic
+covariance matrix\index[subject]{covariance matrix}\index[subject]{G matrix@$\mathbf{G}$ matrix} for 
+flowering time (days) and plant height (cm):
+\[
+  \mat{G} =
+  \begin{pmatrix}
+    25 & 15 \\
+    15 & 36
+  \end{pmatrix}.
+\]
+
+The phenotypic covariance matrix\index[subject]{covariance matrix}\index[subject]{P matrix@$\mathbf{P}$ matrix} is:
+\[
+  \mat{P} =
+  \begin{pmatrix}
+    50 & 20 \\
+    20 & 60
+  \end{pmatrix}.
+\]
+
+Our goals are to:
+\begin{enumerate}
+  \item Find the principal axes of genetic variation.
+  \item Compute heritability in several directions.
+  \item Identify the directions of maximum and minimum heritability\index[subject]{heritability}.
+\end{enumerate}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch12_worked_example.pdf}
+    \caption{Complete analysis of the two-trait worked example. (a) Genetic 
+    ($\mathbf{G}$, blue) and phenotypic ($\mathbf{P}$, green) ellipses in 
+    original trait space, with $\mathbf{g}_{\max}$ and $\mathbf{g}_{\min}$ 
+    marked. (b) The whitened view: $\mathbf{G}^*$ ellipse inside the 
+    $\mathbf{P}$-sphere, showing directions of extreme heritability. 
+    (c) Directional heritability $h^2(\theta)$ as a function of direction, 
+    ranging from 0.42 to 0.62. (d) Summary statistics from the analysis. 
+    (e) The breeder's equation in action: selection gradient $\boldsymbol{\beta}$ 
+    is deflected toward $\mathbf{g}_{\max}$ in the response $\Delta\bar{\mathbf{z}}$. 
+    (f) Variance decomposition by direction, showing the gap between phenotypic 
+    and genetic variance (environmental variance) varies with direction.}
+    \label{fig:worked_example}
+\end{figure}
+
+\subsection*{Step 1: Eigendecompose G}
+\index[subject]{eigendecomposition!of G matrix}
+
+The characteristic equation\index[subject]{characteristic equation}\index[subject]{characteristic equation\index[subject]{characteristic equation}} for $\mat{G}$ is:
+\[
+  \det(\mat{G} - \lambda\mat{I}) = (25 - \lambda)(36 - \lambda) - 15^2 = 0.
+\]
+
+Expanding:
+\[
+  \lambda^2 - 61\lambda + (25 \times 36 - 225) = \lambda^2 - 61\lambda + 675 = 0.
+\]
+
+Using the quadratic form\index[subject]{quadratic form}ula:
+\[
+  \lambda = \frac{61 \pm \sqrt{61^2 - 4 \times 675}}{2}
+          = \frac{61 \pm \sqrt{3721 - 2700}}{2}
+          = \frac{61 \pm \sqrt{1021}}{2}
+          = \frac{61 \pm 31.95}{2}.
+\]
+
+So $\lambda_1 = 46.48$ and $\lambda_2 = 14.52$.
+
+For $\lambda_1 = 46.48$, the eigenvector satisfies:
+\[
+  \begin{pmatrix} 25 - 46.48 & 15 \\ 15 & 36 - 46.48 \end{pmatrix}
+  \begin{pmatrix} v_1 \\ v_2 \end{pmatrix} = \vect{0}.
+\]
+
+From the first row: $-21.48 v_1 + 15 v_2 = 0$, so $v_2/v_1 = 21.48/15 = 1.43$.
+
+Normalising: $\mathbf{g}_{\max} = (0.573, 0.820)^\top$.
+\index[subject]{gmax@$\mathbf{g}_{\max}$}
+
+Similarly, $\mathbf{g}_{\min} = (0.820, -0.573)^\top$ (orthogonal to
+$\mathbf{g}_{\max}$).
+
+\paragraph{Interpretation.}
+The direction of maximum genetic variance points mostly toward height
+(coefficient 0.820) with a positive contribution from flowering time
+(0.573). Plants with high breeding values tend to be both tall and
+late-flowering. The genetic variance along this axis is 46.48.
+
+The direction of minimum genetic variance contrasts the traits: tall but
+early-flowering, or short but late-flowering. Genetic variance along this
+axis is only 14.52---about one-third of the maximum.
+
+\subsection*{Step 2: Compute univariate heritabilities}
+\index[subject]{heritability}
+
+For each trait separately:
+\[
+  h^2_{\text{time}} = \frac{G_{11}}{P_{11}} = \frac{25}{50} = 0.50,
+  \qquad
+  h^2_{\text{height}} = \frac{G_{22}}{P_{22}} = \frac{36}{60} = 0.60.
+\]
+
+Both traits have moderate heritability\index[subject]{heritability}.
+
+\subsection*{Step 3: Compute directional heritabilities}
+\index[subject]{heritability!directional}
+
+For an arbitrary direction $\boldsymbol{\beta}$, the directional
+heritability\index[subject]{heritability} is:
+\[
+  h^2(\boldsymbol{\beta}) = 
+    \frac{\boldsymbol{\beta}^\top \mat{G} \boldsymbol{\beta}}
+         {\boldsymbol{\beta}^\top \mat{P} \boldsymbol{\beta}}.
+\]
+
+\paragraph{Along $\mathbf{g}_{\max}$.}
+Let $\boldsymbol{\beta} = (0.573, 0.820)^\top$.
+
+Numerator:
+\begin{align*}
+  \boldsymbol{\beta}^\top \mat{G} \boldsymbol{\beta}
+    &= (0.573, 0.820) 
+       \begin{pmatrix} 25 & 15 \\ 15 & 36 \end{pmatrix}
+       \begin{pmatrix} 0.573 \\ 0.820 \end{pmatrix} \\
+    &= (0.573, 0.820) \begin{pmatrix} 26.63 \\ 38.12 \end{pmatrix}
+     = 46.48.
+\end{align*}
+
+Denominator:
+\begin{align*}
+  \boldsymbol{\beta}^\top \mat{P} \boldsymbol{\beta}
+    &= (0.573, 0.820) 
+       \begin{pmatrix} 50 & 20 \\ 20 & 60 \end{pmatrix}
+       \begin{pmatrix} 0.573 \\ 0.820 \end{pmatrix} \\
+    &= (0.573, 0.820) \begin{pmatrix} 45.05 \\ 60.66 \end{pmatrix}
+     = 75.55.
+\end{align*}
+
+So $h^2(\mathbf{g}_{\max}) = 46.48 / 75.55 = 0.615$.
+
+\paragraph{Along $\mathbf{g}_{\min}$.}
+Let $\boldsymbol{\beta} = (0.820, -0.573)^\top$.
+
+By similar calculation:
+\[
+  \boldsymbol{\beta}^\top \mat{G} \boldsymbol{\beta} = 14.52,
+  \qquad
+  \boldsymbol{\beta}^\top \mat{P} \boldsymbol{\beta} = 34.45.
+\]
+
+So $h^2(\mathbf{g}_{\min}) = 14.52 / 34.45 = 0.421$.
+
+\paragraph{Along flowering time only.}
+Let $\boldsymbol{\beta} = (1, 0)^\top$.
+
+Then $h^2 = G_{11}/P_{11} = 25/50 = 0.50$.
+
+\subsection*{Step 4: Find extreme heritabilities via G*}
+\index[subject]{G* matrix@$\mathbf{G}^*$ matrix}
+
+To find the true maximum and minimum heritabilities across all directions,
+we compute $\mat{G}^* = \mat{P}^{-1/2}\mat{G}\mat{P}^{-1/2}$ and
+find its eigenvalues.
+
+First, eigendecompose $\mat{P}$:
+\[
+  \mat{P} = \mat{V}_P {\Lambda}_P \mat{V}_P^\top.
+\]
+
+The eigenvalue\index[subject]{eigenvalue}s of $\mat{P}$ are $\lambda_{P,1} = 75.62$ and
+$\lambda_{P,2} = 34.38$, with corresponding eigenvector\index[subject]{eigenvector}s.
+
+Then:
+\[
+  \mat{P}^{-1/2} = \mat{V}_P {\Lambda}_P^{-1/2} \mat{V}_P^\top.
+\]
+
+Computing $\mat{G}^* = \mat{P}^{-1/2}\mat{G}\mat{P}^{-1/2}$ and
+finding its eigenvalue\index[subject]{eigenvalue}s gives:
+\[
+  \lambda_1^* = 0.619, \qquad \lambda_2^* = 0.419.
+\]
+
+These are the maximum and minimum directional heritabilities.
+
+\begin{keyidea}
+The eigenvalue\index[subject]{eigenvalue}s of $\mat{G}^* = \mat{P}^{-1/2}\mat{G}\mat{P}^{-1/2}$ give
+the extreme directional heritabilities. Here, heritability\index[subject]{heritability} ranges from
+0.42 to 0.62 depending on direction---a range of 0.20, or about 40\%
+of the minimum value.
+\end{keyidea}
+
+\subsection*{Summary table}
+
+\begin{center}
+\begin{tabular}{lcc}
+\hline
+Direction & Genetic variance & heritability\index[subject]{heritability} \\
+\hline
+Flowering time only & 25.0 & 0.50 \\
+Height only & 36.0 & 0.60 \\
+$\mathbf{g}_{\max}$ & 46.5 & 0.62 \\
+$\mathbf{g}_{\min}$ & 14.5 & 0.42 \\
+Maximum $h^2$ direction & --- & 0.62 \\
+Minimum $h^2$ direction & --- & 0.42 \\
+\hline
+\end{tabular}
+\end{center}
+
+In this example, the direction of maximum genetic variance 
+($\mathbf{g}_{\max}$) is close to the direction of maximum heritability\index[subject]{heritability},
+but they need not coincide in general. The former maximises
+$\boldsymbol{\beta}^\top\mat{G}\boldsymbol{\beta}$; the latter maximises
+the ratio
+$\boldsymbol{\beta}^\top\mat{G}\boldsymbol{\beta} /
+ \boldsymbol{\beta}^\top\mat{P}\boldsymbol{\beta}$.
+When $\mat{G}$ and $\mat{P}$ have different orientations, these directions
+can differ substantially.
+
+%-------------------------------------------------------------------
+\section{Example 2: Four-trait G-P comparison with whitening\index[subject]{whitening transformation}}
+\index[subject]{worked example!four-trait G-P comparison}
+\index[subject]{whitening\index[subject]{whitening transformation} transformation}
+%-------------------------------------------------------------------
+
+\subsection*{The data}
+
+A study of a passerine bird population estimates G and P for four
+morphological traits: wing length, tarsus length, bill depth, and bill
+width. The matrices are:
+
+\[
+  \mat{G} =
+  \begin{pmatrix}
+    0.80 & 0.45 & 0.20 & 0.15 \\
+    0.45 & 0.60 & 0.25 & 0.18 \\
+    0.20 & 0.25 & 0.35 & 0.28 \\
+    0.15 & 0.18 & 0.28 & 0.30
+  \end{pmatrix},
+\]
+\[
+  \mat{P} =
+  \begin{pmatrix}
+    1.20 & 0.55 & 0.30 & 0.22 \\
+    0.55 & 0.95 & 0.35 & 0.25 \\
+    0.30 & 0.35 & 0.55 & 0.40 \\
+    0.22 & 0.25 & 0.40 & 0.50
+  \end{pmatrix}.
+\]
+
+\subsection*{Step 1: Basic checks}
+\index[subject]{positive definite\index[subject]{matrix!positive definite}ness}
+
+Before analysis, we verify that both matrices are positive definite\index[subject]{matrix!positive definite}
+(all eigenvalue\index[subject]{eigenvalue}s positive) and that $G_{ii} \le P_{ii}$ for each trait
+(genetic variance should not exceed phenotypic variance).
+
+eigenvalue\index[subject]{eigenvalue}s of $\mat{G}$: 1.36, 0.44, 0.21, 0.04.
+All positive---$\mat{G}$ is positive definite\index[subject]{matrix!positive definite}.
+
+eigenvalue\index[subject]{eigenvalue}s of $\mat{P}$: 1.95, 0.67, 0.46, 0.12.
+All positive---$\mat{P}$ is positive definite\index[subject]{matrix!positive definite}.
+
+Diagonal check: $G_{ii} \le P_{ii}$ for all $i$. Yes: 0.80 < 1.20,
+0.60 < 0.95, 0.35 < 0.55, 0.30 < 0.50.
+
+\subsection*{Step 2: Univariate heritabilities}
+
+\begin{center}
+\begin{tabular}{lccc}
+\hline
+Trait & $G_{ii}$ & $P_{ii}$ & $h^2$ \\
+\hline
+Wing length  & 0.80 & 1.20 & 0.67 \\
+Tarsus length & 0.60 & 0.95 & 0.63 \\
+Bill depth   & 0.35 & 0.55 & 0.64 \\
+Bill width   & 0.30 & 0.50 & 0.60 \\
+\hline
+\end{tabular}
+\end{center}
+
+All traits have similar, moderately high heritabilities (0.60--0.67).
+A univariate analysis would conclude that all four traits are roughly
+equally heritable. But this masks important directional variation.
+
+\subsection*{Step 3: Compute G* and its eigenstructure}
+
+We compute $\mat{G}^* = \mat{P}^{-1/2}\mat{G}\mat{P}^{-1/2}$ using the
+eigendecomposition of $\mat{P}$.
+
+The eigenvalue\index[subject]{eigenvalue}s of $\mat{G}^*$ are the directional heritabilities along
+the principal axes of P-whitened space:
+
+\begin{center}
+\begin{tabular}{cccc}
+\hline
+$\lambda_1^*$ & $\lambda_2^*$ & $\lambda_3^*$ & $\lambda_4^*$ \\
+\hline
+0.71 & 0.65 & 0.45 & 0.34 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Step 4: Interpret the heritability\index[subject]{heritability} distribution}
+
+The eigenvalue\index[subject]{eigenvalue}s range from 0.34 to 0.71. This means:
+\begin{itemize}
+  \item Maximum directional heritability\index[subject]{heritability}: 0.71 (71\% of variance genetic).
+  \item Minimum directional heritability\index[subject]{heritability}: 0.34 (34\% genetic).
+  \item Range: 0.37 (more than double the minimum).
+\end{itemize}
+
+Mean heritability\index[subject]{heritability} (average of eigenvalue\index[subject]{eigenvalue}s): $\bar{h}^2 = 0.54$.
+
+Coefficient of variation of eigenvalue\index[subject]{eigenvalue}s:
+\[
+  \text{CV}(\lambda^*) = \frac{\text{SD}(\lambda^*)}{\text{mean}(\lambda^*)}
+    = \frac{0.150}{0.54} = 0.28.
+\]
+
+From the formula $\text{CV}(h^2) = \sqrt{2/(p+2)} \times \text{CV}(\lambda^*)$:
+\[
+  \text{CV}(h^2) = \sqrt{2/6} \times 0.28 = 0.577 \times 0.28 = 0.16.
+\]
+
+The coefficient of variation of directional heritability\index[subject]{heritability} is about 16\%.
+This indicates moderate constraint heterogeneity---some directions are
+substantially more heritable than others.
+
+\subsection*{Step 5: Identify constraint traps}
+\index[subject]{constraint!trap}
+
+The eigenvector\index[subject]{eigenvector} corresponding to $\lambda_4^* = 0.34$ defines the direction
+of minimum heritability\index[subject]{heritability}. Examining its loadings:
+\[
+  \vect{v}_4^* = (0.14, -0.19, 0.66, -0.71)^\top.
+\]
+
+This direction contrasts the bill traits (depth positive, width negative)
+with small contributions from the body-size traits. Selection for birds
+with deep but narrow bills, or vice versa, would face a constraint trap:
+only 34\% of phenotypic variance in this direction is genetic.
+
+In contrast, the direction of maximum heritability\index[subject]{heritability} ($\lambda_1^* = 0.71$)
+has loadings:
+\[
+  \vect{v}_1^* = (0.79, 0.61, 0.05, 0.04)^\top.
+\]
+
+This direction loads heavily on wing and tarsus---overall body ``size.''
+Selection for larger or smaller birds has high heritability\index[subject]{heritability}; 71\% of
+variance is genetic.
+
+\begin{keyidea}
+Size variation has high heritability\index[subject]{heritability} (71\%); bill-shape variation has
+lower heritability\index[subject]{heritability} (34\%). A breeding program targeting bill proportions
+would face stronger constraints than one targeting overall body size.
+\end{keyidea}
+
+\subsection*{Step 6: Geometric interpretation}
+
+Figure~\ref{fig:bird_case_study} illustrates these results geometrically.
+
+In the original trait coordinates, the phenotypic covariance matrix\index[subject]{covariance matrix}
+$\mat{P}$ defines an ellipsoid whose cross-sections in any two-trait
+plane are ellipses. The genetic covariance matrix\index[subject]{covariance matrix} $\mat{G}$ defines a
+second ellipsoid nested inside the first. For this bird population, the
+$\mat{G}$ ellipsoid is somewhat narrower along directions involving bill
+shape than along overall size.
+
+whitening\index[subject]{whitening transformation} by $\mat{P}^{-1/2}$ maps the $\mat{P}$ ellipsoid to a sphere:
+in whitened coordinates every direction has unit phenotypic variance.
+In this whitened space, $\mat{G}^\ast$ appears as an ellipsoid whose
+axes have lengths given by the square roots of the eigenvalue\index[subject]{eigenvalue}s
+$\lambda_i^\ast$. The long axis corresponds to the high-heritability\index[subject]{heritability}
+``size'' direction ($h^2 = 0.71$); the short axis corresponds to the
+low-heritability\index[subject]{heritability} ``shape'' direction ($h^2 = 0.34$).
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\textwidth]{fig_bird_case_study.pdf}
+  \caption[Geometric summary of the bird G--P example]{
+    Schematic view of the four-trait bird example.
+    (a) Genetic ($\mat{G}$) and phenotypic ($\mat{P}$) ellipses in a
+        two-trait projection of the original trait space.
+    (b) Whitened trait space: the P-sphere\index[subject]{P-sphere} (unit circle) and the
+        $\mat{G}^\ast$ ellipse showing directional heritabilities. The
+        long axis corresponds to the high-heritability\index[subject]{heritability} size direction
+        ($h^2 = 0.71$); the short axis corresponds to the 
+        low-heritability\index[subject]{heritability} bill-shape direction ($h^2 = 0.34$), a 
+        constraint trap.
+  }
+  \label{fig:bird_case_study}
+\end{figure}
+
+%-------------------------------------------------------------------
+\section[Example 3: Selection analysis with G and gamma]{Example 3: Selection analysis with G and \texorpdfstring{$\boldsymbol{\gamma}$}{γ}}
+\index[subject]{worked example!selection analysis}
+\index[subject]{gamma matrix@$\boldsymbol{\gamma}$ matrix}
+%-------------------------------------------------------------------
+
+\subsection*{The data}
+
+A study measures survival in relation to two traits (standardised to mean
+zero, unit variance). The estimated selection gradients are:
+\[
+  \boldsymbol{\beta} = \begin{pmatrix} 0.18 \\ 0.12 \end{pmatrix},
+  \qquad
+  \boldsymbol{\gamma} = \begin{pmatrix} -0.15 & 0.08 \\ 0.08 & -0.10 \end{pmatrix}.
+\]
+
+The G matrix (in standardised units) is:
+\[
+  \mat{G} = \begin{pmatrix} 0.45 & 0.30 \\ 0.30 & 0.35 \end{pmatrix}.
+\]
+
+\subsection*{Step 1: Interpret $\boldsymbol{\beta}$}
+\index[subject]{selection gradient}
+
+Both elements of $\boldsymbol{\beta}$ are positive: directional selection
+favours increases in both traits. Trait 1 is under stronger directional
+selection (0.18 vs.\ 0.12).
+
+The magnitude $\|\boldsymbol{\beta}\| = \sqrt{0.18^2 + 0.12^2} = 0.216$
+gives overall strength of directional selection.
+
+The direction of selection:
+\[
+  \frac{\boldsymbol{\beta}}{\|\boldsymbol{\beta}\|} = (0.832, 0.555)^\top.
+\]
+
+\subsection*{Step 2: Interpret $\boldsymbol{\gamma}$}
+\index[subject]{selection!stabilising}
+\index[subject]{selection!correlational}
+
+Both diagonal elements are negative: stabilising selection on each trait
+individually. The off-diagonal is positive: correlational selection favours
+positive trait combinations (both high or both low together).
+
+Eigendecomposition of $\boldsymbol{\gamma}$:
+\[
+  \lambda_1^\gamma = -0.04, \qquad \lambda_2^\gamma = -0.21.
+\]
+
+Both negative, confirming overall stabilising selection. But selection is
+much stronger ($|\lambda| = 0.21$) along the second eigenvector\index[subject]{eigenvector} than the
+first ($|\lambda| = 0.04$).
+
+The eigenvector\index[subject]{eigenvector}s are:
+\begin{align*}
+  \vect{v}_1^\gamma &= (0.59, 0.81)^\top \quad \text{(weak stabilising)}, \\
+  \vect{v}_2^\gamma &= (0.81, -0.59)^\top \quad \text{(strong stabilising)}.
+\end{align*}
+
+\paragraph{Interpretation.}
+Stabilising selection is weak along the direction where both traits
+increase together---a ``size'' axis. Stabilising selection is strong
+along the direction where traits oppose each other---a ``contrast'' axis.
+The fitness surface is elongated: a ridge running along the positive
+diagonal, with steep sides.
+
+\subsection*{Step 3: Predict response to selection}
+
+Using the Lande equation\index[subject]{breeder's equation}:
+\[
+  \Delta\bar{\vect{z}} = \mat{G}\boldsymbol{\beta}
+    = \begin{pmatrix} 0.45 & 0.30 \\ 0.30 & 0.35 \end{pmatrix}
+      \begin{pmatrix} 0.18 \\ 0.12 \end{pmatrix}
+    = \begin{pmatrix} 0.117 \\ 0.096 \end{pmatrix}.
+\]
+
+The predicted response is $(0.117, 0.096)$---increases in both traits, with
+trait 1 responding slightly more.
+
+The response direction is:
+\[
+  \frac{\Delta\bar{\vect{z}}}{\|\Delta\bar{\vect{z}}\|}
+    = (0.773, 0.634)^\top.
+\]
+
+Comparing to the selection direction $(0.832, 0.555)^\top$, we see the
+response is deflected toward the direction of higher genetic variance
+(trait 1), but the deflection is modest because the genetic correlation
+is positive and selection favours both traits.
+
+\subsection*{Step 4: Alignment of G and $\boldsymbol{\gamma}$}
+\index[subject]{G-gamma alignment@G--$\gamma$ alignment}
+
+Eigendecompose $\mat{G}$:
+\[
+  \lambda_1^G = 0.70, \quad \lambda_2^G = 0.10.
+\]
+
+The eigenvector\index[subject]{eigenvector} for $\lambda_1^G$ is $(0.76, 0.65)^\top$---similar to the
+direction of weak stabilising selection ($\vect{v}_1^\gamma$).
+
+\begin{keyidea}
+The direction of maximum genetic variance ($\mathbf{g}_{\max}$) aligns
+with the direction of weak stabilising selection. This is favourable:
+the population can move along the fitness ridge without fighting strong
+curvature. Evolution is channeled but not blocked.
+\end{keyidea}
+
+Conversely, the direction of minimum genetic variance aligns with the
+direction of strong stabilising selection. Even if selection pushed toward
+unusual trait combinations (one high, one low), the population would
+struggle to respond because:
+\begin{enumerate}
+  \item Genetic variance is low in that direction ($\lambda_2^G = 0.10$).
+  \item Stabilising selection is strong ($\lambda_2^\gamma = -0.21$).
+\end{enumerate}
+
+This alignment is likely not coincidental. Theory predicts that
+mutation-selection balance\index[subject]{mutation-selection balance} tends to erode variance in directions of strong
+stabilising selection while preserving variance along fitness ridges.
+
+\subsection*{Step 5: Long-term prediction}
+
+Under mutation-selection balance\index[subject]{mutation-selection balance}, the population is expected to maintain
+variation primarily along $\mathbf{g}_{\max}$ (the fitness ridge). The
+combination of high genetic variance, weak stabilising selection, and
+positive correlational selection along the size axis suggests that size
+variation will persist. Variation in trait contrast will be more rapidly
+eroded.
+
+This example illustrates why both $\mat{G}$ and $\boldsymbol{\gamma}$
+matter. Knowing $\mat{G}$ alone tells us about evolutionary potential;
+knowing $\boldsymbol{\gamma}$ alone tells us about the fitness landscape.
+Only by comparing their geometries can we predict whether evolution will
+be fast or slow, direct or deflected.
+
+%-------------------------------------------------------------------
+\section{Computational tools}
+\index[subject]{R code}
+%-------------------------------------------------------------------
+
+All calculations in this chapter can be performed by hand for two traits,
+but become tedious for more. Here is R code implementing the key steps:
+
+\begin{verbatim}
+# Given G and P matrices (bird example)
+G <- matrix(c(0.80, 0.45, 0.20, 0.15,
+              0.45, 0.60, 0.25, 0.18,
+              0.20, 0.25, 0.35, 0.28,
+              0.15, 0.18, 0.28, 0.30), 4, 4)
+
+P <- matrix(c(1.20, 0.55, 0.30, 0.22,
+              0.55, 0.95, 0.35, 0.25,
+              0.30, 0.35, 0.55, 0.40,
+              0.22, 0.25, 0.40, 0.50), 4, 4)
+
+# Step 1: Basic checks
+cat("G eigenvalues:", round(eigen(G)$values, 3), "\n")
+cat("P eigenvalues:", round(eigen(P)$values, 3), "\n")
+cat("All positive?", all(eigen(G)$values > 0) & 
+                     all(eigen(P)$values > 0), "\n")
+
+# Step 2: Compute P^{-1/2}
+eig_P <- eigen(P)
+V_P <- eig_P$vectors
+P_inv_sqrt <- V_P %*% diag(1/sqrt(eig_P$values)) %*% t(V_P)
+
+# Step 3: Compute G*
+G_star <- P_inv_sqrt %*% G %*% P_inv_sqrt
+
+# Step 4: Eigenvalues of G* are directional heritabilities
+eig_Gstar <- eigen(G_star)
+h2_dir <- eig_Gstar$values
+cat("Directional heritabilities:", round(h2_dir, 3), "\n")
+cat("Max h2:", round(max(h2_dir), 3), "\n")
+cat("Min h2:", round(min(h2_dir), 3), "\n")
+
+# Step 5: CV of directional heritability
+mean_h2 <- mean(h2_dir)
+sd_h2 <- sd(h2_dir)
+cv_lambda <- sd_h2 / mean_h2
+p <- length(h2_dir)
+cv_h2 <- sqrt(2/(p+2)) * cv_lambda
+cat("Mean h2:", round(mean_h2, 3), "\n")
+cat("CV(h2):", round(cv_h2, 3), "\n")
+
+# Step 6: Identify constraint directions
+cat("\nMax h2 direction (loadings):\n")
+print(round(eig_Gstar$vectors[, 1], 2))
+cat("\nMin h2 direction (loadings):\n")
+print(round(eig_Gstar$vectors[, p], 2))
+\end{verbatim}
+
+%-------------------------------------------------------------------
+\section{Summary}
+%-------------------------------------------------------------------
+
+In this chapter we have:
+
+\begin{itemize}
+  \item Worked through a complete two-trait analysis: eigendecomposition
+        of G, calculation of directional heritabilities, and identification
+        of extreme values via G*.
+  \item Extended to four traits, demonstrating P-whitening\index[subject]{whitening transformation} and
+        interpretation of the eigenvalue\index[subject]{eigenvalue} spectrum as the distribution of
+        directional heritability\index[subject]{heritability}.
+  \item Combined G with $\boldsymbol{\gamma}$ to analyse how genetic
+        constraint interacts with the fitness surface geometry.
+  \item Shown that alignment between G and $\boldsymbol{\gamma}$ determines
+        whether evolution is facilitated or frustrated.
+  \item Provided R code for computing G* and its eigenstructure.
+\end{itemize}
+
+These examples illustrate the payoff of the geometric perspective. Matrices
+are not just tables of numbers---they are shapes that constrain and channel
+evolution. By visualising G, P, and $\boldsymbol{\gamma}$ as ellipsoids and
+understanding their eigenstructure, we gain insight into evolutionary
+potential and constraint that would be invisible from univariate analyses
+alone.
+
+%-------------------------------------------------------------------
+\section*{Exercises}
+%-------------------------------------------------------------------
+
+\paragraph{Exercise 1 (Covariance ellipses with the same trace).}
+Construct two $2 \times 2$ covariance matrices that have the same trace
+(sum of diagonal elements) but different eigenvalue\index[subject]{eigenvalue}s. For each matrix:
+\begin{enumerate}
+  \item Compute the eigenvalue\index[subject]{eigenvalue}s and eigenvector\index[subject]{eigenvector}s.
+  \item Sketch the corresponding covariance ellipse.
+  \item Explain how the trace can be the same while the shape differs.
+\end{enumerate}
+
+\paragraph{Exercise 2 (G* and the P-sphere\index[subject]{P-sphere} for two traits).}
+Using the plant example from Example~1:
+\begin{enumerate}
+  \item Compute $\mat{P}^{-1/2}$ explicitly.
+  \item Compute $\mat{G}^\ast = \mat{P}^{-1/2} \mat{G} \mat{P}^{-1/2}$.
+  \item Draw the unit circle (the P-sphere\index[subject]{P-sphere}) and sketch the ellipse
+        defined by $\mat{G}^\ast$.
+  \item Mark the directions of maximum and minimum heritability\index[subject]{heritability}.
+\end{enumerate}
+
+\paragraph{Exercise 3 (Directional heritability\index[subject]{heritability} in a chosen direction).}
+In the bird example from Example~2:
+\begin{enumerate}
+  \item Define a direction corresponding to ``bill shape'' (e.g.,
+        increasing bill depth while decreasing bill width).
+  \item Compute $h^2(\vect{u})$ for this direction.
+  \item Compare to the extreme values from $\mat{G}^\ast$.
+\end{enumerate}
+
+\paragraph{Exercise 4 (G-$\gamma$ alignment).}
+Consider the selection example in Example~3:
+\begin{enumerate}
+  \item Compute the angle between $\mathbf{g}_{\max}$ and
+        $\vect{v}_1^\gamma$.
+  \item How would the evolutionary trajectory change if these were
+        perpendicular?
+  \item Describe a scenario where misalignment would strongly
+        frustrate evolutionary change.
+\end{enumerate}

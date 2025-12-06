@@ -1,0 +1,485 @@
+\chapter{Appendix: Mathematical and Statistical Background}
+
+This appendix collects the minimum linear algebra and probability background
+assumed in the main text. It is not a complete course. Instead, it provides
+a compact reference for four key ingredients:
+
+\begin{itemize}
+  \item vectors and matrices, and how to multiply them;
+  \item eigenvalues and eigenvectors;
+  \item basic probability notions: variance, covariance, and the multivariate normal;
+  \item selection gradients and Lande's equation.
+\end{itemize}
+
+Readers who have seen these topics before can skim or skip this appendix.
+Readers for whom these ideas are new may find it helpful to read this
+appendix alongside Chapters~0--2 and Chapters~10--12.
+
+\section{Vectors and matrices}
+
+\subsection*{Vectors}
+
+A \emph{vector} is an ordered list of numbers that we usually picture as
+an arrow in a trait space. For $p$ traits, we write a phenotype as a
+column vector
+\[
+  \vect{z} =
+  \begin{pmatrix}
+    z_1 \\ z_2 \\ \vdots \\ z_p
+  \end{pmatrix}.
+\]
+
+Each entry $z_i$ is the value of trait $i$. We use bold letters for
+vectors (\vect{z}, \vect{x}, \vect{u}) and reserve plain italics
+($z_i$, $x_i$) for individual components.
+
+The \emph{length} (Euclidean norm) of a vector is
+\[
+  \|\vect{z}\| = \sqrt{z_1^2 + z_2^2 + \cdots + z_p^2}.
+\]
+
+The \emph{dot product} (inner product) of two vectors $\vect{x}$ and
+$\vect{y}$ is
+\[
+  \langle \vect{x}, \vect{y} \rangle
+    = \vect{x}^\top \vect{y}
+    = x_1 y_1 + x_2 y_2 + \cdots + x_p y_p.
+\]
+
+Geometrically, this dot product relates to the angle $\theta$ between
+$\vect{x}$ and \vect{y} via
+\[
+  \langle \vect{x}, \vect{y} \rangle
+    = \|\vect{x}\| \, \|\vect{y}\| \cos \theta.
+\]
+
+\subsection*{Matrices as linear maps}
+
+A \emph{matrix} is a rectangular array of numbers. An $m \times n$ matrix
+has $m$ rows and $n$ columns. We write matrices in bold capitals;
+for example,
+\[
+  \mat{A} =
+  \begin{pmatrix}
+    a_{11} & a_{12} & \cdots & a_{1n} \\
+    a_{21} & a_{22} & \cdots & a_{2n} \\
+    \vdots & \vdots & \ddots & \vdots \\
+    a_{m1} & a_{m2} & \cdots & a_{mn}
+  \end{pmatrix}.
+\]
+
+In this book, matrices are always used as \emph{linear maps}: machines
+that take a vector in and return a vector out. If $\mat{A}$ is $m \times n$
+and $\vect{x}$ is an $n \times 1$ column vector, the product
+$\vect{y} = \mat{A}\vect{x}$ is an $m \times 1$ column vector whose
+entries are
+\[
+  y_i = \sum_{j=1}^n a_{ij} x_j, \qquad i = 1,\dots,m.
+\]
+
+So each entry $y_i$ is a dot product between the $i$th row of $\mat{A}$
+and $\vect{x}$.
+
+\subsection*{Linear combinations view}
+
+There is another useful way to see the matrix--vector product. Let the
+columns of $\mat{A}$ be denoted by $\vect{a}_1,\dots,\vect{a}_n$. Then
+\[
+  \mat{A}\vect{x}
+    = x_1 \vect{a}_1 + x_2 \vect{a}_2 + \cdots + x_n \vect{a}_n.
+\]
+
+So $\mat{A}\vect{x}$ is a \emph{linear combination} of the columns of
+$\mat{A}$, with coefficients $x_1,\dots,x_n$. This viewpoint is important
+when we interpret covariance matrices as sets of basis vectors that span
+trait space.
+
+\subsection*{A simple example}
+
+Consider
+\[
+  \mat{A} =
+  \begin{pmatrix}
+    2 & 1 \\
+    1 & 3
+  \end{pmatrix},
+  \qquad
+  \vect{x} =
+  \begin{pmatrix}
+    1 \\ 2
+  \end{pmatrix}.
+\]
+
+Then
+\[
+  \mat{A}\vect{x}
+    = 
+    \begin{pmatrix}
+      2 \cdot 1 + 1 \cdot 2 \\
+      1 \cdot 1 + 3 \cdot 2
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+      4 \\ 7
+    \end{pmatrix}.
+\]
+
+Geometrically, the matrix $\mat{A}$ stretches and shears the plane.
+The vector $(1,2)^\top$ is moved to $(4,7)^\top$.
+
+\subsection*{Matrix--matrix multiplication}
+
+If $\mat{A}$ is $m \times n$ and $\mat{B}$ is $n \times k$, we can form
+the product $\mat{C} = \mat{A}\mat{B}$, which is $m \times k$. By
+definition, the $(i,\ell)$ entry of $\mat{C}$ is
+\[
+  c_{i\ell} = \sum_{j=1}^n a_{ij} b_{j\ell}.
+\]
+
+Geometrically, applying $\mat{B}$ and then $\mat{A}$ to a vector
+$\vect{x}$ gives
+\[
+  \mat{A}(\mat{B}\vect{x}) = (\mat{A}\mat{B})\vect{x}.
+\]
+
+Matrix multiplication corresponds to \emph{composition} of linear maps:
+do $\mat{B}$ first, then $\mat{A}$. In general, we have
+$\mat{A}\mat{B} \ne \mat{B}\mat{A}$; matrix multiplication is not
+commutative.
+
+\section{eigenvalue\index[subject]{eigenvalue}s and eigenvector\index[subject]{eigenvector}s}
+
+\subsection*{Definition}
+
+Let $\mat{A}$ be a square $p \times p$ matrix. A non-zero vector
+$\vect{v}$ is an \emph{eigenvector\index[subject]{eigenvector}} of $\mat{A}$ with eigenvalue\index[subject]{eigenvalue}
+$\lambda$ if
+\[
+  \mat{A}\vect{v} = \lambda \vect{v}.
+\]
+
+This means that when $\mat{A}$ acts on $\vect{v}$, it does not change
+its direction, only its length. The factor $\lambda$ is the stretch
+(or compression) factor along the direction $\vect{v}$.
+
+\subsection*{Symmetric matrices}
+
+In this book we work almost exclusively with symmetric matrices:
+$\mat{A} = \mat{A}^\top$. Covariance matrices, the $\mat{G}$ and $\mat{P}$
+matrices, and the quadratic selection matrix $\boldsymbol{\gamma}$ are
+all symmetric by construction.
+
+Symmetric matrices have two important properties:
+
+\begin{itemize}
+  \item All eigenvalue\index[subject]{eigenvalue}s are real.
+  \item There exists an orthonormal basis of eigenvector\index[subject]{eigenvector}s.
+\end{itemize}
+
+This means we can write a symmetric matrix as
+\[
+  \mat{A} = \mat{Q} {\Lambda} \mat{Q}^\top,
+\]
+where $\mat{Q}$ is an orthogonal matrix whose columns are unit eigenvector\index[subject]{eigenvector}s
+of $\mat{A}$, and ${\Lambda}$ is a diagonal matrix whose entries are
+the corresponding eigenvalue\index[subject]{eigenvalue}s.
+
+This decomposition is called an \emph{eigendecomposition} or
+\emph{spectral decomposition}.
+
+\subsection*{A two-dimensional example}
+
+Consider
+\[
+  \mat{A} =
+  \begin{pmatrix}
+    3 & 1 \\
+    1 & 3
+  \end{pmatrix}.
+\]
+
+We look for $\lambda$ and non-zero $(v_1,v_2)^\top$ such that
+$\mat{A}\vect{v} = \lambda\vect{v}$. The characteristic equation\index[subject]{characteristic equation} is
+\[
+  \det(\mat{A} - \lambda \mat{I})
+    = \det
+      \begin{pmatrix}
+        3 - \lambda & 1 \\
+        1 & 3 - \lambda
+      \end{pmatrix}
+    = (3-\lambda)^2 - 1 = 0.
+\]
+
+So $(3-\lambda)^2 = 1$ and therefore $\lambda = 4$ or $\lambda = 2$.
+
+For $\lambda=4$, we solve
+\[
+  \begin{pmatrix}
+    -1 & 1 \\
+    1 & -1
+  \end{pmatrix}
+  \begin{pmatrix}
+    v_1 \\ v_2
+  \end{pmatrix}
+  = \vect{0},
+\]
+which yields $v_1 = v_2$. A normalised eigenvector\index[subject]{eigenvector} is
+\[
+  \vect{v}_1 = \frac{1}{\sqrt{2}}
+  \begin{pmatrix}
+    1 \\ 1
+  \end{pmatrix}.
+\]
+
+For $\lambda=2$, we solve
+\[
+  \begin{pmatrix}
+    1 & 1 \\
+    1 & 1
+  \end{pmatrix}
+  \begin{pmatrix}
+    v_1 \\ v_2
+  \end{pmatrix}
+  = \vect{0},
+\]
+which yields $v_1 = -v_2$. A normalised eigenvector\index[subject]{eigenvector} is
+\[
+  \vect{v}_2 = \frac{1}{\sqrt{2}}
+  \begin{pmatrix}
+    1 \\ -1
+  \end{pmatrix}.
+\]
+
+Geometrically, $\vect{v}_1$ points along the line $x=y$ and is stretched by
+a factor of $4$, while $\vect{v}_2$ points along $x=-y$ and is stretched
+by a factor of $2$. Any vector in the plane can be written as a
+combination of these two directions.
+
+\subsection*{Eigenstructure of covariance matrices}
+
+A covariance matrix ${\Sigma}$ is symmetric and positive definite\index[subject]{matrix!positive definite}
+(all eigenvalue\index[subject]{eigenvalue}\index[subject]{eigenvalue}s positive). Its eigendecomposition
+\[
+  {\Sigma} = \mat{Q}{\Lambda}\mat{Q}^\top
+\]
+has a clear geometric interpretation:
+
+\begin{itemize}
+  \item the columns of $\mat{Q}$ give the principal axes (directions)
+        of variation;
+  \item the eigenvalue\index[subject]{eigenvalue}s on the diagonal of ${\Lambda}$ give the
+        variances along those axes.
+\end{itemize}
+
+In two dimensions, the contours of a multivariate normal distribution
+with covariance matrix\index[subject]{covariance matrix} ${\Sigma}$ are ellipses whose axes are aligned
+with the eigenvector\index[subject]{eigenvector}s of ${\Sigma}$ and whose axis lengths are
+proportional to $\sqrt{\lambda_1}$ and $\sqrt{\lambda_2}$.
+
+The same idea extends to the genetic covariance matrix\index[subject]{covariance matrix} $\mat{G}$ and
+the phenotypic covariance matrix\index[subject]{covariance matrix} $\mat{P}$.
+
+\section{Basic probability and covariance}
+
+\subsection*{Random variables and expectation}
+
+A \emph{random variable} $X$ is a numerical quantity that takes different
+values with certain probabilities. We write its \emph{expectation}
+(mean) as $\E[X]$. For a discrete variable taking values $x_i$ with
+probabilities $p_i$,
+\[
+  \E[X] = \sum_i x_i p_i.
+\]
+
+For a continuous variable with density $f(x)$,
+\[
+  \E[X] = \int_{-\infty}^{\infty} x f(x)\,dx.
+\]
+
+In practice, we often estimate the mean from data $x_1,\dots,x_n$ as
+the sample mean
+\[
+  \bar{x} = \frac{1}{n} \sum_{i=1}^n x_i.
+\]
+
+\subsection*{Variance and covariance}
+
+The \emph{variance} of $X$ measures spread:
+\[
+  \Var(X) = \E[(X - \E[X])^2].
+\]
+
+The \emph{covariance} between two random variables $X$ and $Y$ is
+\[
+  \Cov(X,Y) = \E[(X - \E[X])(Y - \E[Y])].
+\]
+
+Covariance is positive when large values of $X$ tend to occur with large
+values of $Y$, negative when large values of $X$ tend to occur with small
+values of $Y$, and near zero when there is no consistent linear relation.
+
+From data pairs $(x_i,y_i)$, we estimate covariance as
+\[
+  \widehat{\Cov}(X,Y)
+    = \frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y}).
+\]
+
+\subsection*{Covariance matrices}
+
+For a random vector $\vect{Z} = (Z_1,\dots,Z_p)^\top$, the covariance
+matrix ${\Sigma}$ is the $p \times p$ matrix with entries
+\[
+  \Sigma_{ij} = \Cov(Z_i,Z_j).
+\]
+
+So
+\[
+  {\Sigma} =
+  \begin{pmatrix}
+    \Var(Z_1) & \Cov(Z_1,Z_2) & \cdots & \Cov(Z_1,Z_p) \\
+    \Cov(Z_2,Z_1) & \Var(Z_2) & \cdots & \Cov(Z_2,Z_p) \\
+    \vdots & \vdots & \ddots & \vdots \\
+    \Cov(Z_p,Z_1) & \Cov(Z_p,Z_2) & \cdots & \Var(Z_p)
+  \end{pmatrix}.
+\]
+
+The diagonal entries record variances of individual traits; the
+off-diagonals record covariances between traits. The matrices
+$\mat{P}$ and $\mat{G}$ used throughout the book are examples of
+covariance matrices.
+
+\subsection*{The multivariate normal distribution}
+
+A $p$-dimensional random vector $\vect{Z}$ is said to have a
+multivariate normal distribution with mean vector ${\mu}$ and
+covariance matrix\index[subject]{covariance matrix} ${\Sigma}$, written
+$\vect{Z} \sim \mathcal{N}({\mu},{\Sigma})$, if its density is
+\[
+  f({\textbf{z}})
+  = \frac{1}{(2\pi)^{p/2} \sqrt{\det({\Sigma})}}
+    \exp\left(
+      -\frac{1}{2}
+      ({\textbf{z}} - {\mu})^\top
+      {\Sigma}^{-1}
+      ({\textbf{z}} - {\mu})
+    \right).
+\]
+
+The quantity
+
+  $$({\textbf{z}} - {\mu})^\top
+  {\Sigma}^{-1}
+  ({\textbf{z}} - {\mu})$$
+  
+is the squared Mahalanobis distance\index[subject]{distance!Mahalanobis} distance from ${\textbf{z}}$ to the mean ${\mu}$. Contours of equal density are ellipsoids defined by constant Mahalanobis distance\index[subject]{distance!Mahalanobis} distance.
+
+The multivariate normal plays a central role in quantitative genetics because sums of many small, independent genetic and environmental effects tend to generate approximately normal trait distributions.
+
+\section{Selection gradients and Lande's equation}
+
+\subsection*{Phenotypes and fitness}
+
+Let $\vect{z}$ be a vector of traits for an individual, and let $w$ be
+its absolute fitness (for example, number of surviving offspring).
+
+We define \emph{relative fitness} as
+\[
+  \tilde{w} = \frac{w}{\bar{w}},
+\]
+where $\bar{w}$ is the mean fitness in the population. Relative fitness
+has mean 1. Using relative fitness simplifies many expressions.
+
+\subsection*{Selection differentials and gradients}
+
+The \emph{selection differential} for trait $i$ is the difference between
+the mean of trait $i$ after selection and the mean before selection.
+For a vector of traits, the vector of selection differentials is
+\[
+  \vect{s} = \Cov(\vect{z}, \tilde{w}),
+\]
+where the covariance is taken component-wise:
+$s_i = \Cov(z_i,\tilde{w})$.
+
+The \emph{directional selection gradient} $\boldsymbol{\beta}$ is defined
+as the vector of partial regression coefficients of relative fitness on
+traits. In matrix notation, if $\mat{P}$ is the phenotypic covariance
+matrix of $\vect{z}$, then
+\[
+  \boldsymbol{\beta} = \mat{P}^{-1} \vect{s}.
+\]
+
+Equivalently, $\boldsymbol{\beta}$ is the vector that minimises the mean
+squared error in the linear approximation
+\[
+  \tilde{w} \approx \alpha + \boldsymbol{\beta}^\top \vect{z}.
+\]
+
+The elements $\beta_i$ measure the strength and direction of linear
+selection on trait $i$, holding the other traits constant.
+
+\subsection*{The multivariate breeder's equation\index[subject]{breeder's equation} equation}
+
+Let $\mat{G}$ be the additive genetic covariance matrix\index[subject]{covariance matrix} for the traits
+$\vect{z}$. Under standard assumptions (additive gene action, weak
+selection, random mating, no environmental change across generations),
+the multivariate breeder's equation\index[subject]{breeder's equation} equation is
+\[
+  \Delta \bar{\vect{z}} = \mat{G}\mat{P}^{-1} \vect{s},
+\]
+where $\Delta \bar{\vect{z}}$ is the expected change in the mean trait
+vector from one generation to the next.
+
+Substituting $\vect{s} = \mat{P}\boldsymbol{\beta}$ gives
+\[
+  \Delta \bar{\vect{z}}
+    = \mat{G} \mat{P}^{-1} \mat{P} \boldsymbol{\beta}
+    = \mat{G} \boldsymbol{\beta}.
+\]
+
+This is \emph{Lande's equation}.
+
+\begin{keyidea}
+Lande's equation
+\[
+  \Delta \bar{\vect{z}} = \mat{G}\boldsymbol{\beta}
+\]
+states that the expected evolutionary response vector is obtained by
+multiplying the directional selection gradient $\boldsymbol{\beta}$ by
+the additive genetic covariance matrix\index[subject]{covariance matrix} $\mat{G}$. The pattern and amount
+of genetic variance (encoded in $\mat{G}$) filter and redirect the effect
+of selection.
+\end{keyidea}
+
+In the main chapters we interpret this equation geometrically: $\vect{\beta}$
+is a direction in trait space describing how fitness changes; $\mat{G}$
+rescales and rotates this direction according to the available additive
+variance, yielding the response vector $\Delta \bar{\vect{z}}$.
+
+\subsection*{Quadratic selection}
+
+When selection is not purely directional, we can expand relative fitness
+to second order in the traits:
+\[
+  \tilde{w}
+    \approx \alpha
+          + \boldsymbol{\beta}^\top \vect{z}
+          + \frac{1}{2}
+            \vect{z}^\top \boldsymbol{\gamma} \vect{z},
+\]
+where $\boldsymbol{\gamma}$ is a symmetric matrix of quadratic selection
+gradients. The diagonal entries of $\boldsymbol{\gamma}$ describe
+stabilising or disruptive selection on individual traits, and the
+off-diagonal entries describe correlational selection between traits.
+
+The matrix $\boldsymbol{\gamma}$ defines the local curvature of the
+fitness surface near the mean. In later chapters we combine $\mat{G}$
+and $\boldsymbol{\gamma}$ to study how genetic variance interacts with
+this curvature to shape evolutionary trajectories and constraints.
+
+\section*{Further reading}
+
+For more detailed treatments of these topics, see standard texts in
+linear algebra (for example, Strang's \emph{Introduction to Linear
+Algebra}) and in quantitative genetics (for example, Walsh and Lynch's
+\emph{Evolution and Selection of Quantitative Traits}). The aim of this
+appendix is not to replace such texts, but to provide a compact yet formal reminder of the concepts and notation used throughout this book.

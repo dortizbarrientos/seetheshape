@@ -1,0 +1,574 @@
+\chapter{When Euclidean distance\index[subject]{distance!Euclidean} Distance Fails}
+
+In the previous chapter we derived the Euclidean distance\index[subject]{distance!Euclidean} distance formula and saw
+why squaring plays a central role in statistics. But we ended with a
+warning: Euclidean distance\index[subject]{distance!Euclidean} distance assumes that all traits are measured on
+comparable scales and that traits are uncorrelated. When these assumptions
+fail, Euclidean distance\index[subject]{distance!Euclidean} distance can give badly misleading answers.
+
+This chapter presents three examples where Euclidean distance\index[subject]{distance!Euclidean} distance leads us
+astray. Each example reveals a different way the assumption can break. By
+the end, you will be convinced that we need a better metric---one that
+accounts for the structure of variation in the data.
+
+\section{Example 1: The problem of scale}
+
+Consider two morphological traits measured on a sample of beetles:
+
+\begin{itemize}
+  \item Elytra length, measured in millimetres, with a sample mean of 12\,mm
+        and a standard deviation of 2\,mm.
+  \item Body mass, measured in milligrams, with a sample mean of 450\,mg
+        and a standard deviation of 80\,mg.
+\end{itemize}
+
+Now compare two beetles to a reference individual at the population mean
+(12\,mm, 450\,mg):
+
+\begin{center}
+\begin{tabular}{lccc}
+  \hline
+  Beetle & Elytra (mm) & Mass (mg) & Euclidean distance\index[subject]{distance!Euclidean} distance \\
+  \hline
+  Reference & 12 & 450 & 0 \\
+  A & 14 & 450 & 2 \\
+  B & 12 & 530 & 80 \\
+  \hline
+\end{tabular}
+\end{center}
+
+Beetle A differs from the reference by 2\,mm in elytra length. Beetle B
+differs by 80\,mg in mass. The Euclidean distance\index[subject]{distance!Euclidean} distances are 2 and 80,
+respectively. By this measure, beetle B is 40 times more different from
+the reference than beetle A.
+
+But wait. Beetle A is one standard deviation above the mean in elytra
+length ($2\,\text{mm} / 2\,\text{mm} = 1$). Beetle B is also one standard
+deviation above the mean in mass ($80\,\text{mg} / 80\,\text{mg} = 1$). In
+terms of how unusual each beetle is within the population, they are
+\emph{equally extreme}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.75\textwidth]{fig11_scale_problem.png}
+  \caption[The scale problem]{
+    Euclidean distance\index[subject]{distance!Euclidean} distance depends on measurement units. Beetles A and B are
+    each one standard deviation from the mean, but Euclidean distance\index[subject]{distance!Euclidean} distance
+    makes B appear 40 times more extreme because mass is measured in
+    larger numbers.
+  }
+  \label{fig:scale-problem}
+\end{figure}
+
+The problem is clear: Euclidean distance\index[subject]{distance!Euclidean} distance treats a difference of 1\,mm the
+same as a difference of 1\,mg, even though 1\,mm is a large deviation for
+elytra length while 1\,mg is tiny for body mass. The units of measurement
+contaminate our notion of ``how different.''
+
+\begin{keyidea}
+Euclidean distance\index[subject]{distance!Euclidean} distance is not unit-free. If you change from millimetres to
+metres, or from milligrams to grams, the distances change. This is a
+problem because biological questions should not depend on arbitrary choices
+of measurement scale.
+\end{keyidea}
+
+\subsection*{A partial fix: standardisation}
+
+One common remedy is to standardise each trait by its standard deviation
+before computing distances. Define
+\[
+  z_{\text{std}} = \frac{z - \bar{z}}{s},
+\]
+where $s$ is the sample standard deviation. After standardisation, each
+trait has mean zero and standard deviation one.
+
+For our beetles:
+\begin{align*}
+  \text{Beetle A (standardised):} &\quad (1, 0) \\
+  \text{Beetle B (standardised):} &\quad (0, 1)
+\end{align*}
+
+The Euclidean distance\index[subject]{distance!Euclidean} distances from the origin (the standardised mean) are now
+both equal to 1. Problem solved?
+
+Not quite. Standardisation fixes the scale problem, but it ignores
+something else: the correlation\index[subject]{correlation}between traits. The next example shows why
+this matters.
+
+\section{Example 2: The problem of correlation}
+
+Suppose elytra length and body mass are positively correlated---larger
+beetles tend to be both longer and heavier. This is biologically
+reasonable; body parts scale together.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.75\textwidth]{fig11_correlation_problem.png}
+  \caption[The correlation\index[subject]{correlation}problem]{
+    When traits are correlated, the cloud of individuals is elongated.
+    Points C and D are equally far from the mean in Euclidean distance\index[subject]{distance!Euclidean} terms, but
+    C lies along the main axis of variation (common) while D lies
+    perpendicular to it (rare).
+  }
+  \label{fig:correlation-problem}
+\end{figure}
+
+Consider two more beetles, both one unit of Euclidean distance\index[subject]{distance!Euclidean} distance from the
+mean after standardisation (\cref{fig:correlation-problem}):
+
+\begin{itemize}
+  \item Beetle C: large elytra and heavy body---both traits elevated
+        together, in the direction of the correlation.
+  \item Beetle D: large elytra but light body---one trait elevated, the
+        other depressed, against the correlation.
+\end{itemize}
+
+Euclidean distance\index[subject]{distance!Euclidean} distance says C and D are equally different from the mean. But
+look at the data cloud. Beetles like C are common; they lie along the
+elongated axis of the ellipse. Beetles like D are rare; they lie in a
+direction where the population shows little variation.
+
+In biological terms, a beetle with large elytra and heavy body is just a
+``big beetle''---unusual in size but not in proportion. A beetle with large
+elytra but light body has an unusual \emph{combination} of traits. It is a
+genuine outlier, not just an extreme of normal variation.
+
+\begin{keyidea}
+Euclidean distance\index[subject]{distance!Euclidean} distance ignores correlation\index[subject]{correlation}structure. It treats directions of
+high variation the same as directions of low variation. Two points can have
+the same Euclidean distance\index[subject]{distance!Euclidean} distance from the mean but very different probabilities
+under the population distribution.
+\end{keyidea}
+
+\subsection*{Why standardisation does not help}
+
+Standardising each trait individually does not fix this problem.
+Standardisation rescales the axes so that each trait has variance 1, but it
+does not rotate the axes to align with the correlation\index[subject]{correlation}structure. The
+ellipse becomes a different ellipse (closer to circular along the original
+axes), but it is still tilted.
+
+What we need is a distance measure that accounts for the full covariance
+structure---both the variances and the correlations. That measure is the
+Mahalanobis distance\index[subject]{distance!Mahalanobis} distance, which we will develop in the next chapter.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch5_quantile_comparison.pdf}
+    \caption{\textbf{Probability calibration: Euclidean versus Mahalanobis distance.}
+    Data drawn from a bivariate normal with correlation $\rho = 0.8$.
+    (a)~Scatter plot with contours of constant distance. Red dashed circles 
+    show Euclidean distance contours; blue ellipses show Mahalanobis distance 
+    contours aligned with the covariance structure. Point A lies along the 
+    correlation direction (common phenotype); point B lies against it (rare 
+    phenotype). Despite similar Euclidean distances, their Mahalanobis distances 
+    differ dramatically: $D_{\text{Mah}}(A) = 1.05$ versus $D_{\text{Mah}}(B) = 2.39$.
+    (b)~Distribution of squared distances. Mahalanobis $D^2$ follows the 
+    theoretical $\chi^2_2$ distribution (black curve); Euclidean $D^2$ does not.
+    (c)~Tail probabilities $P(D^2 > c)$. At the 95th percentile of $\chi^2_2$ 
+    ($c = 5.99$), Mahalanobis correctly identifies 5\% of points as extreme, 
+    while Euclidean identifies 17\%---a threefold miscalibration. This is why 
+    Mahalanobis distance is essential for probability-based inference: it is 
+    the only metric properly calibrated to the data's covariance structure.}
+    \label{fig:quantile_comparison}
+\end{figure}
+
+\section{Example 3: The probability perspective}
+
+Here is another way to see the problem. Suppose our two traits follow a
+bivariate normal distribution with means $\mu_1 = 0$, $\mu_2 = 0$, standard
+deviations $\sigma_1 = 1$, $\sigma_2 = 1$, and correlation\index[subject]{correlation}$\rho = 0.8$.
+
+The probability density at a point $(z_1, z_2)$ depends on how ``central''
+that point is. Points near the mean have high density; points far from the
+mean have low density. But ``far from the mean'' must be measured in a way
+that respects the correlation.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig11_probability_contours.png}
+  \caption[Probability contours]{
+    Contours of equal probability density for a correlated bivariate
+    normal. The contours are ellipses, not circles. Points on the same
+    Euclidean distance\index[subject]{distance!Euclidean} circle (dashed) can have very different probability
+    densities.
+  }
+  \label{fig:probability-contours}
+\end{figure}
+
+\Cref{fig:probability-contours} shows contours of equal probability density.
+These contours are ellipses aligned with the correlation\index[subject]{correlation}structure. The
+dashed circle shows points at constant Euclidean distance\index[subject]{distance!Euclidean} distance from the mean.
+Notice that:
+
+\begin{itemize}
+  \item Some points on the circle lie well inside the 95\% probability
+        contour---they are not unusual at all.
+  \item Other points on the same circle lie far outside---they are extremely
+        rare.
+\end{itemize}
+
+Euclidean distance\index[subject]{distance!Euclidean} distance cannot distinguish these cases. It sees only the radius
+of the circle, not where on the circle the point lies.
+
+\begin{keyidea}
+Euclidean distance\index[subject]{distance!Euclidean} distance is blind to the shape of the distribution. Points at the
+same Euclidean distance\index[subject]{distance!Euclidean} distance can have wildly different probabilities. A proper
+distance metric should make ``equally distant'' mean ``equally probable.''
+\end{keyidea}
+
+\section{A biological interlude: why this matters for selection}
+
+These are not just statistical curiosities. The failure of Euclidean distance\index[subject]{distance!Euclidean}
+distance has direct consequences for how we think about natural selection.
+
+Consider stabilising selection on multiple traits. Fitness decreases as
+phenotypes deviate from an optimum. If we model this using Euclidean distance\index[subject]{distance!Euclidean}
+distance from the optimum,
+\[
+  w(\vect{z}) = \exp\left( -\frac{1}{2} \|\vect{z} - \boldsymbol{\theta}\|^2 \right),
+\]
+we are implicitly assuming that all directions of deviation are equally
+costly. A beetle that is too long receives the same fitness penalty as a
+beetle that is too heavy, unit for unit.
+
+But if the population has abundant genetic variation in the ``too long and
+too heavy'' direction and little variation in the ``too long but too
+light'' direction, these deviations are not biologically equivalent. The
+first represents a common, easily produced phenotype; the second represents
+a rare, difficult-to-produce phenotype.
+
+A more realistic fitness function would penalise deviations according to
+how unusual they are in the population---that is, according to Mahalanobis distance\index[subject]{distance!Mahalanobis}
+distance, not Euclidean distance\index[subject]{distance!Euclidean} distance. We will return to this point when we
+discuss selection surfaces in Part~IV.
+
+\section{What we need from a better metric}
+
+Let us summarise what Euclidean distance\index[subject]{distance!Euclidean} distance gets wrong and what a better
+metric should provide.
+
+\paragraph{Problem 1: Scale dependence.}
+Euclidean distance\index[subject]{distance!Euclidean} distance changes when we change units. A better metric should be
+\emph{scale-invariant}---the answer should not depend on whether we measure
+length in millimetres or metres.
+
+\paragraph{Problem 2: Ignoring correlation.}
+Euclidean distance\index[subject]{distance!Euclidean} distance treats all directions equally. A better metric should
+weight directions according to how variable the population is in those
+directions. Deviations in low-variance directions should count more than
+deviations in high-variance directions.
+
+\paragraph{Problem 3: Disconnection from probability.}
+Euclidean distance\index[subject]{distance!Euclidean} distance does not correspond to probability. A better metric
+should have the property that points at the same distance from the mean are
+equally probable under the population distribution.
+
+All three problems have a common solution: use the covariance matrix\index[subject]{covariance matrix} to
+define distance. The covariance matrix\index[subject]{covariance matrix} knows about both variances (which
+address the scale problem) and correlations (which address the shape
+problem). Using it correctly will give us a distance that corresponds to
+probability.
+
+\section{A geometric preview}
+
+Before we derive the Mahalanobis distance\index[subject]{distance!Mahalanobis} distance formally, let us see geometrically
+what we are aiming for.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig11_geometric_preview.png}
+  \caption[Geometric preview of the solution]{
+    Left: Euclidean distance\index[subject]{distance!Euclidean} distance uses circles centred on the mean. Points on
+    the same circle are ``equally far'' even if some are common and others
+    rare. Right: Mahalanobis distance\index[subject]{distance!Mahalanobis} distance uses ellipses that match the shape
+    of the data. Points on the same ellipse are equally probable---this is
+    the right notion of ``equally far'' for a population.
+  }
+  \label{fig:geometric-preview}
+\end{figure}
+
+The left panel of \cref{fig:geometric-preview} shows Euclidean distance\index[subject]{distance!Euclidean} distance:
+circles centred on the mean. The right panel shows what we want: ellipses
+that match the shape of the covariance structure. Points on the same ellipse
+are equally probable; they represent the same degree of ``unusualness.''
+
+The transformation from circles to ellipses is exactly what the covariance
+matrix encodes. In the next chapter, we will see how to use the inverse of
+the covariance matrix\index[subject]{covariance matrix} to define a new distance---the Mahalanobis distance\index[subject]{distance!Mahalanobis}
+distance---that has all the properties we want.
+
+\section{A worked comparison}
+
+To make the contrast concrete, consider the following covariance matrix\index[subject]{covariance matrix}:
+\[
+  \mat{S} =
+  \begin{pmatrix}
+    1.0 & 0.8 \\
+    0.8 & 1.0
+  \end{pmatrix}.
+\]
+
+Both traits have variance 1, and the correlation\index[subject]{correlation}is 0.8. Consider three
+points, all at Euclidean distance\index[subject]{distance!Euclidean} distance 1 from the origin:
+
+\begin{center}
+\begin{tabular}{lcccc}
+  \hline
+  Point & $z_1$ & $z_2$ & Euclidean distance\index[subject]{distance!Euclidean} dist & Direction \\
+  \hline
+  E & $1/\sqrt{2}$ & $1/\sqrt{2}$ & 1.0 & Along correlation\index[subject]{correlation}\\
+  F & $1/\sqrt{2}$ & $-1/\sqrt{2}$ & 1.0 & Against correlation\index[subject]{correlation}\\
+  G & $1$ & $0$ & 1.0 & Along trait 1 only \\
+  \hline
+\end{tabular}
+\end{center}
+
+Point E lies along the major axis of the ellipse (both traits elevated
+together). Point F lies along the minor axis (traits in opposition). Point G
+lies along the first trait axis.
+
+All three have Euclidean distance\index[subject]{distance!Euclidean} distance 1. But their Mahalanobis distance\index[subject]{distance!Mahalanobis} distances (which
+we will compute properly in the next chapter) are:
+
+\begin{center}
+\begin{tabular}{lcc}
+  \hline
+  Point & Euclidean distance\index[subject]{distance!Euclidean} dist & Mahalanobis distance\index[subject]{distance!Mahalanobis} dist \\
+  \hline
+  E & 1.0 & 0.53 \\
+  F & 1.0 & 2.36 \\
+  G & 1.0 & 1.00 \\
+  \hline
+\end{tabular}
+\end{center}
+
+Point E, which lies in the direction of maximum variation, has a small
+Mahalanobis distance\index[subject]{distance!Mahalanobis} distance---it is not unusual. Point F, which lies in the
+direction of minimum variation, has a large Mahalanobis distance\index[subject]{distance!Mahalanobis} distance---it is
+very unusual. Point G is intermediate.
+
+\begin{keyidea}
+Mahalanobis distance\index[subject]{distance!Mahalanobis} distance rescales directions by how variable the population is
+in those directions. Large deviations in high-variance directions are less
+surprising than small deviations in low-variance directions.
+\end{keyidea}
+
+\section{The connection to standardisation}
+
+You might wonder: if we standardise each trait to have variance 1, and then
+rotate to align with the principal axes of the correlation\index[subject]{correlation}matrix, would
+that fix the problem?
+
+Yes---and that is exactly what Mahalanobis distance\index[subject]{distance!Mahalanobis} distance does, algebraically.
+It can be understood as:
+
+\begin{enumerate}
+  \item Standardise each trait by its standard deviation (fixing the scale
+        problem).
+  \item Rotate to the principal axes of the covariance matrix\index[subject]{covariance matrix} (fixing the
+        correlation\index[subject]{correlation}problem).
+  \item Measure ordinary Euclidean distance\index[subject]{distance!Euclidean} distance in this transformed space.
+\end{enumerate}
+
+The matrix that performs this combined standardisation-and-rotation is
+related to the inverse (or inverse square root) of the covariance matrix\index[subject]{covariance matrix}.
+We will derive this in the next chapter.
+
+This preview should help you see that Mahalanobis distance\index[subject]{distance!Mahalanobis} distance is not some
+arbitrary alternative to Euclidean distance\index[subject]{distance!Euclidean} distance. It is the natural distance in
+a space that has been ``whitened''---transformed so that the covariance
+matrix becomes the identity. In whitened space, Euclidean distance\index[subject]{distance!Euclidean} distance works
+correctly because the assumptions behind it are satisfied.
+
+\section{Summary}
+
+In this chapter we have seen three ways that Euclidean distance\index[subject]{distance!Euclidean} distance fails:
+
+\begin{itemize}
+  \item \textbf{Scale dependence:} Distances change with measurement units.
+        Two individuals equally extreme in their traits can have very
+        different Euclidean distance\index[subject]{distance!Euclidean} distances.
+  \item \textbf{Ignoring correlation:} Directions of high and low variation
+        are treated equally. Points along the major axis of variation
+        appear just as extreme as points along the minor axis.
+  \item \textbf{Disconnection from probability:} Points at the same
+        Euclidean distance\index[subject]{distance!Euclidean} distance can have very different probabilities under
+        the population distribution.
+\end{itemize}
+
+We have also previewed the solution:
+
+\begin{itemize}
+  \item The covariance matrix\index[subject]{covariance matrix} encodes both scale (variances) and shape
+        (correlations).
+  \item Using the covariance matrix\index[subject]{covariance matrix} to define distance gives us contours
+        that are ellipses matching the data, not circles ignoring it.
+  \item This distance---the Mahalanobis distance\index[subject]{distance!Mahalanobis} distance---makes ``equally far''
+        mean ``equally probable.''
+\end{itemize}
+
+In the next chapter, we derive the Mahalanobis distance\index[subject]{distance!Mahalanobis} distance formally and show
+how the inverse covariance matrix\index[subject]{covariance matrix} enters the formula. The key insight will
+be that inserting a matrix between the vectors in our distance formula
+changes the shape of the ``unit ball'' from a circle to an ellipse.
+
+
+Copy
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% EXERCISE SECTIONS FOR CHAPTERS 00-02, 10-12, AND 32
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Instructions: Copy each section to the end of the corresponding chapter,
+% just before the final \end{document} or before the next \chapter command.
+%
+% These exercises are designed to reinforce key concepts without solutions.
+% A companion "Hints and Selected Solutions" appendix follows at the end
+% of this file.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHAPTER 00: POINTS AND TRAIT SPACE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Exercises}
+
+\paragraph{Exercise 0.1 (Plotting a phenotype cloud).}
+Five plants are measured for leaf length (cm) and leaf width (cm):
+
+\begin{center}
+\begin{tabular}{ccc}
+\hline
+Plant & Length & Width \\
+\hline
+A & 4.2 & 2.1 \\
+B & 5.1 & 2.8 \\
+C & 3.8 & 1.9 \\
+D & 4.7 & 2.4 \\
+E & 4.2 & 2.3 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{enumerate}
+  \item Plot these five individuals as points in a two-dimensional trait space.
+  \item Estimate the centroid (mean phenotype) by eye from your plot.
+  \item Calculate the centroid exactly. How close was your estimate?
+  \item A sixth plant F has measurements (6.0, 3.5). Add it to your plot.
+        How does the centroid shift?
+\end{enumerate}
+
+\paragraph{Exercise 0.2 (Trait space dimensions).}
+A bird ecologist measures wing length, tarsus length, bill depth, and body
+mass on each individual.
+
+\begin{enumerate}
+  \item How many dimensions does this trait space have?
+  \item Can you visualise this space directly? If not, what strategies
+        might help you understand the distribution of individuals?
+  \item If you added bill width as a fifth trait, how would the
+        dimensionality change?
+\end{enumerate}
+
+\paragraph{Exercise 0.3 (Phenotype as position).}
+Consider two fish: Fish 1 has length 15 cm and mass 50 g; Fish 2 has
+length 20 cm and mass 80 g.
+
+\begin{enumerate}
+  \item Represent each fish as a point in (length, mass) space.
+  \item Draw the arrow from Fish 1 to Fish 2. What does this arrow
+        represent biologically?
+  \item If a third fish lies exactly halfway along this arrow, what are
+        its length and mass?
+\end{enumerate}
+
+\paragraph{Exercise 0.4 (The meaning of ``distance'' in trait space).}
+Two flowers differ in petal length by 2 mm and in petal width by 3 mm.
+
+\begin{enumerate}
+  \item What is the straight-line (Euclidean) distance between them in
+        trait space?
+  \item Does this number have a direct biological interpretation?
+  \item What might make two flowers ``far apart'' in trait space but
+        similar in fitness?
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHAPTER 11: WHEN EUCLIDEAN DISTANCE FAILS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Exercises I}
+
+\paragraph{Exercise 11.1 (Scale dependence).}
+A data set contains height (in metres) and weight (in kg):
+
+\begin{center}
+\begin{tabular}{ccc}
+\hline
+Individual & Height (m) & Weight (kg) \\
+\hline
+A & 1.70 & 70 \\
+B & 1.75 & 72 \\
+C & 1.80 & 90 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{enumerate}
+  \item Compute the Euclidean distance from A to B and from A to C.
+  \item Convert height to centimetres. Recompute both distances.
+  \item Which distance changed more? Why?
+  \item Propose a way to make the distance independent of measurement units.
+\end{enumerate}
+
+\paragraph{Exercise 11.2 (Ignoring correlation).}
+Imagine a bivariate distribution where traits $X$ and $Y$ are strongly
+positively correlated ($r = 0.95$). Most individuals lie near the line
+$Y = X$.
+
+\begin{enumerate}
+  \item Sketch this distribution as an elliptical cloud.
+  \item Mark two points that are equidistant (in Euclidean terms) from the
+        centre: one along the major axis, one along the minor axis.
+  \item Which point is more ``unusual'' given the shape of the distribution?
+  \item Why does Euclidean distance fail to capture this?
+\end{enumerate}
+
+\paragraph{Exercise 11.3 (A concrete failure).}
+Consider a population where leaf length ($L$) and leaf width ($W$) have:
+\begin{itemize}
+  \item Mean: $\bar{L} = 10$ cm, $\bar{W} = 5$ cm
+  \item Standard deviation: $s_L = 2$ cm, $s_W = 1$ cm
+  \item Correlation: $r = 0.8$
+\end{itemize}
+
+Three individuals are measured:
+\begin{itemize}
+  \item Plant X: $(L, W) = (12, 6)$
+  \item Plant Y: $(L, W) = (10, 7)$
+  \item Plant Z: $(L, W) = (14, 5)$
+\end{itemize}
+
+\begin{enumerate}
+  \item Compute the Euclidean distance of each plant from the mean.
+  \item Standardise each trait (subtract mean, divide by SD) and recompute
+        distances.
+  \item Which plant is most unusual given the correlation structure?
+        (Hint: think about which point lies furthest from the major axis
+        of the ellipse.)
+\end{enumerate}
+
+\paragraph{Exercise 11.4 (When Euclidean distance works).}
+Under what conditions would Euclidean distance be a reasonable measure
+of dissimilarity?
+
+\begin{enumerate}
+  \item List two conditions on the traits.
+  \item Give a biological example where these conditions might hold.
+  \item Give a biological example where they clearly do not hold.
+\end{enumerate}
+

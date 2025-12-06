@@ -1,0 +1,564 @@
+\chapter{Diagonalisation\index[subject]{diagonalisation} and Natural Axes}
+
+In Part~II we saw that covariance matrices define ellipses and that the Mahalanobis distance\index[subject]{distance!Mahalanobis} distance uses the inverse covariance matrix\index[subject]{covariance matrix} to measure ``unusualness.'' But we repeatedly invoked eigenvalue\index[subject]{eigenvalue}s and eigenvectors without explaining how to find them or what they mean.
+
+This chapter fills that gap. We develop diagonalisation\index[subject]{diagonalisation}---the process of finding the natural axes of an ellipse---from first principles. By the end, you will understand eigenvalue\index[subject]{eigenvalue}s and eigenvector\index[subject]{eigenvector}s not as abstract algebra but as answers to a concrete geometric question: \emph{in which directions does a matrix act as pure stretching?}
+
+\section{The question that leads to eigenvalue\index[subject]{eigenvalue}s}
+
+Consider a symmetric matrix $\mat{A}$ acting on vectors in the plane. For most vectors $\vect{v}$, the output $\mat{A}\vect{v}$ points in a different direction from $\vect{v}$. The matrix rotates as well as stretches.
+
+But for some special vectors, the output points in the \emph{same direction} as the input---or exactly opposite. The matrix stretches (or compresses) without rotating. These special vectors are called \textbf{eigenvector\index[subject]{eigenvector}s},
+and the stretching factors are called \textbf{eigenvalue\index[subject]{eigenvalue}s}.
+
+Formally, $\vect{v}$ is an eigenvector\index[subject]{eigenvector} of $\mat{A}$ with eigenvalue\index[subject]{eigenvalue}
+$\lambda$ if
+\[
+  \mat{A}\vect{v} = \lambda\vect{v}.
+\]
+
+The matrix $\mat{A}$ acting on $\vect{v}$ produces the same result as simply multiplying $\vect{v}$ by the scalar $\lambda$.
+
+\begin{keyidea}
+eigenvector\index[subject]{eigenvector}s are the directions along which a matrix acts as pure scaling. eigenvalue\index[subject]{eigenvalue}s are the scaling factors. Finding them reveals the natural axes of the transformation.
+\end{keyidea}
+
+\section{A concrete example}
+
+Let us find the eigenvector\index[subject]{eigenvector}s and eigenvalue\index[subject]{eigenvalue}s of
+\[
+  \mat{A} =
+  \begin{pmatrix}
+    3 & 1 \\
+    1 & 3
+  \end{pmatrix}.
+\]
+
+We seek vectors $\vect{v}$ and scalars $\lambda$ such that
+$\mat{A}\vect{v} = \lambda\vect{v}$.
+
+Rearranging:
+\[
+  \mat{A}\vect{v} - \lambda\vect{v} = \vect{0}
+  \quad\Rightarrow\quad
+  (\mat{A} - \lambda\mat{I})\vect{v} = \vect{0}.
+\]
+
+For a non-zero solution $\vect{v}$ to exist, the matrix
+$(\mat{A} - \lambda\mat{I})$ must be singular. This happens when its determinant is zero:
+\[
+  \det(\mat{A} - \lambda\mat{I}) = 0.
+\]
+
+This is the \textbf{characteristic equation\index[subject]{characteristic equation}}. For our matrix:
+\[
+  \det
+  \begin{pmatrix}
+    3 - \lambda & 1 \\
+    1 & 3 - \lambda
+  \end{pmatrix}
+  = (3 - \lambda)^2 - 1
+  = \lambda^2 - 6\lambda + 8
+  = (\lambda - 4)(\lambda - 2)
+  = 0.
+\]
+
+The eigenvalue\index[subject]{eigenvalue}s are $\lambda_1 = 4$ and $\lambda_2 = 2$.
+
+\subsection*{Finding the eigenvector\index[subject]{eigenvector}s}
+
+For $\lambda_1 = 4$:
+\[
+  (\mat{A} - 4\mat{I})\vect{v} =
+  \begin{pmatrix}
+    -1 & 1 \\
+    1 & -1
+  \end{pmatrix}
+  \begin{pmatrix}
+    v_1 \\ v_2
+  \end{pmatrix}
+  = \vect{0}.
+\]
+
+This gives $-v_1 + v_2 = 0$, so $v_1 = v_2$. The eigenvector\index[subject]{eigenvector} (normalised to unit length) is
+\[
+  \vect{v}_1 = \frac{1}{\sqrt{2}}
+  \begin{pmatrix}
+    1 \\ 1
+  \end{pmatrix}.
+\]
+
+For $\lambda_2 = 2$:
+\[
+  (\mat{A} - 2\mat{I})\vect{v} =
+  \begin{pmatrix}
+    1 & 1 \\
+    1 & 1
+  \end{pmatrix}
+  \begin{pmatrix}
+    v_1 \\ v_2
+  \end{pmatrix}
+  = \vect{0}.
+\]
+
+This gives $v_1 + v_2 = 0$, so $v_2 = -v_1$. The eigenvector\index[subject]{eigenvector} is
+\[
+  \vect{v}_2 = \frac{1}{\sqrt{2}}
+  \begin{pmatrix}
+    1 \\ -1
+  \end{pmatrix}.
+\]
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig20_eigenvectors.png}
+  \caption[Eigenvectors and eigenvalue\index[subject]{eigenvalue}s]{
+    The matrix $\mat{A}$ stretches space by factor 4 along $\vect{v}_1$ (the diagonal where both traits increase together) and by factor 2 along $\vect{v}_2$ (the diagonal where traits move in opposite directions). These are the natural axes of the transformation.
+  }
+  \label{fig:eigenvectors}
+\end{figure}
+
+Notice that $\vect{v}_1$ and $\vect{v}_2$ are perpendicular (their dot product is zero). This is not a coincidence---it is guaranteed for symmetric matrices.
+
+\section{The spectral theorem: why symmetric matrices are special}
+
+Symmetric matrices have three remarkable properties that make them central to statistics and biology:
+
+\begin{enumerate}
+  \item \textbf{Real eigenvalue\index[subject]{eigenvalue}s.} The eigenvalue\index[subject]{eigenvalue}s of a symmetric matrix are always real numbers, never complex.
+  \item \textbf{Orthogonal eigenvector\index[subject]{eigenvector}s.} eigenvector\index[subject]{eigenvector}s corresponding to different eigenvalue\index[subject]{eigenvalue}s are perpendicular.
+  \item \textbf{Complete set.} A $p \times p$ symmetric matrix always has $p$ eigenvector\index[subject]{eigenvector}s that form an orthonormal basis for $\mathbb{R}^p$.
+\end{enumerate}
+
+These properties are collectively known as the \textbf{spectral theorem}.
+
+\begin{keyidea}
+Every symmetric matrix can be understood as pure stretching along perpendicular axes. There is no rotation mixed in, no shear, no reflection---just stretching (or compressing) along $p$ orthogonal directions.
+\end{keyidea}
+
+Covariance matrices are symmetric by construction (the covariance of $X$ with $Y$ equals the covariance of $Y$ with $X$). This is why ellipses, not parallelograms, describe their geometry.
+
+\section{diagonalisation\index[subject]{diagonalisation}: the matrix factorisation}
+
+Collect the eigenvector\index[subject]{eigenvector}s as columns of a matrix $\mat{V}$:
+\[
+  \mat{V} =
+  \begin{pmatrix}
+    | & | \\
+    \vect{v}_1 & \vect{v}_2 \\
+    | & |
+  \end{pmatrix}.
+\]
+
+For our example:
+\[
+  \mat{V} = \frac{1}{\sqrt{2}}
+  \begin{pmatrix}
+    1 & 1 \\
+    1 & -1
+  \end{pmatrix}.
+\]
+
+Collect the eigenvalue\index[subject]{eigenvalue}s in a diagonal matrix ${\Lambda}$:
+\[
+  {\Lambda} =
+  \begin{pmatrix}
+    \lambda_1 & 0 \\
+    0 & \lambda_2
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    4 & 0 \\
+    0 & 2
+  \end{pmatrix}.
+\]
+
+The spectral theorem guarantees that
+\[
+  \mat{A} = \mat{V}{\Lambda}\mat{V}^\top.
+\]
+
+This is the \textbf{eigendecomposition} or \textbf{spectral decomposition}
+of $\mat{A}$.
+
+\begin{keyidea}
+The eigendecomposition $\mat{A} = \mat{V}{\Lambda}\mat{V}^\top$
+factorises a symmetric matrix into three parts:
+\begin{itemize}
+  \item $\mat{V}^\top$: rotate from original axes to eigenvector\index[subject]{eigenvector} axes;
+  \item ${\Lambda}$: stretch along each eigenvector\index[subject]{eigenvector} axis;
+  \item $\mat{V}$: rotate back to original axes.
+\end{itemize}
+\end{keyidea}
+
+Let us verify this for our example:
+\begin{align*}
+  \mat{V}{\Lambda}\mat{V}^\top
+  &= \frac{1}{\sqrt{2}}
+     \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}
+     \begin{pmatrix} 4 & 0 \\ 0 & 2 \end{pmatrix}
+     \frac{1}{\sqrt{2}}
+     \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix} \\
+  &= \frac{1}{2}
+     \begin{pmatrix} 1 & 1 \\ 1 & -1 \end{pmatrix}
+     \begin{pmatrix} 4 & 4 \\ 2 & -2 \end{pmatrix} \\
+  &= \frac{1}{2}
+     \begin{pmatrix} 6 & 2 \\ 2 & 6 \end{pmatrix}
+  = \begin{pmatrix} 3 & 1 \\ 1 & 3 \end{pmatrix}
+  = \mat{A}. \quad\checkmark
+\end{align*}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch7_rotate_stretch_rotate.pdf}
+    \caption{\textbf{The eigendecomposition as rotate--stretch--rotate.} The 
+    matrix $\mat{A} = \mat{V}\mat{\Lambda}\mat{V}^\top$ acts in three stages. 
+    (a)~Original unit circle with eigenvectors marked (dashed). 
+    (b)~Multiply by $\mat{V}^\top$: rotate the coordinate system so that the 
+    eigenvectors align with the axes. (c)~Multiply by $\mat{\Lambda}$: stretch 
+    by $\lambda_1 = 4$ along the first axis and $\lambda_2 = 2$ along the 
+    second. (d)~Multiply by $\mat{V}$: rotate back to the original coordinates. 
+    The unit circle becomes an ellipse whose axes align with the eigenvectors 
+    and whose semi-axis lengths are $\sqrt{\lambda_1}$ and $\sqrt{\lambda_2}$.}
+    \label{fig:rotate-stretch-rotate}
+\end{figure}
+
+\section{Geometric interpretation: the ellipse revealed}
+
+Now we can see exactly what a covariance matrix\index[subject]{covariance matrix} describes geometrically.
+
+If ${\Sigma}$ is a covariance matrix\index[subject]{covariance matrix} with eigendecomposition
+${\Sigma} = \mat{V}{\Lambda}\mat{V}^\top$, then:
+
+\begin{itemize}
+  \item The \textbf{eigenvector\index[subject]{eigenvector}s} $\vect{v}_1, \vect{v}_2, \ldots, \vect{v}_p$
+        are the directions of the principal axes of the covariance ellipse.
+  \item The \textbf{eigenvalue\index[subject]{eigenvalue}s} $\lambda_1, \lambda_2, \ldots, \lambda_p$
+        are the variances along those axes.
+  \item The \textbf{semi-axis lengths} of the ellipse are
+        $\sqrt{\lambda_1}, \sqrt{\lambda_2}, \ldots, \sqrt{\lambda_p}$.
+\end{itemize}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig20_ellipse_axes.png}
+  \caption[eigenvalue\index[subject]{eigenvalue}s and eigenvector\index[subject]{eigenvector}s of a covariance matrix\index[subject]{covariance matrix}]{
+    A covariance matrix\index[subject]{covariance matrix} defines an ellipse. The eigenvector\index[subject]{eigenvector}s point along the principal axes; the eigenvalue\index[subject]{eigenvalue}s are the variances (squared semi-axis lengths) along those axes.
+  }
+  \label{fig:ellipse-axes}
+\end{figure}
+
+For the covariance matrix\index[subject]{covariance matrix} from Chapter~12,
+\[
+  {\Sigma} =
+  \begin{pmatrix}
+    1.0 & 0.8 \\
+    0.8 & 1.0
+  \end{pmatrix},
+\]
+the eigenvalue\index[subject]{eigenvalue}s are $\lambda_1 = 1.8$ and $\lambda_2 = 0.2$. The ratio $\lambda_1 / \lambda_2 = 9$ tells us the ellipse is elongated: its major axis is three times longer than its minor axis ($\sqrt{9} = 3$).
+
+The eigenvector\index[subject]{eigenvector}s are at 45° angles to the original axes---one along the direction where both traits increase together (the correlation\index[subject]{correlation}direction), and one perpendicular to it.
+
+\section{Why diagonalisation\index[subject]{diagonalisation} simplifies everything}
+
+In the eigenvector\index[subject]{eigenvector} coordinate system, the covariance matrix\index[subject]{covariance matrix} becomes diagonal:
+\[
+  {\Lambda} =
+  \begin{pmatrix}
+    \lambda_1 & 0 & \cdots & 0 \\
+    0 & \lambda_2 & \cdots & 0 \\
+    \vdots & & \ddots & \vdots \\
+    0 & 0 & \cdots & \lambda_p
+  \end{pmatrix}.
+\]
+
+A diagonal matrix is trivial to work with:
+
+\begin{itemize}
+  \item \textbf{Inverse:} ${\Lambda}^{-1}$ has entries
+        $1/\lambda_1, 1/\lambda_2, \ldots$
+  \item \textbf{Square root:} ${\Lambda}^{1/2}$ has entries
+        $\sqrt{\lambda_1}, \sqrt{\lambda_2}, \ldots$
+  \item \textbf{Powers:} ${\Lambda}^k$ has entries
+        $\lambda_1^k, \lambda_2^k, \ldots$
+  \item \textbf{Determinant:} $\det({\Lambda}) = \lambda_1 \lambda_2
+        \cdots \lambda_p$
+  \item \textbf{Trace:} $\tr({\Lambda}) = \lambda_1 + \lambda_2 +
+        \cdots + \lambda_p$
+\end{itemize}
+
+Since ${\Sigma} = \mat{V}{\Lambda}\mat{V}^\top$, these operations
+extend to the original matrix. For example:
+\[
+  {\Sigma}^{-1} = \mat{V}{\Lambda}^{-1}\mat{V}^\top,
+  \qquad
+  {\Sigma}^{1/2} = \mat{V}{\Lambda}^{1/2}\mat{V}^\top.
+\]
+
+\begin{keyidea}
+diagonalisation\index[subject]{diagonalisation} converts hard matrix problems into easy scalar problems. Once you know the eigenvalue\index[subject]{eigenvalue}s and eigenvector\index[subject]{eigenvector}s, operations like inversion, taking square roots, and computing powers become simple.
+\end{keyidea}
+
+\section{The trace and determinant as summaries}
+
+Two numbers summarise the eigenvalue\index[subject]{eigenvalue} spectrum:
+
+\paragraph{The trace.}
+The trace of a matrix is the sum of its diagonal entries, which equals the sum of its eigenvalue\index[subject]{eigenvalue}s:
+\[
+  \tr({\Sigma}) = \sigma_1^2 + \sigma_2^2 + \cdots + \sigma_p^2
+    = \lambda_1 + \lambda_2 + \cdots + \lambda_p.
+\]
+
+For a covariance matrix\index[subject]{covariance matrix}, the trace is the \textbf{total variance}---the sum of variances across all traits. Geometrically, it measures the overall ``size'' of the ellipse.
+
+\paragraph{The determinant.}
+The determinant is the product of the eigenvalue\index[subject]{eigenvalue}s:
+\[
+  \det({\Sigma}) = \lambda_1 \lambda_2 \cdots \lambda_p.
+\]
+
+Geometrically, the determinant is the squared volume of the ellipsoid. For a covariance matrix\index[subject]{covariance matrix}, it measures \textbf{generalised variance}---a single number capturing the overall spread, accounting for correlations.
+
+If any eigenvalue\index[subject]{eigenvalue} is zero, the determinant is zero, indicating that the data lie in a lower-dimensional subspace. The matrix is then singular and
+cannot be inverted.
+
+\section{Variance in any direction: the quadratic form\index[subject]{quadratic form} revisited}
+
+In Chapter~2 we introduced the quadratic form\index[subject]{quadratic form} $\vect{v}^\top{\Sigma}\vect{v}$. Now we can interpret it precisely.
+
+Let $\boldsymbol{\beta}$ be a unit vector representing a direction in trait space. The variance of the population in that direction is
+\[
+  \sigma^2_{\boldsymbol{\beta}} = \boldsymbol{\beta}^\top {\Sigma} \boldsymbol{\beta}.
+\]
+
+Using the eigendecomposition ${\Sigma} = \mat{V}{\Lambda}\mat{V}^\top$:
+\begin{align*}
+  \boldsymbol{\beta}^\top {\Sigma} \boldsymbol{\beta}
+    &= \boldsymbol{\beta}^\top \mat{V}{\Lambda}\mat{V}^\top \boldsymbol{\beta} \\
+    &= (\mat{V}^\top\boldsymbol{\beta})^\top {\Lambda} (\mat{V}^\top\boldsymbol{\beta}).
+\end{align*}
+
+Let $\vect{c} = \mat{V}^\top\boldsymbol{\beta}$ be the coordinates of $\boldsymbol{\beta}$ in the eigenvector\index[subject]{eigenvector} basis. Then
+\[
+  \boldsymbol{\beta}^\top {\Sigma} \boldsymbol{\beta}
+    = \vect{c}^\top {\Lambda} \vect{c}
+    = \sum_{i=1}^{p} \lambda_i c_i^2.
+\]
+
+\begin{keyidea}
+The variance in direction $\boldsymbol{\beta}$ is a weighted average of the eigenvalue\index[subject]{eigenvalue}s, with weights $c_i^2 = (\boldsymbol{\beta} \cdot \vect{v}_i)^2$ ---the squared projections of $\boldsymbol{\beta}$ onto the eigenvector\index[subject]{eigenvector}s.
+\end{keyidea}
+
+This formula explains why:
+\begin{itemize}
+  \item Variance is maximised ($= \lambda_1$) when $\boldsymbol{\beta}$ 
+        aligns with $\vect{v}_1$, the first eigenvector\index[subject]{eigenvector}.
+  \item Variance is minimised ($= \lambda_p$) when $\boldsymbol{\beta}$
+        aligns with $\vect{v}_p$, the last eigenvector\index[subject]{eigenvector}.
+  \item For any other direction, variance is intermediate.
+\end{itemize}
+
+The eigenvalue\index[subject]{eigenvalue}s bound the variance: $\lambda_{\min} \le \boldsymbol{\beta}^\top{\Sigma}\boldsymbol{\beta} \le \lambda_{\max}$.
+
+\section{Principal Component Analysis (PCA\index[subject]{PCA}) in one paragraph}
+
+PCA\index[subject]{PCA} is simply this: project the data onto the eigenvector\index[subject]{eigenvector}s of the covariance matrix\index[subject]{covariance matrix}. The first principal component is the projection onto $\vect{v}_1$; it captures the direction of maximum variance. The second principal component is the projection onto $\vect{v}_2$; it captures the most variance in the subspace orthogonal to the first. And so on.
+
+The eigenvalue\index[subject]{eigenvalue}s tell you how much variance each component captures. If $\lambda_1$ is much larger than the others, the first principal component carries most of the information, and the data are approximately one-dimensional despite having $p$ measured traits.
+
+We will explore PCA\index[subject]{PCA} and related methods in Chapter~32.
+
+\section{Computing eigenvalue\index[subject]{eigenvalue}s and eigenvector\index[subject]{eigenvector}s in practice}
+
+For $2 \times 2$ matrices, you can solve the characteristic equation\index[subject]{characteristic equation} by hand. For larger matrices, use numerical algorithms. In R:
+
+\begin{verbatim}
+Sigma <- matrix(c(1.0, 0.8, 0.8, 1.0), nrow = 2)
+eig <- eigen(Sigma)
+eig$values      # eigenvalues
+eig$vectors     # eigenvectors (columns)
+\end{verbatim}
+
+In Python:
+
+\begin{verbatim}
+import numpy as np
+Sigma = np.array([[1.0, 0.8], [0.8, 1.0]])
+eigenvalues, eigenvectors = np.linalg.eigh(Sigma)
+\end{verbatim}
+
+Note: \texttt{eigh} is for symmetric (Hermitian) matrices and guarantees real eigenvalue\index[subject]{eigenvalue}s and orthogonal eigenvector\index[subject]{eigenvector}s. Use it for covariance matrices.
+
+\section{A biological example: the G matrix}
+
+The additive genetic covariance matrix\index[subject]{covariance matrix} $\mat{G}$ describes the genetic architecture underlying multiple traits. Its eigendecomposition reveals:
+
+\begin{itemize}
+  \item \textbf{$\mathbf{g}_{\max}$:} The first eigenvector\index[subject]{eigenvector}, pointing in
+        the direction of maximum genetic variance. This is the ``line of
+        least resistance''---the direction evolution finds easiest.
+  \item \textbf{Higher eigenvector\index[subject]{eigenvector}s:} Directions of progressively less
+        genetic variance. Evolution in these directions requires stronger
+        selection to achieve the same response.
+  \item \textbf{eigenvalue\index[subject]{eigenvalue}s:} The genetic variances along each principal
+        axis. Large eigenvalue\index[subject]{eigenvalue} ratios indicate that $\mat{G}$ strongly
+        channels evolution along certain directions.
+\end{itemize}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig20_gmax.png}
+  \caption[The G matrix and $\mathbf{g}_{\max}$]{
+    The G matrix defines a genetic ellipse. The first eigenvector\index[subject]{eigenvector}
+    $\mathbf{g}_{\max}$ points along the direction of maximum genetic
+    variance---the ``line of least evolutionary resistance.''
+  }
+  \label{fig:gmax}
+\end{figure}
+
+When the G matrix is highly eccentric (eigenvalue\index[subject]{eigenvalue}s very unequal), the population can respond quickly to selection along $\mathbf{g}_{\max}$ but responds sluggishly---or not at all---to selection perpendicular to it. This is the geometric foundation of evolutionary constraint.
+
+\section{positive definite\index[subject]{matrix!positive definite}ness and what eigenvalue\index[subject]{eigenvalue}s tell us}
+
+A matrix is \textbf{positive definite\index[subject]{matrix!positive definite}} if all its eigenvalue\index[subject]{eigenvalue}s are strictly positive. For covariance matrices, this means:
+
+\begin{itemize}
+  \item Every direction has positive variance.
+  \item The matrix can be inverted.
+  \item The ellipse is a proper ellipse, not degenerate.
+\end{itemize}
+
+A matrix is \textbf{positive semi-definite\index[subject]{matrix!positive semi-definite}} if all eigenvalue\index[subject]{eigenvalue}s are non-negative (some may be zero). A zero eigenvalue\index[subject]{eigenvalue} means:
+
+\begin{itemize}
+  \item Some linear combination of traits has zero variance.
+  \item The data lie in a lower-dimensional subspace.
+  \item The matrix cannot be inverted (it is singular).
+\end{itemize}
+
+In practice, estimated covariance matrices from finite samples may have small or even slightly negative eigenvalues due to sampling error. This can cause numerical problems and may require regularisation.
+
+\section{The condition number: how ``ill-behaved'' is the matrix?}
+
+The ratio of largest to smallest eigenvalue\index[subject]{eigenvalue} is the \textbf{condition number}:
+\[
+  \kappa = \frac{\lambda_{\max}}{\lambda_{\min}}.
+\]
+
+A large condition number indicates:
+
+\begin{itemize}
+  \item The ellipse is highly elongated.
+  \item The matrix is nearly singular.
+  \item Numerical computations (like inversion) may be unstable.
+  \item Small errors in estimating the matrix can cause large errors in
+        derived quantities.
+\end{itemize}
+
+In evolutionary terms, a G matrix with large condition number channels evolution strongly along certain directions. In statistical terms, it makes estimation difficult.
+
+\section{Summary}
+
+In this chapter we have:
+
+\begin{itemize}
+  \item Defined eigenvalues and eigenvector\index[subject]{eigenvector}s as the answers to ``in which directions does a matrix act as pure scaling?''
+  \item Worked through a complete example: finding eigenvalue\index[subject]{eigenvalue}s from the characteristic equation\index[subject]{characteristic equation}, then finding eigenvector\index[subject]{eigenvector}s.
+  \item Stated the spectral theorem: symmetric matrices have real eigenvalue\index[subject]{eigenvalue}s and orthogonal eigenvector\index[subject]{eigenvector}s.
+  \item Introduced the eigendecomposition
+        $\mat{A} = \mat{V}{\Lambda}\mat{V}^\top$ and interpreted it as rotate--stretch--rotate-back.
+  \item Connected eigenvalues to ellipse geometry: eigenvector\index[subject]{eigenvector}s are axes, eigenvalue\index[subject]{eigenvalue}s are variances along those axes.
+  \item Showed that variance in any direction is a weighted average of eigenvalue\index[subject]{eigenvalue}s, with weights given by squared projections.
+  \item Applied these ideas to the G matrix: $\mathbf{g}_{\max}$ is the direction of maximum genetic variance, and eigenvalue\index[subject]{eigenvalue} ratios quantify constraint.
+\end{itemize}
+
+We now have the tools to understand any symmetric matrix geometrically. In the next chapter, we use diagonalisation\index[subject]{diagonalisation} to construct the whitening\index[subject]{whitening transformation} transformation---the key to understanding directional heritability\index[subject]{heritability} and the P-sphere\index[subject]{P-sphere}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHAPTER 32: PCA, MANOVA, AND PROJECTIONS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Exercises}
+
+\paragraph{Exercise 32.1 (PCA by hand).}
+Consider the covariance matrix
+\[
+  \mat{S} = \begin{pmatrix} 5 & 3 \\ 3 & 5 \end{pmatrix}.
+\]
+
+\begin{enumerate}
+  \item Find the eigenvalues of $\mat{S}$.
+  \item Find the eigenvectors of $\mat{S}$ (normalised to unit length).
+  \item What proportion of total variance does PC1 explain?
+  \item Interpret PC1 and PC2 in terms of the original traits.
+\end{enumerate}
+
+\paragraph{Exercise 32.2 (When all loadings are positive).}
+In many morphological data sets, PC1 has all positive loadings.
+
+\begin{enumerate}
+  \item What biological interpretation does this suggest?
+  \item Give an example of a trait set where you would \emph{not} expect
+        all PC1 loadings to be positive.
+  \item If PC1 is ``size,'' what does PC2 typically represent?
+\end{enumerate}
+
+\paragraph{Exercise 32.3 (Covariance vs.\ correlation PCA).}
+A data set has three traits with very different variances:
+\begin{itemize}
+  \item Trait A: variance = 100
+  \item Trait B: variance = 10
+  \item Trait C: variance = 1
+\end{itemize}
+
+\begin{enumerate}
+  \item If you run PCA on the covariance matrix, which trait will
+        dominate PC1?
+  \item What happens if you standardise each trait to unit variance
+        before computing PCA (equivalently, PCA on the correlation matrix)?
+  \item When is covariance-based PCA appropriate? When is correlation-based
+        PCA better?
+\end{enumerate}
+
+\paragraph{Exercise 32.4 (MANOVA intuition).}
+Two species of iris are measured for sepal length and sepal width. The
+within-species variation forms two overlapping ellipses; the between-species
+variation is the distance between their centroids.
+
+\begin{enumerate}
+  \item Sketch this scenario with two partially overlapping ellipses.
+  \item MANOVA compares the ``size'' of between-group variation to
+        within-group variation. In your sketch, are the groups well
+        separated?
+  \item How would the separation change if the within-group ellipses
+        were narrower?
+  \item How would it change if the centroids were farther apart?
+\end{enumerate}
+
+\paragraph{Exercise 32.5 (Discriminant analysis).}
+Using the iris scenario from Exercise 32.4:
+
+\begin{enumerate}
+  \item The first discriminant function (DF1) is the direction that
+        maximises between-group variance relative to within-group variance.
+        Sketch the direction of DF1 on your diagram.
+  \item If you project all individuals onto DF1, what do you expect the
+        resulting univariate distributions to look like?
+  \item How does DF1 relate to the eigenvectors of $\mat{W}^{-1}\mat{B}$?
+  \item If there are $g$ groups, what is the maximum number of non-trivial
+        discriminant functions?
+\end{enumerate}
+
+\paragraph{Exercise 32.6 (Scree plots).}
+A PCA of 10 traits yields eigenvalues: 5.2, 2.1, 1.0, 0.6, 0.4, 0.3, 0.2,
+0.1, 0.08, 0.02.
+
+\begin{enumerate}
+  \item Compute the proportion of variance explained by each PC.
+  \item Compute the cumulative proportion of variance.
+  \item Sketch a scree plot (eigenvalue vs.\ PC number).
+  \item How many PCs would you retain? Justify your choice.
+  \item What percentage of total variance do your retained PCs explain?
+\end{enumerate}

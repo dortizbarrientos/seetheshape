@@ -1,0 +1,419 @@
+\chapter[The Fitness Surface and Gamma]{The Fitness Surface and \texorpdfstring{$\boldsymbol{\gamma}$}{γ}}
+
+The previous chapter explored the G matrix---the genetic variation that
+fuels evolutionary response. Now we turn to the other side of the equation:
+the fitness surface that determines where selection pushes the population.
+
+The fitness surface is a landscape in trait space, with fitness as elevation.
+Peaks represent optimal phenotypes; valleys represent maladaptive ones. The
+shape of this surface---its slopes and curvatures---determines the direction
+and strength of natural selection. The matrix $\boldsymbol{\gamma}$ captures
+the curvature, revealing whether selection is stabilising, disruptive, or
+acting differently along different trait combinations.
+
+\section{Fitness as a surface over trait space}
+
+Imagine a population of organisms, each with a phenotype that can be
+represented as a point in trait space. Each phenotype has an associated
+fitness---the expected reproductive success of an individual with that
+phenotype.
+
+We can think of fitness as a surface over trait space. In one trait, this
+is a curve: fitness $w$ as a function of phenotype $z$. In two traits, it
+is a surface: $w(z_1, z_2)$. In $p$ traits, it is a hypersurface that we
+cannot visualise directly but can analyse mathematically.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig31_fitness_surface.png}
+  \caption[A fitness surface]{
+    A fitness surface over two traits. The peak represents the optimum
+    phenotype. Contour lines show phenotypes of equal fitness. The surface
+    may be symmetric (circular contours) or asymmetric (elliptical contours),
+    depending on how selection acts on different trait combinations.
+  }
+  \label{fig:fitness-surface}
+\end{figure}
+
+The key insight is that the local shape of the fitness surface determines
+selection. Near a peak, fitness decreases in all directions---this is
+stabilising selection. Near a saddle point, fitness increases in some
+directions and decreases in others---this is correlational selection. On
+a slope, fitness increases in one direction---this is directional selection.
+
+\section[The selection gradient beta]{The selection gradient \texorpdfstring{$\boldsymbol{\beta}$}{β}}
+
+The first-order description of the fitness surface is its slope. At any
+point in trait space, we can ask: in which direction does fitness increase
+most steeply?
+
+The answer is the \textbf{selection gradient} $\boldsymbol{\beta}$, defined
+as the vector of partial derivatives of relative fitness with respect to
+each trait:
+\[
+  \beta_i = \frac{\partial \ln w}{\partial z_i}
+          = \frac{1}{w} \frac{\partial w}{\partial z_i}.
+\]
+
+In matrix notation:
+\[
+  \boldsymbol{\beta} = \nabla \ln w.
+\]
+
+The selection gradient points ``uphill'' on the fitness surface. Its
+magnitude indicates how steep the slope is; its direction indicates where
+selection is pushing.
+
+\begin{keyidea}
+The selection gradient $\boldsymbol{\beta}$ is the direction of steepest
+ascent on the fitness surface. It describes directional selection---the
+tendency for the population mean to move toward higher fitness.
+\end{keyidea}
+
+From the Lande equation\index[subject]{breeder's equation}, the response to selection is
+$\Delta\bar{\vect{z}} = \mat{G}\boldsymbol{\beta}$.
+The selection gradient tells us where selection wants to go; the G matrix
+determines how much of that desire is realised.
+
+\section[Beyond slopes: the curvature matrix gamma]{Beyond slopes: the curvature matrix \texorpdfstring{$\boldsymbol{\gamma}$}{γ}}
+
+Slopes tell us about directional selection, but they miss an important
+aspect: is the fitness surface curved? Is selection pushing the population
+toward a peak (stabilising) or away from a valley (disruptive)?
+
+Curvature is captured by second derivatives. The matrix of second partial
+derivatives of relative fitness is:
+\[
+  \gamma_{ij} = \frac{\partial^2 \ln w}{\partial z_i \partial z_j}.
+\]
+
+This is the \textbf{quadratic selection gradient} or \textbf{gamma matrix},
+denoted $\boldsymbol{\gamma}$.
+
+\begin{keyidea}
+The $\boldsymbol{\gamma}$ matrix describes the curvature of the fitness
+surface. Its eigenvalue\index[subject]{eigenvalue}s tell us whether selection is stabilising
+(negative curvature) or disruptive (positive curvature) along each
+principal axis.
+\end{keyidea}
+
+Like G and P, $\boldsymbol{\gamma}$ is a symmetric matrix. It can be
+diagonalised, and its eigenstructure reveals the geometry of selection.
+
+\section[Interpreting gamma: the sign of eigenvalue\index[subject]{eigenvalue}s]{Interpreting \texorpdfstring{$\boldsymbol{\gamma}$}{γ}: the sign of eigenvalue\index[subject]{eigenvalue}s}
+
+Suppose we diagonalise $\boldsymbol{\gamma}$:
+\[
+  \boldsymbol{\gamma} = \mat{V}\mat{\Lambda}\mat{V}^\top.
+\]
+
+The eigenvalue\index[subject]{eigenvalue}s $\lambda_1, \lambda_2, \ldots, \lambda_p$ describe the
+curvature along the principal axes (eigenvector\index[subject]{eigenvector}s) of the fitness surface.
+
+\paragraph{Negative eigenvalue\index[subject]{eigenvalue}: stabilising selection.}
+If $\lambda_i < 0$, the fitness surface curves downward along eigenvector\index[subject]{eigenvector}
+$\vect{v}_i$. Moving away from the current mean in that direction decreases
+fitness. Selection is stabilising: it pushes the population back toward
+the centre.
+
+\paragraph{Positive eigenvalue\index[subject]{eigenvalue}: disruptive selection.}
+If $\lambda_i > 0$, the fitness surface curves upward along $\vect{v}_i$.
+Moving away from the mean increases fitness. Selection is disruptive: it
+pushes the population away from the centre, potentially toward two or more
+distinct phenotypes.
+
+\paragraph{Zero eigenvalue\index[subject]{eigenvalue}: no curvature.}
+If $\lambda_i = 0$, the fitness surface is flat along $\vect{v}_i$ (at
+least locally). Selection has no stabilising or disruptive component in
+that direction---only directional selection (if any) from $\boldsymbol{\beta}$.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig31_curvature_types.png}
+  \caption[Types of curvature]{
+    Three types of curvature in one dimension. Left: negative curvature
+    (stabilising selection, fitness peak). Centre: zero curvature
+    (directional selection, constant slope). Right: positive curvature
+    (disruptive selection, fitness valley).
+  }
+  \label{fig:curvature-types}
+\end{figure}
+
+\section{Correlational selection: the off-diagonal elements}
+
+The diagonal elements of $\boldsymbol{\gamma}$ describe curvature along
+each individual trait. The off-diagonal elements describe something more
+subtle: \textbf{correlational selection}.
+
+If $\gamma_{12} \neq 0$, then the curvature of the fitness surface depends
+on trait combinations, not just individual traits. A positive $\gamma_{12}$
+means that fitness is higher when both traits are simultaneously high or
+simultaneously low (positive correlation\index[subject]{correlation}favoured). A negative $\gamma_{12}$
+means that fitness is higher when traits are in opposition (negative
+correlation\index[subject]{correlation}favoured).
+
+\begin{keyidea}
+Correlational selection ($\gamma_{ij} \neq 0$ for $i \neq j$) favours
+particular trait combinations. It can build or break genetic correlations
+over evolutionary time.
+\end{keyidea}
+
+The eigenvector\index[subject]{eigenvector}s of $\boldsymbol{\gamma}$ reveal the trait combinations
+along which selection acts most strongly (largest $|\lambda_i|$) and the
+directions along which selection is neutral (small $|\lambda_i|$).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch10_saddle_correlational.pdf}
+    \caption{\textbf{A fitness saddle from correlational selection.} When 
+    $\boldsymbol{\gamma}$ has both positive and negative eigenvalues, the 
+    fitness surface is a saddle. (a)~Three-dimensional view: fitness increases 
+    along one axis (the ridge, $\lambda = 0.3 > 0$, disruptive) and decreases 
+    along the other (the valley, $\lambda = -0.7 < 0$, stabilising). 
+    (b)~Contour view from above: hyperbolic level curves indicate a saddle 
+    point. The eigenvectors of $\boldsymbol{\gamma}$ (dashed lines) point 
+    along the ridge and valley directions. Correlational selection 
+    ($\gamma_{12} \neq 0$) rotates these directions away from the original 
+    trait axes.}
+    \label{fig:saddle-correlational}
+\end{figure}
+
+\section{Quadratic fitness functions}
+
+A common model for the fitness surface is a quadratic function centred on
+an optimum $\boldsymbol{\theta}$:
+\[
+  w(\vect{z}) = w_{\max} \exp\left(
+    -\frac{1}{2}(\vect{z} - \boldsymbol{\theta})^\top
+    \boldsymbol{\omega}^{-1}
+    (\vect{z} - \boldsymbol{\theta})
+  \right).
+\]
+
+Here $\boldsymbol{\omega}$ is a matrix that describes the ``width'' of
+the fitness peak. The quadratic form\index[subject]{quadratic form} in the exponent is a Mahalanobis distance\index[subject]{distance!Mahalanobis}
+distance from the optimum, using $\boldsymbol{\omega}^{-1}$ as the metric.
+
+For this Gaussian fitness function:
+\begin{itemize}
+  \item The selection gradient at phenotype $\vect{z}$ is
+        $\boldsymbol{\beta} = \boldsymbol{\omega}^{-1}(\boldsymbol{\theta} - \vect{z})$.
+  \item The curvature matrix is $\boldsymbol{\gamma} = -\boldsymbol{\omega}^{-1}$.
+\end{itemize}
+
+The curvature is constant everywhere and equals the negative of the inverse
+width matrix. Narrow peaks (small $\boldsymbol{\omega}$) have strong
+curvature (large $|\boldsymbol{\gamma}|$); wide peaks have weak curvature.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig31_gaussian_surface.png}
+  \caption[Gaussian fitness surface]{
+    A Gaussian fitness surface with elliptical contours. The optimum is at
+    $\boldsymbol{\theta}$. The width matrix $\boldsymbol{\omega}$ determines
+    how rapidly fitness declines away from the optimum in different
+    directions.
+  }
+  \label{fig:gaussian-surface}
+\end{figure}
+
+\section[Estimating gamma from data]{Estimating \texorpdfstring{$\boldsymbol{\gamma}$}{γ} from data}
+
+In practice, $\boldsymbol{\gamma}$ is estimated by regressing fitness on
+traits and their products. The standard approach (Lande and Arnold 1983)
+uses:
+\[
+  w = \alpha + \sum_i \beta_i z_i 
+    + \frac{1}{2}\sum_i \gamma_{ii} z_i^2 
+    + \sum_{i < j} \gamma_{ij} z_i z_j + \epsilon.
+\]
+
+The linear coefficients estimate directional selection ($\boldsymbol{\beta}$);
+the quadratic and cross-product coefficients estimate the curvature
+($\boldsymbol{\gamma}$).
+
+There are subtleties:
+
+\begin{itemize}
+  \item \textbf{Standardisation.} Traits are typically standardised to have
+        mean zero and unit variance before analysis, so that coefficients
+        are comparable across traits.
+  \item \textbf{The factor of 2.} Note the $\frac{1}{2}$ in front of the
+        diagonal quadratic terms. This ensures that $\gamma_{ii}$ equals
+        the second derivative $\partial^2 w / \partial z_i^2$, not half of
+        it.
+  \item \textbf{Relative fitness.} Fitness should be relativised (divided
+        by mean fitness) so that the regression estimates selection
+        gradients, not absolute fitness effects.
+  \item \textbf{Sample size.} Estimating $\boldsymbol{\gamma}$ requires
+        large samples because quadratic terms have less power than linear
+        terms.
+\end{itemize}
+
+\section[The geometry of gamma]{The geometry of \texorpdfstring{$\boldsymbol{\gamma}$}{γ}}
+
+Like G and P, we can visualise $\boldsymbol{\gamma}$ as an ellipse (in two
+traits) or ellipsoid (in higher dimensions). But the interpretation is
+different:
+
+\begin{itemize}
+  \item For G and P, the ellipse shows where \emph{variation} extends.
+  \item For $\boldsymbol{\gamma}$, the ellipse shows where \emph{selection
+        curvature} is strongest.
+\end{itemize}
+
+The eigenvector\index[subject]{eigenvector}s of $\boldsymbol{\gamma}$ are the principal axes of the
+fitness surface---the directions along which curvature is purely stabilising
+or disruptive, with no correlational component. The eigenvalue\index[subject]{eigenvalue}s are the
+curvatures along those axes.
+
+If all eigenvalue\index[subject]{eigenvalue}s of $\boldsymbol{\gamma}$ are negative and equal, the
+fitness surface is a symmetric peak with circular contours. If eigenvalue\index[subject]{eigenvalue}s
+differ, the peak is elongated---selection is stronger in some directions
+than others.
+
+\section[Comparing gamma and G: alignment matters]{Comparing \texorpdfstring{$\boldsymbol{\gamma}$}{γ} and G: alignment matters}
+
+A central question in evolutionary biology is: how does the geometry of
+selection (encoded in $\boldsymbol{\gamma}$) interact with the geometry
+of genetic variation (encoded in G)?
+
+\paragraph{Aligned.}
+If the eigenvector\index[subject]{eigenvector}s of $\boldsymbol{\gamma}$ align with those of G, then
+selection is strongest along directions where genetic variation is abundant
+or scarce. This can either accelerate evolution (if strong selection meets
+abundant variation) or frustrate it (if strong selection meets scarce
+variation).
+
+\paragraph{Misaligned.}
+If $\boldsymbol{\gamma}$ and G are misaligned, the situation is more complex.
+Selection may push in one direction, but genetic variation may only be
+available in another. The response is a compromise, deflected by G away
+from where $\boldsymbol{\gamma}$ would drive it.
+
+\begin{keyidea}
+The interaction between $\boldsymbol{\gamma}$ (the geometry of selection)
+and G (the geometry of genetic variation) determines whether evolution is
+fast or slow, aligned or deflected. Understanding both matrices is essential
+for predicting evolutionary trajectories.
+\end{keyidea}
+
+\section[Gamma and the maintenance of genetic variation]{\texorpdfstring{$\boldsymbol{\gamma}$}{γ} and the maintenance of genetic variation}
+
+The curvature matrix also influences the maintenance of genetic variation.
+Under stabilising selection ($\boldsymbol{\gamma}$ with negative eigenvalue\index[subject]{eigenvalue}s),
+selection removes variation by favouring intermediate phenotypes. The
+stronger the curvature (more negative eigenvalue\index[subject]{eigenvalue}s), the faster variation
+is eroded.
+
+This creates a puzzle: if stabilising selection is common, why do
+populations retain genetic variation? Possible answers include:
+\begin{itemize}
+  \item mutation-selection balance\index[subject]{mutation-selection balance}.
+  \item Fluctuating selection (the optimum moves over time).
+  \item Correlational constraints (selection on one trait limited by
+        correlated response in others).
+  \item Frequency-dependent or spatially varying selection.
+\end{itemize}
+
+The eigenstructure of $\boldsymbol{\gamma}$ helps quantify how rapidly
+selection should erode variation along different axes, informing these
+debates.
+
+\section{A worked example}
+
+Consider a study measuring survival as a function of two morphological
+traits in a bird population. After standardising traits and relativising
+fitness, a quadratic regression yields:
+
+\[
+  \boldsymbol{\beta} = \begin{pmatrix} 0.15 \\ 0.08 \end{pmatrix},
+  \qquad
+  \boldsymbol{\gamma} = \begin{pmatrix} -0.12 & 0.06 \\ 0.06 & -0.08 \end{pmatrix}.
+\]
+
+\paragraph{Interpreting $\boldsymbol{\beta}$.}
+Both selection gradients are positive: directional selection favours
+larger values of both traits. Trait 1 is under stronger directional
+selection than trait 2.
+
+\paragraph{Interpreting $\boldsymbol{\gamma}$.}
+Both diagonal elements are negative: stabilising selection on each trait
+individually. The off-diagonal element is positive: correlational selection
+favours positive trait combinations (both high or both low).
+
+\paragraph{Eigendecomposition.}
+\[
+  \lambda_1 = -0.04, \quad \lambda_2 = -0.16.
+\]
+
+Both eigenvalue\index[subject]{eigenvalue}s are negative, confirming overall stabilising selection.
+But selection is much stronger ($|\lambda_2| = 0.16$) along the second
+eigenvector\index[subject]{eigenvector} than the first ($|\lambda_1| = 0.04$). The fitness peak is
+elongated.
+
+The eigenvector\index[subject]{eigenvector}s reveal that the direction of weakest stabilising selection
+($\lambda_1$) is approximately the positive diagonal (both traits high
+together), while the direction of strongest stabilising selection
+($\lambda_2$) is the negative diagonal (traits in opposition).
+
+This makes biological sense: the population can tolerate variation in
+overall size (both traits scaling together) but is strongly selected
+against unusual proportions (one trait high, the other low).
+
+\section{Canonical analysis of the fitness surface}
+
+Phillips and Arnold (1989) introduced \textbf{canonical analysis} to
+understand the geometry of $\boldsymbol{\gamma}$. The idea is to:
+
+\begin{enumerate}
+  \item Diagonalise $\boldsymbol{\gamma}$ to find its eigenvector\index[subject]{eigenvector}s and
+        eigenvalue\index[subject]{eigenvalue}s.
+  \item Express the fitness surface in terms of these principal axes.
+  \item Interpret which trait combinations are under strong versus weak
+        stabilising or disruptive selection.
+\end{enumerate}
+
+In the canonical basis, the fitness function becomes:
+\[
+  w = \bar{w} + \sum_i \theta_i m_i + \frac{1}{2}\sum_i \lambda_i m_i^2,
+\]
+where $m_i$ is the projection of the phenotype onto the $i$th eigenvector\index[subject]{eigenvector},
+$\theta_i$ is the directional selection along that axis (the projection
+of $\boldsymbol{\beta}$), and $\lambda_i$ is the curvature.
+
+This separates selection into independent components along orthogonal axes,
+making interpretation cleaner.
+
+\section{Summary}
+
+In this chapter we have:
+
+\begin{itemize}
+  \item Introduced the fitness surface as a landscape over trait space,
+        with slopes (directional selection) and curvatures (stabilising or
+        disruptive selection).
+  \item Defined the selection gradient $\boldsymbol{\beta}$ as the slope
+        of the fitness surface and the curvature matrix $\boldsymbol{\gamma}$
+        as its second derivatives.
+  \item Interpreted eigenvalue\index[subject]{eigenvalue}s of $\boldsymbol{\gamma}$: negative means
+        stabilising, positive means disruptive, zero means flat.
+  \item Explained correlational selection through off-diagonal elements
+        of $\boldsymbol{\gamma}$.
+  \item Described Gaussian fitness surfaces, where
+        $\boldsymbol{\gamma} = -\boldsymbol{\omega}^{-1}$.
+  \item Outlined how to estimate $\boldsymbol{\gamma}$ from fitness data
+        using quadratic regression.
+  \item Emphasised that the interaction between $\boldsymbol{\gamma}$ and
+        G determines evolutionary trajectories.
+  \item Worked through an example showing how to interpret eigenvalue\index[subject]{eigenvalue}s
+        and eigenvector\index[subject]{eigenvector}s of $\boldsymbol{\gamma}$.
+  \item Introduced canonical analysis as a tool for decomposing selection
+        along principal axes.
+\end{itemize}
+
+With G describing what evolution \emph{can} do and $\boldsymbol{\gamma}$
+describing what selection \emph{wants}, we now have both pieces of the
+puzzle. In the next chapter, we turn to the statistical tools---PCA\index[subject]{PCA},
+MANOVA\index[subject]{MANOVA}, and related methods---that let us estimate and compare these
+matrices from data.

@@ -1,0 +1,395 @@
+\documentclass[11pt,oneside]{book}
+
+% --------------------------------------------------
+% Basic geometry and typography
+% --------------------------------------------------
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[sc]{mathpazo} % Palatino-like text + maths
+\linespread{1.05}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+
+% --------------------------------------------------
+% Maths and symbols
+% --------------------------------------------------
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\tr}{\mathrm{tr}}
+
+% Key idea box (using tcolorbox)
+\usepackage{tcolorbox}
+\newtcolorbox{keyidea}{
+  colback=blue!5!white,
+  colframe=blue!75!black,
+  fonttitle=\bfseries,
+  title=Key Idea
+}
+
+% --------------------------------------------------
+% Graphics
+% --------------------------------------------------
+\usepackage{graphicx}
+\graphicspath{{figures/}}  % Look for figures in this subdirectory
+
+% --------------------------------------------------
+% Code listings (corrected)
+% --------------------------------------------------
+\usepackage{listings}
+
+\lstdefinestyle{pythonstyle}{
+  language=Python,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\bfseries,
+  commentstyle=\itshape,
+  showstringspaces=false,
+  frame=single,
+  framerule=0.3pt,
+  xleftmargin=1em,
+  xrightmargin=1em,
+  belowskip=1em,
+  aboveskip=1em,
+  breaklines=true,
+  breakatwhitespace=true,
+}
+
+% Use lstnewenvironment instead of newenvironment for listings
+\lstnewenvironment{pycode}[1][]
+  {\lstset{style=pythonstyle,numbers=left,numberstyle=\tiny,#1}}
+  {}
+
+% --------------------------------------------------
+% Colours, links, and boxes
+% --------------------------------------------------
+\usepackage{xcolor}
+\definecolor{myblue}{RGB}{0,60,130}
+\definecolor{mygreen}{RGB}{0,120,80}
+
+\usepackage[
+  colorlinks=true,
+  linkcolor=myblue,
+  citecolor=mygreen,
+  urlcolor=myblue
+]{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+
+\newtcolorbox{examplebox}{
+  colback=mygreen!3,
+  colframe=mygreen,
+  title={Example},
+}
+
+% --------------------------------------------------
+% Theorem-like environments (optional)
+% --------------------------------------------------
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[chapter]
+
+% --------------------------------------------------
+% Indexes (subject index + author index)
+% --------------------------------------------------
+\usepackage{imakeidx}
+\makeindex[name=subject,title=Subject Index,columns=2]
+\makeindex[name=authors,title=Author Index,columns=2]
+
+\usepackage{epigraph}
+\setlength{\epigraphwidth}{0.85\textwidth}
+\renewcommand{\epigraphflush}{center}
+\renewcommand{\sourceflush}{center}
+% --------------------------------------------------
+% Title and author
+% --------------------------------------------------
+
+\title{\textbf{Seeing the Shape}\\[0.5em]
+  \large A Geometric Introduction to Multivariate Quantitative Genetics}
+\author{Daniel Ortiz-Barrientos\\[0.5em]
+  \normalsize School of the Environment\\
+  \normalsize The University of Queensland\\[0.3em]
+  \normalsize ARC Centre of Excellence for Plant Success\\
+  \normalsize in Nature and Agriculture}
+\date{\today}
+
+\begin{document}
+
+\frontmatter
+\maketitle
+
+\epigraph{\textit{The shape of the ellipsoid and the direction of the arrow---these two things, together, determine what will happen. The G matrix is potential; selection is actuality. Their interaction is evolution.}}{}
+
+% --------------------------------------------------
+% Copyright page
+% --------------------------------------------------
+\thispagestyle{empty}
+\vspace*{\fill}
+
+\begin{flushleft}
+\textbf{Seeing the Shape: A Geometric Introduction to Multivariate Quantitative Genetics}
+
+\vspace{1em}
+\textcopyright{} 2025 Daniel Ortiz-Barrientos
+
+\vspace{1em}
+This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0). You are free to share and adapt this material for non-commercial purposes, provided you give appropriate credit and distribute any derivative works under the same license.
+
+\vspace{0.5em}
+\url{https://creativecommons.org/licenses/by-nc-sa/4.0/}
+
+\vspace{2em}
+School of the Environment\\
+The University of Queensland\\
+Brisbane, Queensland, Australia
+
+\vspace{2em}
+\texttt{https://www.ortizbarrientoslab.org}
+
+\vspace{2em}
+First edition: December 2025
+
+\vspace{1em}
+\small{Typeset in Palatino using \LaTeX.}
+\end{flushleft}
+
+\vspace*{\fill}
+\cleardoublepage
+
+\chapter*{Preface}
+
+These notes began as a companion to my reading of Mark Blows' paper \emph{``A tale of two matrices.''} They grew while teaching Biostatistics at The University of Queensland, where I found that students comfortable with regression, $t$-tests, and ANOVA would lose their footing as soon as covariance matrices, eigenvalues, and diagonalisation appeared. The notes have expanded through conversations with Nicholas O'Brien, Mark Blows, Mark Cooper, Jan Engesltaedter, Pamela Burrage, and Kevin Burrage.
+
+The aim here is to build a different path into that material. We start from distance, which is intuitive, and we show how the standard tools of multivariate evolutionary biology---phenotypic and genetic covariance matrices, Mahalanobis distance, PCA, canonical analyses, and the matrices underlying multivariate selection---are all expressions of the same geometric story.
+
+By the end of these notes you should be able to
+\begin{itemize}
+  \item interpret eigenvectors and eigenvalues geometrically and biologically;
+  \item perform diagonalisation in simple cases and understand each step;
+  \item decide when diagonalisation is the right tool for a given biological question.
+\end{itemize}
+
+The guiding principle is simple: \emph{symmetric matrices describe shapes}. The algebra is a precise language for those shapes. Whenever the symbols become opaque, the right move is to go back to the picture and draw the ellipse.
+
+These are living lecture notes. They will change. Feedback is welcome.
+
+\subsection*{Intended audience and prerequisites}
+
+This book is written for biologists who are already comfortable with basic
+statistics and are willing to learn some linear algebra along the way.
+A good starting point is the level of a typical second- or third-year
+biostatistics course: means and variances, covariance and correlation,
+simple linear regression, $t$-tests, and ANOVA.
+
+You do \emph{not} need a full course in linear algebra before starting,
+but you will get more from the later chapters if you have met vectors,
+matrices, and the idea of an eigenvalue at least once. The appendix
+\emph{Mathematical and Statistical Background} collects the minimum
+machinery assumed in the main text: vectors and matrices as things you can
+multiply, eigenvalues and eigenvectors for symmetric matrices, basic
+probability language (variance, covariance, multivariate normal), and the
+definition of selection gradients and Lande's equation. Readers who feel
+rusty on any of these topics are encouraged to skim that appendix early and
+return to it as needed.
+
+The book is designed to be readable in two passes. On a first pass, you can
+focus on the geometric story: pictures of trait space, ellipses for
+covariance, the idea of whitening, and the shapes defined by $\mat{G}$,
+$\mat{P}$, and $\boldsymbol{\gamma}$. On a second pass, you can pay closer
+attention to the algebra, work through the derivations in detail, and use
+the worked examples and code in the later chapters to practise complete
+analyses from data to interpretation.
+
+\subsection*{How this book is organised}
+
+This book is written for biologists who want to understand the geometry behind quantitative genetics. It is organised in four parts that build on each other: we start with pictures of trait space, move to distance and covariance, then to natural axes and whitening, and finally to genetic and fitness objects such as the $\mathbf{G}$ matrix and curved fitness surfaces.
+
+\medskip
+
+\textbf{Part I: Geometry of trait space}
+
+The first part introduces the basic geometric language.
+
+In \textbf{Chapter 0: Points and trait space} we learn to see individual phenotypes as points in a trait space, samples as clouds of points, and trait differences as arrows between points. 
+
+In \textbf{Chapter 1: Vectors and coordinates} we put coordinates on this space, introduce vectors as directed differences, and use the dot product to talk about lengths and angles between trait combinations. 
+
+In \textbf{Chapter 2: Matrices as machines} we treat matrices as machines that move vectors, and we see how simple matrices can stretch, rotate, and shear trait space in ways that we will later use to describe variance, covariance, and selection.
+
+\medskip
+
+\textbf{Part II: Distance, variance, and covariance}
+
+The second part explains why distance matters for variation and why simple Euclidean distance is sometimes misleading.
+
+In \textbf{Chapter 10: Distance and why we square it} we link straight-line distance to Pythagoras’ theorem, show how squaring distance leads naturally to variance as “average squared distance from the mean”, and connect this idea to the familiar one-dimensional formulas used in statistics. 
+
+In \textbf{Chapter 11: When Euclidean distance fails} we see concrete examples where Euclidean distance ignores scale differences between traits, misses correlations between traits, and does not match the probability structure of our data, motivating the need for a more flexible metric. 
+
+In \textbf{Chapter 12: Covariance and Mahalanobis distance} we introduce the covariance matrix as a shape that summarises how traits vary together and define Mahalanobis distance by placing this matrix between two vectors, leading to ellipses (and ellipsoids) that match the spread and correlation of the data.
+
+\medskip
+
+\textbf{Part III: Natural axes, diagonalisation, and whitening}
+
+The third part shows how to find natural axes of variation and how to rescale trait space so that phenotypic variance looks spherical.
+
+In \textbf{Chapter 20: Diagonalisation and natural axes} we introduce eigenvalues and eigenvectors as directions in which a matrix only stretches and does not rotate, and we relate these natural axes to principal components and to the shape of covariance ellipses. 
+
+In \textbf{Chapter 21: Whitening and the P-sphere} we transform trait space using the phenotypic covariance matrix $\mathbf{P}$ so that phenotypic variation becomes a sphere (the P-sphere), and in this whitened space we see how a transformed genetic matrix $\mathbf{G}^\ast$ encodes directional heritability along different directions of trait change.
+
+\medskip
+
+\textbf{Part IV: Genetic and fitness geometry}
+
+The final part applies these geometric tools to genetic and fitness objects.
+
+In \textbf{Chapter 30: The $\mathbf{G}$ matrix and the genetic ellipsoid} we describe the additive genetic covariance matrix $\mathbf{G}$ as an ellipsoid that channels evolutionary change, introduce key quantities such as the leading eigenvector (often called $g_{\max}$), and connect this geometric view to evolvability, constraint, and effective dimensionality. 
+
+In \textbf{Chapter 31: Fitness surfaces and curvature} we represent local fitness surfaces as curved (paraboloid) shapes over trait space, introduce the curvature matrix $\boldsymbol{\gamma}$, and explain how curvature interacts with genetic variation to influence the paths and limits of evolutionary change.
+
+\medskip
+
+A final chapter collects references and suggestions for further reading. Later chapters and online material include worked examples, figures, and code that mirror the ideas in the text, so readers can move back and forth between pictures, algebra, and data analysis.
+
+\subsection*{Notation used in this book}
+
+This book uses a small, consistent set of symbols. The aim is to reduce the
+need to hunt through previous chapters when you forget what a symbol means.
+Roughly speaking, plain italics such as $a$ or $x$ denote single numbers
+(scalars), bold symbols such as $\vect{x}$ denote vectors, and bold capitals
+such as $\mat{A}$ denote matrices. The commands \verb|\vect{}| and
+\verb|\mat{}| in the source simply typeset these in bold.
+
+\medskip
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{ll}
+\hline
+Symbol & Meaning \\
+\hline
+$a,b,c$            & Single numbers (scalars) \\
+$x,y,z$            & Scalar trait values or coordinates \\
+$i,j,k$            & Indices for individuals or traits \\
+$n$                & Number of individuals in a sample \\
+$p$                & Number of traits \\
+\hline
+$\vect{x}$         & Column vector of trait values for one individual \\
+$\vect{x}_i$       & Phenotype vector of individual $i$ \\
+$\bar{\vect{x}}$   & Mean phenotype vector in a sample or population \\
+$\vect{0}$         & Zero vector (all components equal to 0) \\
+$\vect{e}_i$       & Unit vector along trait $i$ (1 in position $i$, 0 elsewhere) \\
+\hline
+$\mat{A}, \mat{B}$ & General matrices (linear transformations) \\
+$\mat{I}$          & Identity matrix (leaves every vector unchanged) \\
+${\Sigma}$     & Generic covariance matrix \\
+$\mat{P}$          & Phenotypic covariance matrix \\
+$\mat{G}$          & Additive genetic covariance matrix \\
+$\mat{G}^\ast$     & Whitened genetic matrix: $\mat{P}^{-1/2} \mat{G} \mat{P}^{-1/2}$ \\
+${\Lambda}$    & Diagonal matrix of eigenvalues \\
+$\mat{Q}$          & Matrix whose columns are eigenvectors \\
+\hline
+$\vect{x}^\top$    & Transpose of $\vect{x}$ (row vector) \\
+$\langle \vect{x}, \vect{y} \rangle$ & Inner (dot) product of two vectors \\
+$\|\vect{x}\|$     & Length (Euclidean norm) of vector $\vect{x}$ \\
+$\vect{x}^\top \mat{A} \vect{x}$ & Quadratic form defined by $\mat{A}$ \\
+\hline
+$\lambda_i$        & $i$th eigenvalue of a matrix (stretch along $\vect{v}_i$) \\
+$\vect{v}_i$       & $i$th eigenvector (direction associated with $\lambda_i$) \\
+\hline
+$X,Y$              & Scalar random variables \\
+$\E[X]$            & Expectation (mean) of $X$ \\
+$\Var(X)$          & Variance of $X$ \\
+$\Cov(X,Y)$        & Covariance between $X$ and $Y$ \\
+$\mathcal{N}(\vect{\mu},{\Sigma})$ & Multivariate normal with mean ${\mu}$ and covariance ${\Sigma}$ \\
+\hline
+$\vect{\beta}$     & Vector of directional selection gradients \\
+$\vect{s}$         & Vector of selection differentials \\
+$\Delta \bar{\vect{z}}$ & Change in mean phenotype under selection \\
+$h^2$              & Heritability of a single trait \\
+$h^2(\vect{u})$    & Directional heritability along direction $\vect{u}$ \\
+$e(\vect{u})$      & Evolvability along direction $\vect{u}$ (additive variance in that direction) \\
+\hline
+$w$                & Fitness of an individual \\
+$\bar{w}$          & Mean fitness in the population \\
+$\boldsymbol{\gamma}$ & Matrix of quadratic selection gradients (curvature of the fitness surface) \\
+\hline
+\end{tabular}
+\end{table}
+
+\medskip
+
+This table does not try to list every symbol used in a specific example. Its
+role is to give you a quick reminder of the main objects that appear
+throughout the book: vectors and matrices for traits, the key covariance
+matrices $\mat{P}$ and $\mat{G}$, and the quantities used to describe
+selection, response, and fitness.
+
+
+
+\tableofcontents
+
+\mainmatter
+
+% ==================================================
+% Part I -- Arrows, Directions, and Tables of Numbers
+% ==================================================
+\part{Arrows, Directions, and Tables of Numbers}
+
+\include{chapters/00_points_and_trait_space}
+\include{chapters/01_vectors_and_coordinates}
+\include{chapters/02_matrices_as_machines}
+
+% ==================================================
+% Part II -- Distance and Shape
+% ==================================================
+\part{Distance and Shape}
+
+\include{chapters/10_distance_and_why_we_square_it}
+\include{chapters/11_when_euclidean_distance_fails}
+\include{chapters/12_covariance_and_mahalanobis}
+
+% ==================================================
+% Part III -- Diagonalisation and Natural Axes
+% ==================================================
+\part{Diagonalisation and Natural Axes}
+
+\include{chapters/20_diagonalisation_natural_axes}
+\include{chapters/21_whitening_and_Psphere}
+
+% ==================================================
+% Part IV -- Evolutionary Applications
+% ==================================================
+\part{Evolutionary Applications}
+
+\include{chapters/30_G_matrix_genetic_ellipsoid}
+\include{chapters/31_gamma_fitness_surface}
+\include{chapters/32_pca_manova_projections}
+
+% ==================================================
+% Part V -- Practice and Extensions
+% ==================================================
+\part{Practice and Extensions}
+
+\include{chapters/40_worked_examples}
+\include{chapters/41_connections_dirh2_response_fields}
+
+\backmatter
+
+\include{chapters/50_epilogue}
+\include{chapters/90_references}
+\include{chapters/95_math_background}
+\include{chapters/100_hints_to_problems}
+
+\printindex[subject]
+\printindex[authors]
+
+\end{document}

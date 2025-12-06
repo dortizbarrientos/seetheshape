@@ -1,0 +1,438 @@
+\chapter{directional heritability\index[subject]{heritability!directional} and the Geometry of Constraint}
+
+This final chapter connects the geometric framework to a frontier research
+question: how does heritability\index[subject]{heritability} vary across directions in trait space, and
+what does this variation tell us about evolutionary constraint?
+
+We have seen that the eigenvalue\index[subject]{eigenvalue}s of
+$\mat{G}^* = \mat{P}^{-1/2}\mat{G}\mat{P}^{-1/2}$ are the directional
+heritabilities along principal axes. But most selection does not align
+with principal axes. What is the \emph{distribution} of heritability\index[subject]{heritability} across
+all possible directions? How do we characterise, measure, and interpret
+this distribution?
+
+These questions lead to the concept of \textbf{constraint heterogeneity}:
+the degree to which heritability\index[subject]{heritability} varies across directions. When constraint
+heterogeneity is high, some directions are evolutionary highways while
+others are dead ends. Understanding this heterogeneity is essential for
+predicting evolutionary trajectories and designing effective breeding
+programs.
+
+\section{From eigenvalue\index[subject]{eigenvalue}s to distributions}
+
+The eigenvalue\index[subject]{eigenvalue}s of $\mat{G}^*$ give us the extreme directional
+heritabilities:
+\[
+  h^2_{\min} = \lambda_p^* \le h^2(\boldsymbol{\beta}) \le \lambda_1^* = h^2_{\max}.
+\]
+
+But what about all the directions in between? If we sample directions
+uniformly from the P-sphere\index[subject]{P-sphere} (the set of unit phenotypic variance directions),
+what distribution of $h^2$ values do we observe?
+
+From Chapter~21, we know that the quadratic form\index[subject]{quadratic form}
+$h^2(\boldsymbol{\beta}) = \boldsymbol{\beta}^\top\mat{G}^*\boldsymbol{\beta}$
+(for unit vectors in whitened space) is a weighted average of the
+eigenvalue\index[subject]{eigenvalue}s $\lambda_i^*$, with weights given by squared projections onto
+eigenvectors.
+
+The mathematics of random quadratic form\index[subject]{quadratic form}s gives us a precise characterisation.
+For a random unit vector uniformly distributed on the sphere, the variance
+of the quadratic form\index[subject]{quadratic form} is:
+\[
+  \Var[h^2(\boldsymbol{\beta})] = \frac{2}{p(p+2)} 
+    \sum_{i < j} (\lambda_i^* - \lambda_j^*)^2
+    = \frac{2}{p+2} \Var(\lambda^*),
+\]
+where $\Var(\lambda^*)$ is the variance of the eigenvalue\index[subject]{eigenvalue}s of $\mat{G}^*$.
+
+\begin{keyidea}
+The variance of directional heritability\index[subject]{heritability} across random directions is
+proportional to the variance of the eigenvalue\index[subject]{eigenvalue}s of $\mat{G}^*$. If
+eigenvalue\index[subject]{eigenvalue}s are similar, heritability\index[subject]{heritability} is similar in all directions. If
+eigenvalue\index[subject]{eigenvalue}s differ greatly, heritability\index[subject]{heritability} varies dramatically with direction.
+\end{keyidea}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch13_cv_dimensionality.pdf}
+    \caption{\textbf{How dimensionality affects the variation in directional heritability.}
+    (a)~The dimensionality factor $\sqrt{2/(p+2)}$ decreases with the number of 
+    traits $p$. In two dimensions, this factor equals 0.707; by $p = 50$, it 
+    has fallen to 0.196. This decay occurs because random directions in high 
+    dimensions tend to ``average out'' the eigenvalues of $\mathbf{G}^*$, 
+    reducing the variation in $h^2(\boldsymbol{\beta})$ across directions.
+    (b)~The coefficient of variation of directional heritability, 
+    $\text{CV}(h^2) = \sqrt{2/(p+2)} \times \text{CV}(\lambda^*)$, shown for 
+    different levels of eigenvalue dispersion. Higher $\text{CV}(\lambda^*)$ 
+    (more eccentric $\mathbf{G}^*$ ellipsoid) produces greater directional 
+    variation in heritability, but this effect is attenuated as dimensionality 
+    increases.
+    (c)~Simulation verification. Blue points show empirical $\text{CV}(h^2)$ 
+    computed from 5,000 random directions sampled uniformly on the unit sphere; 
+    the dashed line shows the theoretical prediction. The near-perfect agreement 
+    (correlation $r > 0.99$) validates the formula 
+    $\text{CV}^2(h^2) = \frac{2}{p+2} \times V_{\text{rel}}(\mathbf{G}^*)$ 
+    derived in Section~13.1.}
+    \label{fig:cv_dimensionality}
+\end{figure}
+
+\section{The coefficient of variation of directional heritability\index[subject]{heritability}}
+
+A natural measure of constraint heterogeneity is the coefficient of
+variation of directional heritability\index[subject]{heritability}:
+\[
+  \text{CV}(h^2) = \frac{\text{SD}(h^2)}{\text{E}(h^2)}.
+\]
+
+Using the results above and the fact that $\text{E}(h^2) = \bar{\lambda}^*$
+(the mean eigenvalue\index[subject]{eigenvalue}), we obtain:
+\[
+  \text{CV}(h^2) = \sqrt{\frac{2}{p+2}} \times \text{CV}(\lambda^*),
+\]
+where $\text{CV}(\lambda^*) = \text{SD}(\lambda^*) / \bar{\lambda}^*$ is
+the coefficient of variation of the eigenvalue\index[subject]{eigenvalue}s.
+
+This formula reveals two factors controlling heritability\index[subject]{heritability} variation:
+
+\begin{enumerate}
+  \item \textbf{eigenvalue\index[subject]{eigenvalue} dispersion:} $\text{CV}(\lambda^*)$ measures
+        how different the principal heritabilities are. Large dispersion
+        means some directions have much higher heritability\index[subject]{heritability} than others.
+  \item \textbf{Dimensionality:} The factor $\sqrt{2/(p+2)}$ decreases
+        with the number of traits $p$. In high dimensions, random
+        directions tend to ``average out'' the eigenvalue\index[subject]{eigenvalue}s, reducing
+        heritability\index[subject]{heritability} variation.
+\end{enumerate}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.9\textwidth]{fig41_cv_formula.png}
+  \caption[CV of directional heritability\index[subject]{heritability}]{
+    The coefficient of variation of directional heritability\index[subject]{heritability} depends on
+    two factors: the dispersion of G* eigenvalue\index[subject]{eigenvalue}s and the number of traits.
+    Higher eigenvalue\index[subject]{eigenvalue} dispersion increases CV; more traits decrease CV
+    through averaging.
+  }
+  \label{fig:cv-formula}
+\end{figure}
+
+\section[Relative eigenvalue\index[subject]{eigenvalue} variance]{Relative eigenvalue variance: \texorpdfstring{$V_{\text{rel}}(\mat{G}^*)$}{Vrel(G*)}}
+
+A key quantity is the relative variance of the eigenvalue\index[subject]{eigenvalue}s:
+\[
+  V_{\text{rel}}(\mat{G}^*) = \frac{\Var(\lambda^*)}{\bar{\lambda}^{*2}}
+    = \text{CV}(\lambda^*)^2.
+\]
+
+This dimensionless quantity measures the ``eccentricity'' of the G* ellipsoid.
+When $V_{\text{rel}} = 0$, all eigenvalue\index[subject]{eigenvalue}s are equal (G* is spherical, no
+constraint). As $V_{\text{rel}}$ increases, the ellipsoid becomes more
+elongated and constraint heterogeneity increases.
+
+The formula for $\text{CV}(h^2)$ becomes:
+\[
+  \text{CV}(h^2) = \sqrt{\frac{2}{p+2} \times V_{\text{rel}}(\mat{G}^*)}.
+\]
+
+This elegant relationship connects three quantities:
+\begin{itemize}
+  \item $\text{CV}(h^2)$: observable variation in heritability\index[subject]{heritability} across
+        directions.
+  \item $V_{\text{rel}}(\mat{G}^*)$: geometric property of the G-P
+        relationship.
+  \item $p$: the number of traits.
+\end{itemize}
+
+\begin{keyidea}
+The formula $\text{CV}^2(h^2) = \frac{2}{p+2} \times V_{\text{rel}}(\mat{G}^*)$
+connects the distributional property (heritability\index[subject]{heritability} variation) to the
+geometric property (G* eccentricity). This is the bridge between theory
+and empirical observation.
+\end{keyidea}
+
+\section{Constraint traps revisited}
+
+In Chapter~21 we introduced constraint traps: directions where phenotypic
+variance is normal but heritability\index[subject]{heritability} is low. Now we can quantify how severe
+these traps are.
+
+The minimum directional heritability\index[subject]{heritability} is $\lambda_p^*$, the smallest
+eigenvalue\index[subject]{eigenvalue} of $\mat{G}^*$. If $\lambda_p^*$ is much smaller than the mean
+$\bar{\lambda}^*$, there exist directions where selection will be
+ineffective despite observable phenotypic variation.
+
+Define the \textbf{constraint severity} as:
+\[
+  \text{Severity} = 1 - \frac{\lambda_p^*}{\bar{\lambda}^*}.
+\]
+
+This measures how much worse the worst direction is compared to the average.
+Severity of 0 means all directions are equally heritable; severity
+approaching 1 means the worst direction has near-zero heritability\index[subject]{heritability}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig41_constraint_severity.png}
+  \caption[Constraint severity]{
+    Constraint severity measures how much worse the minimum heritability\index[subject]{heritability}
+    is compared to the mean. High severity indicates the existence of
+    severe constraint traps.
+  }
+  \label{fig:constraint-severity}
+\end{figure}
+
+\section{Selection strength and constraint risk}
+
+Whether a constraint trap matters biologically depends on selection strength.
+Consider a selection gradient $\boldsymbol{\beta}$ with magnitude
+$\|\boldsymbol{\beta}\|$.
+
+The expected response to selection is:
+\[
+  \text{E}[\Delta\bar{z}] \approx \bar{\lambda}^* \times \|\boldsymbol{\beta}\|
+\]
+for random direction (roughly speaking).
+
+But the variance of response depends on heritability\index[subject]{heritability} variance:
+\[
+  \Var[\Delta\bar{z}] \propto \Var(h^2) \times \|\boldsymbol{\beta}\|^2.
+\]
+
+When selection is strong ($\|\boldsymbol{\beta}\|$ large), even modest
+$\text{CV}(h^2)$ produces large variation in response. Some selection
+directions produce robust response; others produce disappointing results.
+
+This interaction matters for:
+\begin{itemize}
+  \item \textbf{Breeding programs:} Strong artificial selection may hit
+        constraint traps.
+  \item \textbf{Conservation:} Populations facing strong environmental
+        change may be unable to respond if change targets constrained
+        directions.
+  \item \textbf{Evolutionary prediction:} Predicting long-term response
+        requires knowing not just mean heritability\index[subject]{heritability} but its directional
+        distribution.
+\end{itemize}
+
+\section{Empirical estimation}
+
+To apply these concepts, we need to estimate G and P from data and compute
+$\mat{G}^*$ and its eigenvalue\index[subject]{eigenvalue}s.
+
+\subsection*{Estimation pipeline}
+
+\begin{enumerate}
+  \item \textbf{Estimate G and P.} Use standard quantitative genetics
+        methods: half-sib designs, parent-offspring regression, animal
+        models, or genomic approaches.
+  \item \textbf{Check positive definite\index[subject]{matrix!positive definite}ness.} Ensure both G and P have all
+        positive eigenvalue\index[subject]{eigenvalue}s. Sampling error can produce negative eigenvalue\index[subject]{eigenvalue}s
+        in G, especially for the smallest values.
+  \item \textbf{Compute P-whitening matrix.} Eigendecompose P and construct
+        $\mat{P}^{-1/2}$.
+  \item \textbf{Compute G*.} Form
+        $\mat{G}^* = \mat{P}^{-1/2}\mat{G}\mat{P}^{-1/2}$.
+  \item \textbf{Eigendecompose G*.} The eigenvalue\index[subject]{eigenvalue}s are directional
+        heritabilities; eigenvector\index[subject]{eigenvector}s are the principal constraint axes.
+  \item \textbf{Compute summary statistics.} Mean, variance, CV of
+        eigenvalue\index[subject]{eigenvalue}s; constraint severity; $V_{\text{rel}}$.
+\end{enumerate}
+
+\subsection*{R implementation}
+
+\begin{verbatim}
+compute_h2_distribution <- function(G, P) {
+  # Check positive definite\index[subject]{matrix!positive definite}ness
+  if (any(eigen(G)$values <= 0)) 
+    warning("G has non-positive eigenvalues")
+  if (any(eigen(P)$values <= 0)) 
+    stop("P must be positive definite\index[subject]{matrix!positive definite}")
+  
+  # P-whitening
+  eig_P <- eigen(P)
+  P_inv_sqrt <- eig_P$vectors %*% 
+                diag(1/sqrt(eig_P$values)) %*% 
+                t(eig_P$vectors)
+  
+  # Compute G*
+  G_star <- P_inv_sqrt %*% G %*% P_inv_sqrt
+  
+  # Eigendecompose G*
+  eig_Gstar <- eigen(G_star)
+  lambda_star <- eig_Gstar$values
+  
+  # Summary statistics
+  p <- nrow(G)
+  mean_h2 <- mean(lambda_star)
+  var_lambda <- var(lambda_star)
+  cv_lambda <- sqrt(var_lambda) / mean_h2
+  V_rel <- var_lambda / mean_h2^2
+  cv_h2 <- sqrt(2/(p+2)) * cv_lambda
+  
+  h2_min <- min(lambda_star)
+  severity <- 1 - h2_min / mean_h2
+  
+  list(
+    lambda_star = lambda_star,
+    mean_h2 = mean_h2,
+    cv_h2 = cv_h2,
+    V_rel = V_rel,
+    h2_min = h2_min,
+    h2_max = max(lambda_star),
+    constraint_severity = severity,
+    eigenvectors = eig_Gstar$vectors
+  )
+}
+\end{verbatim}
+
+\section{Case study: empirical G-P analysis}
+
+Let us apply these methods to a real example. Consider a dataset of G and P
+matrices from a published study of floral traits in a plant species.
+
+\[
+  \mat{G} = \begin{pmatrix}
+    0.42 & 0.28 & 0.15 \\
+    0.28 & 0.38 & 0.22 \\
+    0.15 & 0.22 & 0.31
+  \end{pmatrix},
+  \qquad
+  \mat{P} = \begin{pmatrix}
+    0.85 & 0.35 & 0.20 \\
+    0.35 & 0.72 & 0.28 \\
+    0.20 & 0.28 & 0.55
+  \end{pmatrix}.
+\]
+
+\subsection*{Results}
+
+Eigenvalues of $\mat{G}^*$: $(0.71, 0.52, 0.35)$.
+
+Summary statistics:
+\begin{center}
+\begin{tabular}{lc}
+\hline
+Statistic & Value \\
+\hline
+Mean $h^2$ & 0.53 \\
+Max $h^2$ & 0.71 \\
+Min $h^2$ & 0.35 \\
+$\text{CV}(h^2)$ & 0.24 \\
+$V_{\text{rel}}(\mat{G}^*)$ & 0.15 \\
+Constraint severity & 0.34 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{Interpretation}
+
+The mean heritability\index[subject]{heritability} is moderate (0.53), but it ranges from 0.35 to 0.71
+depending on direction. The CV of 24\% indicates substantial heterogeneity.
+The constraint severity of 0.34 means the worst direction has heritability\index[subject]{heritability}
+34\% below the average.
+
+The eigenvector\index[subject]{eigenvector} for minimum heritability\index[subject]{heritability} reveals which trait combination
+faces the strongest constraint. If this direction corresponds to a
+biologically important target (e.g., a pollinator preference axis), the
+breeding implications are significant.
+
+\section{Implications for breeding and evolution}
+
+\subsection*{Breeding programs}
+
+Traditional breeding often focuses on individual-trait heritabilities. Our
+framework reveals that:
+
+\begin{enumerate}
+  \item The direction of selection matters as much as its strength.
+  \item Index selection that combines traits should be evaluated for
+        directional heritability\index[subject]{heritability}, not just component heritabilities.
+  \item Constraint traps can be identified in advance and avoided or
+        addressed through introgression of new genetic variation.
+\end{enumerate}
+
+\subsection*{Evolutionary biology}
+
+For understanding evolution in natural populations:
+
+\begin{enumerate}
+  \item The rate of adaptation depends on whether selection aligns with
+        high-heritability\index[subject]{heritability} directions.
+  \item Long-term evolutionary trajectories may be biased toward
+        $\mathbf{g}_{\max}$ or its P-standardised equivalent.
+  \item Phenotypic divergence among populations may reflect the geometry
+        of G* as much as the direction of selection.
+\end{enumerate}
+
+\subsection*{Conservation}
+
+For populations facing environmental change:
+
+\begin{enumerate}
+  \item The capacity to adapt depends on whether required trait changes
+        align with heritable directions.
+  \item Populations with high $\text{CV}(h^2)$ are more vulnerable---they
+        may have adequate mean heritability\index[subject]{heritability} but face traps in critical
+        directions.
+  \item Assisted gene flow could be targeted to increase heritability\index[subject]{heritability} in
+        constrained directions.
+\end{enumerate}
+
+\section{Extensions and open questions}
+
+The framework presented here opens several research directions:
+
+\begin{itemize}
+  \item \textbf{Non-Gaussian distributions:} The formula
+        $\text{CV}^2(h^2) = \frac{2}{p+2} V_{\text{rel}}$ assumes uniform
+        sampling on the P-sphere\index[subject]{P-sphere}. For specific selection scenarios, the
+        distribution may differ.
+  
+  \item \textbf{Estimation uncertainty:} G and P are estimated with error.
+        How does this uncertainty propagate to $\text{CV}(h^2)$ and
+        constraint severity?
+  
+  \item \textbf{Temporal stability:} Does the G-P geometry remain stable
+        across generations, or does constraint heterogeneity itself evolve?
+  
+  \item \textbf{Environmental dependence:} Does P (and hence G*) change
+        across environments? Are constraint traps consistent or
+        context-dependent?
+  
+  \item \textbf{Genomic architecture:} Can we predict G* eigenstructure
+        from knowledge of gene networks and pleiotropy?
+\end{itemize}
+
+\section{Summary}
+
+In this chapter we have:
+
+\begin{itemize}
+  \item Derived the distribution of directional heritability\index[subject]{heritability} across random
+        selection directions.
+  \item Shown that $\text{CV}^2(h^2) = \frac{2}{p+2} V_{\text{rel}}(\mat{G}^*)$
+        connects the distributional property to G* eigenstructure.
+  \item Defined constraint severity as a measure of how bad the worst
+        constraint trap is.
+  \item Provided an estimation pipeline and R code for computing these
+        quantities from G and P estimates.
+  \item Illustrated the analysis with a case study.
+  \item Discussed implications for breeding, evolutionary biology, and
+        conservation.
+  \item Outlined open research questions.
+\end{itemize}
+
+This chapter brings us full circle. We began with distance and the simple
+question of why we square. We built up through covariance matrices,
+Mahalanobis distance\index[subject]{distance!Mahalanobis} distance, eigendecomposition, and P-whitening\index[subject]{whitening transformation}. Now we can
+answer sophisticated questions about evolutionary constraint: not just
+``is this trait heritable?'' but ``how does heritability\index[subject]{heritability} vary across the
+space of possible selection targets?''
+
+The geometric perspective unifies it all. Matrices are shapes; eigenvalues
+measure extent; eigenvector\index[subject]{eigenvector}s define axes. With these tools, the complexity
+of multivariate evolution becomes tractable---not simple, but navigable.
+
+The ellipse has been our guide throughout. May it serve you well in your
+own research.

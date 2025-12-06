@@ -1,0 +1,479 @@
+\chapter{PCA, MANOVA, and Projections}
+
+The previous chapters developed the geometry of G, P, and $\boldsymbol{\gamma}$.
+We saw that these matrices are ellipsoids, that their eigenstructure reveals
+principal axes, and that comparing matrices illuminates evolutionary
+constraint and selection. But how do we estimate these matrices and test
+hypotheses about them?
+
+This chapter connects the geometric framework to statistical practice. We
+cover Principal Component Analysis (PCA\index[subject]{PCA}), Multivariate Analysis of Variance
+(MANOVA\index[subject]{MANOVA}), and related projection methods. The unifying theme is that all
+these techniques are applications of eigendecomposition to biological
+questions.
+
+\section{The bridge from geometry to statistics}
+
+Every statistical method in this chapter does the same thing at its core:
+it takes a covariance matrix (or a ratio of covariance matrices), finds its
+eigenvalue\index[subject]{eigenvalue}s and eigenvector\index[subject]{eigenvector}s, and interprets them biologically.
+
+\begin{itemize}
+  \item \textbf{PCA\index[subject]{PCA}} eigendecomposes a single covariance matrix\index[subject]{covariance matrix} to find
+        directions of maximum variance.
+  \item \textbf{MANOVA\index[subject]{MANOVA}} compares covariance matrices (among-group vs.
+        within-group) to test whether groups differ.
+  \item \textbf{Canonical correlation\index[subject]{correlation}Analysis (CCA)} finds directions
+        that maximise correlation\index[subject]{correlation}between two sets of variables.
+  \item \textbf{Discriminant Analysis} finds directions that best separate
+        groups.
+\end{itemize}
+
+Once you understand diagonalisation\index[subject]{diagonalisation}, these methods become variations on a
+single theme.
+
+\begin{keyidea}
+PCA\index[subject]{PCA}, MANOVA\index[subject]{MANOVA}, CCA, and discriminant analysis\index[subject]{discriminant analysis} are all eigendecompositions
+of covariance matrices or their ratios. The geometry we have developed
+provides the interpretive framework for all of them.
+\end{keyidea}
+
+\section{Principal Component Analysis (PCA\index[subject]{PCA})}
+
+PCA\index[subject]{PCA} is the most widely used multivariate technique in biology. Its goal is
+dimensionality reduction: represent the variation in $p$ traits using fewer
+than $p$ derived variables, while losing as little information as possible.
+
+\subsection*{The procedure}
+
+Given data on $p$ traits measured on $n$ individuals:
+
+\begin{enumerate}
+  \item Compute the sample covariance matrix\index[subject]{covariance matrix} $\mat{S}$ (or correlation
+        matrix $\mat{R}$ if traits are on different scales).
+  \item Eigendecompose: $\mat{S} = \mat{V}\mat{\Lambda}\mat{V}^\top$.
+  \item The eigenvector\index[subject]{eigenvector}s $\vect{v}_1, \vect{v}_2, \ldots, \vect{v}_p$ are
+        the \textbf{principal component loadings}.
+  \item The eigenvalue\index[subject]{eigenvalue}s $\lambda_1 \ge \lambda_2 \ge \cdots \ge \lambda_p$
+        are the variances along each principal component.
+  \item Project each individual onto the eigenvector\index[subject]{eigenvector}s to get
+        \textbf{principal component scores}.
+\end{enumerate}
+
+The first principal component (PC1) is the direction of maximum variance
+in the data---exactly the first eigenvector\index[subject]{eigenvector} of $\mat{S}$. PC2 is the
+direction of maximum variance orthogonal to PC1, and so on.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig32_pca_geometry.png}
+  \caption[PCA\index[subject]{PCA} geometry]{
+    PCA\index[subject]{PCA} finds the principal axes of the data ellipse. PC1 points along
+    the direction of maximum variance; PC2 is orthogonal. Projecting
+    data onto these axes gives the principal component scores.
+  }
+  \label{fig:pca-geometry}
+\end{figure}
+
+\subsection*{Interpretation}
+
+The eigenvalue\index[subject]{eigenvalue}s tell us how much variance each PC captures. A common
+summary is the proportion of variance explained:
+\[
+  \text{Proportion for PC}_k = \frac{\lambda_k}{\sum_{i=1}^{p} \lambda_i}
+    = \frac{\lambda_k}{\tr(\mat{S})}.
+\]
+
+If the first few eigenvalue\index[subject]{eigenvalue}s are large and the rest are small, most
+variation lies in a low-dimensional subspace. We can then work with just
+PC1 and PC2 (for example) without losing much information.
+
+The eigenvector\index[subject]{eigenvector}s (loadings) tell us what each PC represents biologically.
+If all loadings have the same sign, PC1 represents overall ``size.'' If
+loadings have mixed signs, the PC represents a contrast between trait
+groups.
+
+\begin{keyidea}
+PCA\index[subject]{PCA} is eigendecomposition of the covariance matrix\index[subject]{covariance matrix}. The eigenvalue\index[subject]{eigenvalue}s measure
+how much variance each direction captures; the eigenvector\index[subject]{eigenvector}s define those
+directions. PCA\index[subject]{PCA} does not assume any group structure---it describes the
+total variation in the sample.
+\end{keyidea}
+
+\subsection*{Covariance vs. correlation\index[subject]{correlation}PCA\index[subject]{PCA}}
+
+A crucial choice is whether to analyse the covariance matrix\index[subject]{covariance matrix} $\mat{S}$ or
+the correlation\index[subject]{correlation}matrix $\mat{R}$.
+
+\begin{itemize}
+  \item \textbf{Covariance PCA\index[subject]{PCA}:} Uses raw (centred) data. Traits with
+        larger variances dominate the analysis. Appropriate when traits
+        are on comparable scales and absolute variances are meaningful.
+  \item \textbf{correlation\index[subject]{correlation}PCA\index[subject]{PCA}:} Standardises each trait to unit variance
+        before analysis. All traits contribute equally regardless of
+        original scale. Appropriate when traits are on different scales
+        (e.g., length in mm vs. mass in g).
+\end{itemize}
+
+In evolutionary biology, covariance PCA is often preferred when analysing
+G or P matrices because the absolute magnitudes of genetic variances are
+biologically meaningful. correlation\index[subject]{correlation}PCA\index[subject]{PCA} is useful for exploratory analysis
+of phenotypic data on mixed scales.
+
+\section{MANOVA\index[subject]{MANOVA}: comparing groups}
+
+While PCA\index[subject]{PCA} describes variation within a single sample, MANOVA\index[subject]{MANOVA} asks whether
+multiple groups differ in their multivariate means. It is the multivariate
+generalisation of ANOVA.
+
+\subsection*{The setup}
+
+Suppose we have $k$ groups (e.g., populations, treatments, species) and
+measure $p$ traits on individuals within each group. MANOVA\index[subject]{MANOVA} tests the null
+hypothesis that all group means are equal:
+\[
+  H_0: \boldsymbol{\mu}_1 = \boldsymbol{\mu}_2 = \cdots = \boldsymbol{\mu}_k.
+\]
+
+\subsection*{The geometry}
+
+MANOVA\index[subject]{MANOVA} decomposes total variation into among-group and within-group
+components, just as univariate ANOVA does. The key objects are:
+
+\begin{itemize}
+  \item \textbf{Among-group matrix $\mat{B}$:} Measures how group means
+        differ from the grand mean. Large $\mat{B}$ indicates groups are
+        spread out in trait space.
+  \item \textbf{Within-group matrix $\mat{W}$:} Measures variation within
+        groups, pooled across groups. This is the ``error'' variation.
+  \item \textbf{Total matrix $\mat{T} = \mat{B} + \mat{W}$:} Total
+        variation ignoring group structure.
+\end{itemize}
+
+The MANOVA\index[subject]{MANOVA} test asks: is $\mat{B}$ large relative to $\mat{W}$? If groups
+are very different (large $\mat{B}$) and within-group variation is small
+(small $\mat{W}$), we reject the null hypothesis.
+
+\subsection*{Test statistics}
+
+Several test statistics are used, all based on eigenvalue\index[subject]{eigenvalue}s of
+$\mat{W}^{-1}\mat{B}$:
+
+\begin{itemize}
+  \item \textbf{Wilks' $\Lambda$:} $\Lambda = \det(\mat{W}) / \det(\mat{T})
+        = \prod_i (1 + \lambda_i)^{-1}$, where $\lambda_i$ are eigenvalue\index[subject]{eigenvalue}s
+        of $\mat{W}^{-1}\mat{B}$.
+  \item \textbf{Pillai's trace:} $\sum_i \lambda_i / (1 + \lambda_i)$.
+  \item \textbf{Hotelling-Lawley trace:} $\sum_i \lambda_i$.
+  \item \textbf{Roy's largest root:} $\lambda_1$ (the largest eigenvalue\index[subject]{eigenvalue}).
+\end{itemize}
+
+These statistics have different properties. Wilks' $\Lambda$ is most common;
+Pillai's trace is most robust to violations of assumptions; Roy's largest
+root is most powerful when groups differ along a single dimension.
+
+\begin{keyidea}
+MANOVA\index[subject]{MANOVA} tests whether groups differ by comparing among-group variation
+($\mat{B}$) to within-group variation ($\mat{W}$). The eigenvalue\index[subject]{eigenvalue}s of
+$\mat{W}^{-1}\mat{B}$ quantify how much groups differ along each
+discriminant axis.
+\end{keyidea}
+
+\section{discriminant analysis\index[subject]{discriminant analysis}}
+
+discriminant analysis\index[subject]{discriminant analysis} is closely related to MANOVA\index[subject]{MANOVA}. While MANOVA\index[subject]{MANOVA} tests
+\emph{whether} groups differ, discriminant analysis\index[subject]{discriminant analysis} finds the directions
+along which they differ most and uses these for classification.
+
+\subsection*{Linear discriminant analysis\index[subject]{discriminant analysis} (LDA)}
+
+LDA finds linear combinations of traits that maximise the ratio of
+among-group to within-group variance. These are the eigenvector\index[subject]{eigenvector}s of
+$\mat{W}^{-1}\mat{B}$.
+
+The first discriminant function (DF1) is the direction along which groups
+are most separated relative to within-group spread. DF2 is the next-best
+direction orthogonal to DF1, and so on.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig32_discriminant.png}
+  \caption[discriminant analysis\index[subject]{discriminant analysis}]{
+    discriminant analysis\index[subject]{discriminant analysis} finds directions that separate groups. The
+    first discriminant function maximises the ratio of among-group to
+    within-group variance. Projecting data onto this axis best reveals
+    group differences.
+  }
+  \label{fig:discriminant}
+\end{figure}
+
+\subsection*{Connection to Mahalanobis distance\index[subject]{distance!Mahalanobis} distance}
+
+The Mahalanobis distance\index[subject]{distance!Mahalanobis} distance between two group means, using the pooled
+within-group covariance, is:
+\[
+  D^2 = (\boldsymbol{\mu}_1 - \boldsymbol{\mu}_2)^\top \mat{W}^{-1}
+        (\boldsymbol{\mu}_1 - \boldsymbol{\mu}_2).
+\]
+
+This is exactly the squared distance along the discriminant axis connecting
+the two groups. discriminant analysis\index[subject]{discriminant analysis} and Mahalanobis distance\index[subject]{distance!Mahalanobis} distance are two views
+of the same geometry.
+
+\section{Canonical correlation\index[subject]{correlation}Analysis (CCA)}
+
+CCA extends correlation\index[subject]{correlation}to multiple variables on each side. Given two sets
+of variables (e.g., morphological traits and physiological traits), CCA
+finds linear combinations of each set that are maximally correlated.
+
+\subsection*{The setup}
+
+Let $\vect{x}$ be a vector of $p$ variables and $\vect{y}$ be a vector of
+$q$ variables. We seek coefficients $\vect{a}$ and $\vect{b}$ such that
+the correlation\index[subject]{correlation}between $\vect{a}^\top\vect{x}$ and $\vect{b}^\top\vect{y}$
+is maximised.
+
+The solution involves eigendecomposition of matrices built from the
+covariance structure. The eigenvalue\index[subject]{eigenvalue}s are the squared canonical
+correlations; the eigenvector\index[subject]{eigenvector}s define the canonical variates.
+
+\subsection*{Biological applications}
+
+CCA is useful for:
+\begin{itemize}
+  \item Relating genotype to phenotype (which genetic combinations predict
+        which phenotypic combinations?).
+  \item Relating morphology to performance (which body shapes predict which
+        functional capacities?).
+  \item Relating traits to environmental variables.
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch11_cca_geometry.pdf}
+    \caption{Geometry of Canonical Correlation Analysis (CCA). (a) The 
+    $\mathbf{X}$ variable set (e.g., morphological traits) with its covariance 
+    ellipse and first canonical direction $\mathbf{a}_1$. (b) The $\mathbf{Y}$ 
+    variable set (e.g., performance traits) with its covariance ellipse and 
+    corresponding canonical direction $\mathbf{b}_1$. (c) First canonical 
+    variate pair: projections onto $\mathbf{a}_1$ and $\mathbf{b}_1$ achieve 
+    maximum correlation ($r_1$). (d) Second canonical variate pair: orthogonal 
+    to the first, capturing residual correlation ($r_2$). CCA finds linear 
+    combinations of each variable set that are maximally correlated, revealing 
+    the underlying dimensions linking morphology to performance, or genotype 
+    to phenotype.}
+    \label{fig:cca_geometry}
+\end{figure}
+
+\section{Projection pursuit: the general principle}
+
+All these methods share a common structure: they find ``interesting''
+directions in high-dimensional space by optimising some criterion.
+
+\begin{itemize}
+  \item PCA\index[subject]{PCA} maximises variance.
+  \item discriminant analysis\index[subject]{discriminant analysis} maximises group separation.
+  \item CCA maximises correlation\index[subject]{correlation}between variable sets.
+\end{itemize}
+
+This perspective, called \textbf{projection pursuit}, suggests that we can
+invent new methods by defining new criteria for ``interesting'' directions.
+In evolutionary biology, natural criteria include:
+
+\begin{itemize}
+  \item Directions of maximum genetic variance ($\mathbf{g}_{\max}$).
+  \item Directions of maximum selection ($\boldsymbol{\gamma}$ eigenvector\index[subject]{eigenvector}s).
+  \item Directions of maximum or minimum heritability\index[subject]{heritability} ($\mat{G}^*$
+        eigenvector\index[subject]{eigenvector}s).
+\end{itemize}
+
+\begin{keyidea}
+Projection pursuit is the general framework: find directions that optimise
+some criterion. PCA\index[subject]{PCA}, discriminant analysis\index[subject]{discriminant analysis}, and CCA are special cases.
+Evolutionary biologists can define biologically motivated criteria.
+\end{keyidea}
+
+\section{Comparing G matrices}
+
+A major application of these methods is comparing G matrices across
+populations or species. Do different populations have the same pattern
+of genetic constraints?
+
+\subsection*{Common principal components}
+
+Flury's method tests whether two or more G matrices share the same
+eigenvector\index[subject]{eigenvector}s (common principal components) even if eigenvalue\index[subject]{eigenvalue}s differ.
+This tests whether the ``shape'' of genetic constraint is conserved.
+
+Hierarchical models allow partial sharing:
+\begin{itemize}
+  \item \textbf{Equal matrices:} Same eigenvector\index[subject]{eigenvector}s and eigenvalue\index[subject]{eigenvalue}s.
+  \item \textbf{Proportional matrices:} Same eigenvector\index[subject]{eigenvector}s, eigenvalue\index[subject]{eigenvalue}s
+        differ by a constant factor.
+  \item \textbf{Common principal components:} Same eigenvector\index[subject]{eigenvector}s, different
+        eigenvalue\index[subject]{eigenvalue}s.
+  \item \textbf{Partial CPC:} Some eigenvector\index[subject]{eigenvector}s shared, others not.
+  \item \textbf{Unrelated:} No structural similarity.
+\end{itemize}
+
+\subsection*{Random skewers}
+
+An alternative approach is to compare how matrices respond to random
+selection vectors. Generate many random unit vectors $\boldsymbol{\beta}$,
+compute the response $\mat{G}\boldsymbol{\beta}$ for each matrix, and
+correlate the responses.
+
+If two G matrices give similar responses to the same selection pressures,
+they are functionally similar even if their eigenvector\index[subject]{eigenvector}s differ.
+
+\subsection*{Krzanowski's subspace comparison}
+
+Krzanowski's method compares the subspaces spanned by the first $k$
+eigenvector\index[subject]{eigenvector}s of two matrices. It asks: do the major axes of variation
+span similar directions?
+
+The comparison uses angles between subspaces. If the leading eigenvector\index[subject]{eigenvector}s
+of two matrices point in similar directions, the subspaces overlap
+substantially.
+
+\section{Estimation issues}
+
+Estimating covariance matrices is statistically challenging, especially
+with many traits.
+
+\subsection*{Sample size requirements}
+
+A $p \times p$ covariance matrix\index[subject]{covariance matrix} has $p(p+1)/2$ unique elements. With $p$
+traits, you need far more than $p$ observations to estimate the matrix
+reliably. Rules of thumb suggest $n > 10p$ or even $n > 20p$ for stable
+estimates.
+
+When $n < p$, the sample covariance matrix\index[subject]{covariance matrix} is singular (has zero
+eigenvalue\index[subject]{eigenvalue}s). This occurs frequently in genomic studies where thousands
+of markers are measured on hundreds of individuals.
+
+\subsection*{Shrinkage and regularisation}
+
+When sample sizes are small relative to dimensionality, shrinkage
+estimators improve accuracy by pulling eigenvalue\index[subject]{eigenvalue}s toward a common value
+(reducing the extremes). Common approaches include:
+
+\begin{itemize}
+  \item \textbf{Ledoit-Wolf shrinkage:} Shrinks toward a scaled identity
+        matrix.
+  \item \textbf{Ridge regularisation:} Adds a small constant to the
+        diagonal before inversion.
+  \item \textbf{Factor models:} Assume the covariance arises from a few
+        latent factors.
+\end{itemize}
+
+These methods trade bias for reduced variance, often improving predictions
+and avoiding numerical instability.
+
+\subsection*{Bayesian estimation}
+
+Bayesian methods place prior distributions on covariance matrices and
+estimate posterior distributions. This naturally handles small samples
+and provides uncertainty quantification for eigenvalue\index[subject]{eigenvalue}s and eigenvector\index[subject]{eigenvector}s.
+
+Animal models in quantitative genetics typically use Bayesian MCMC to
+estimate G matrices, providing credible intervals for genetic parameters.
+
+\section{Visualising high-dimensional patterns}
+
+With more than three traits, direct visualisation is impossible. Several
+approaches help:
+
+\begin{itemize}
+  \item \textbf{Scree plots:} Plot eigenvalue\index[subject]{eigenvalue}s against their rank to see
+        how many dimensions capture most variation.
+  \item \textbf{Biplots:} Overlay individuals (as points) and variables
+        (as arrows) in the PC1-PC2 plane.
+  \item \textbf{Heatmaps:} Display the covariance or correlation\index[subject]{correlation}matrix
+        as a coloured grid.
+  \item \textbf{Parallel coordinates:} Draw each individual as a line
+        connecting their values on parallel trait axes.
+\end{itemize}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig32_visualisation.png}
+  \caption[Visualisation methods]{
+    Methods for visualising multivariate data. Top left: scree plot of
+    eigenvalue\index[subject]{eigenvalue}s. Top right: biplot showing individuals and variable
+    loadings. Bottom: correlation\index[subject]{correlation}heatmap.
+  }
+  \label{fig:visualisation}
+\end{figure}
+
+\section{Worked example: PCA\index[subject]{PCA} of a phenotypic dataset}
+
+Consider measurements of four traits on 150 individuals from three
+populations. We perform PCA\index[subject]{PCA} on the pooled covariance matrix\index[subject]{covariance matrix}.
+
+\paragraph{Step 1: Compute covariance matrix\index[subject]{covariance matrix}.}
+\[
+  \mat{S} =
+  \begin{pmatrix}
+    1.20 & 0.85 & 0.42 & 0.31 \\
+    0.85 & 1.05 & 0.51 & 0.28 \\
+    0.42 & 0.51 & 0.78 & 0.15 \\
+    0.31 & 0.28 & 0.15 & 0.55
+  \end{pmatrix}.
+\]
+
+\paragraph{Step 2: Eigendecomposition.}
+eigenvalue\index[subject]{eigenvalue}s: $\lambda_1 = 2.35$, $\lambda_2 = 0.72$, $\lambda_3 = 0.38$,
+$\lambda_4 = 0.13$.
+
+Proportion of variance: PC1 captures $2.35/3.58 = 66\%$, PC2 captures
+$20\%$, PC3 captures $11\%$, PC4 captures $4\%$.
+
+\paragraph{Step 3: Interpret loadings.}
+The first eigenvector\index[subject]{eigenvector} has all positive loadings: $(0.58, 0.56, 0.42, 0.31)$.
+This represents overall ``size''---individuals with high PC1 scores are
+large on all traits.
+
+The second eigenvector\index[subject]{eigenvector} has mixed signs: $(0.21, 0.18, -0.65, 0.71)$.
+This contrasts traits 3 and 4---individuals with high PC2 scores have
+relatively low trait 3 and high trait 4.
+
+\paragraph{Step 4: Biological interpretation.}
+With 66\% of variance in PC1 (size), the dominant pattern is allometric
+scaling. PC2 captures shape variation independent of size. For many
+biological questions, PC1 and PC2 together (86\% of variance) provide
+an adequate low-dimensional summary.
+
+\section{Summary}
+
+In this chapter we have:
+
+\begin{itemize}
+  \item Connected the geometric framework to statistical methods: PCA\index[subject]{PCA},
+        MANOVA\index[subject]{MANOVA}, discriminant analysis, and CCA are all eigendecompositions.
+  \item Detailed PCA\index[subject]{PCA} as eigendecomposition of the covariance matrix\index[subject]{covariance matrix},
+        finding directions of maximum variance.
+  \item Explained MANOVA\index[subject]{MANOVA} as a comparison of among-group ($\mat{B}$) to
+        within-group ($\mat{W}$) variation, testing whether groups differ.
+  \item Introduced discriminant analysis\index[subject]{discriminant analysis} for finding directions that best
+        separate groups and for classification.
+  \item Described CCA for finding maximally correlated combinations of
+        two variable sets.
+  \item Presented the projection pursuit framework as a unifying
+        perspective: all methods find ``interesting'' directions by
+        optimising some criterion.
+  \item Discussed methods for comparing G matrices: common principal
+        components, random skewers, and subspace comparison.
+  \item Addressed estimation challenges: sample size requirements,
+        shrinkage, regularisation, and Bayesian approaches.
+  \item Introduced visualisation tools: scree plots, biplots, heatmaps.
+  \item Worked through a PCA\index[subject]{PCA} example, interpreting eigenvalue\index[subject]{eigenvalue}s as variance
+        captured and eigenvector\index[subject]{eigenvector}s as biological patterns.
+\end{itemize}
+
+With this chapter, we have completed the core of Part~IV. The matrices
+G, P, and $\boldsymbol{\gamma}$ are no longer abstract---they are objects
+we can estimate, visualise, compare, and interpret. In Part~V, we turn
+to practice: worked examples that integrate all these ideas, and extensions
+that connect to current research on directional heritability\index[subject]{heritability} and
+evolutionary constraint.

@@ -1,0 +1,486 @@
+\chapter{Distance and Why We Square It}
+
+In Part~I we built a language for trait space: phenotypes are points,
+differences are vectors, and matrices are machines that transform vectors.
+Now we turn to a deceptively simple question: how do we measure how
+different two phenotypes are?
+
+This chapter develops the idea of distance and explains why squaring plays
+such a central role in statistics. The answer is not arbitrary convention.
+Squaring has a geometric meaning that connects individual differences to
+population summaries in a way that no other operation does.
+
+\section{Why distance matters}
+
+Distance is fundamental to biology. When we ask whether two species have
+diverged, we are asking about distance in phenotype space. When we measure
+the strength of selection, we compare phenotypes that survive to those that
+do not---again, a question of distance. When we estimate heritability\index[subject]{heritability}, we
+ask whether offspring are closer to their parents than to random individuals
+in the population.
+
+In all these cases, we need a number that captures ``how different'' two
+phenotypes are. That number should have sensible properties:
+
+\begin{itemize}
+  \item The distance from A to B should equal the distance from B to A.
+  \item The distance from any phenotype to itself should be zero.
+  \item If A, B, and C lie on a straight line with B between them, the
+        distance from A to C should equal the sum of distances A to B and
+        B to C.
+\end{itemize}
+
+These are the axioms of a \emph{metric}. Different metrics give different
+answers to ``how different,'' and choosing the right metric is not a
+mathematical formality---it changes what we see in our data.
+
+\section{One trait: distance on a line}
+
+Start with a single trait. Individual $i$ has value $z_i$, individual $j$
+has value $z_j$. The natural measure of difference is
+\[
+  z_j - z_i,
+\]
+a signed quantity that tells us both the magnitude and direction of the
+difference.
+
+But for many purposes we want an unsigned measure---just ``how far apart,''
+regardless of which is larger. We could take the absolute value:
+\[
+  |z_j - z_i|.
+\]
+
+Or we could square:
+\[
+  (z_j - z_i)^2.
+\]
+
+Both give non-negative numbers that are zero only when $z_i = z_j$. Why
+might we prefer one over the other?
+
+\section{Two traits: the Pythagorean formula}
+
+With two traits, the situation becomes geometric (\cref{fig:pythagoras}).
+Individual $i$ sits at $(x_i, y_i)$, individual $j$ at $(x_j, y_j)$. The
+difference in trait~1 is $\Delta x = x_j - x_i$; the difference in trait~2
+is $\Delta y = y_j - y_i$.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.6\textwidth]{fig10_pythagoras.png}
+  \caption[Pythagorean distance]{
+    The distance between two phenotypes in trait space. The horizontal leg
+    is $\Delta x$, the vertical leg is $\Delta y$, and the hypotenuse has
+    length $\sqrt{(\Delta x)^2 + (\Delta y)^2}$.
+  }
+  \label{fig:pythagoras}
+\end{figure}
+
+The Pythagorean theorem gives the straight-line distance:
+\[
+  d = \sqrt{(\Delta x)^2 + (\Delta y)^2}.
+\]
+
+This is the length of the arrow from $i$ to $j$. In vector notation, if
+$\vect{v} = \vect{z}_j - \vect{z}_i$, then
+\[
+  d = \|\vect{v}\| = \sqrt{\vect{v}^\top \vect{v}}.
+\]
+
+The squared distance is simpler:
+\[
+  d^2 = (\Delta x)^2 + (\Delta y)^2 = \vect{v}^\top \vect{v}.
+\]
+
+No square root, just a sum of squared components. This pattern extends to
+any number of traits: if we have $p$ traits, the squared Euclidean distance\index[subject]{distance!Euclidean} distance
+is
+\[
+  d^2 = \sum_{k=1}^{p} (\Delta z_k)^2.
+\]
+
+\section{Why do we square?}
+
+Here is the central question of this chapter. The Pythagorean formula
+involves squares. Variance involves squares. Why?
+
+The answer has three parts, each revealing a different reason why squaring
+is not arbitrary.
+
+\subsection*{Reason 1: Geometry demands it}
+
+The Pythagorean theorem is not a human invention; it is a property of flat
+space. If you want the distance along the hypotenuse of a right triangle,
+you must add the squares of the legs and take the square root. This is what
+``straight-line distance'' means in Euclidean distance\index[subject]{distance!Euclidean} geometry.
+
+Using absolute values instead---$|\Delta x| + |\Delta y|$---gives a
+different metric, sometimes called ``Manhattan distance'' or ``taxicab
+distance'' because it measures how far you would walk along a grid of
+streets. This is a perfectly valid metric, but it does not measure
+straight-line distance. In trait space, we usually want the length of the
+arrow, not the length of a path that only moves parallel to the axes.
+
+\subsection*{Reason 2: Algebra rewards it}
+
+Squared quantities have a remarkable property: they decompose additively
+when the underlying components are independent.
+
+Consider two independent random variables $X$ and $Y$. The variance of their
+sum satisfies
+\[
+  \Var(X + Y) = \Var(X) + \Var(Y).
+\]
+
+This additivity is the foundation of ANOVA, of partitioning variance into
+genetic and environmental components, of combining information across
+independent sources. It works because variance is defined using squares.
+
+If we used absolute deviations instead, we would not get this clean
+decomposition. The mean absolute deviation of a sum is not, in general, the
+sum of the mean absolute deviations. The algebra becomes intractable.
+
+\begin{keyidea}
+Squaring is the price we pay for additivity. Variance decomposes into
+components precisely because it is built from squared deviations.
+\end{keyidea}
+
+\subsection*{Reason 3: Calculus prefers it}
+
+Squared functions are smooth. The function $f(x) = x^2$ has a derivative
+everywhere; the function $f(x) = |x|$ has a kink at zero where the
+derivative is undefined.
+
+This matters when we optimise. Least-squares fitting works because the sum
+of squared residuals is a smooth, bowl-shaped function with a unique
+minimum that calculus can find. Least-absolute-deviation fitting is harder:
+the objective function has corners, and the minimum is not always unique.
+
+In evolutionary biology, we often model fitness surfaces, selection
+gradients, and breeding values using derivatives. Squared quantities fit
+naturally into this calculus-based framework.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch4_variance_accumulation.pdf}
+    \caption{\textbf{Variance as the mean of squared distances from the mean.}
+    (a)~A sample of eight individuals (blue points) on a trait axis, with 
+    deviation arrows showing each point's displacement from the mean 
+    $\bar{x} = 5.38$ (red diamond). Orange arrows indicate positive deviations; 
+    magenta arrows indicate negative deviations.
+    (b)~The same deviations represented as squares, where the area of each square 
+    equals $d_i^2 = (x_i - \bar{x})^2$. Larger deviations contribute 
+    disproportionately more to the variance because of the squaring operation.
+    (c)~Bar chart of individual squared deviations. The horizontal red line 
+    marks the variance---the mean of these squared deviations. The shaded region 
+    emphasizes that variance is this average, not the sum. This figure illustrates 
+    why squaring is essential: it makes all contributions positive while 
+    maintaining the geometric connection to distance via Pythagoras.}
+    \label{fig:variance_accumulation}
+\end{figure}
+
+
+\section{From individual distances to population spread}
+
+Now we make the connection to variance.
+
+Take a sample of $n$ individuals with values $z_1, z_2, \ldots, z_n$ on a
+single trait. The sample mean is
+\[
+  \bar{z} = \frac{1}{n} \sum_{i=1}^{n} z_i.
+\]
+
+Each individual's deviation from the mean is $z_i - \bar{z}$. The sample
+variance is the average of the squared deviations:
+\[
+  s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (z_i - \bar{z})^2.
+\]
+
+\begin{keyidea}
+Variance is the mean squared distance from the mean. It measures how spread
+out the sample is by averaging how far each individual sits from the centre.
+\end{keyidea}
+
+The geometric picture is clear (\cref{fig:variance-as-distance}): each
+individual has an arrow pointing from the mean to its location. Variance
+averages the squared lengths of these arrows.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\textwidth]{fig10_variance_as_distance.png}
+  \caption[Variance as mean squared distance]{
+    Variance as the mean squared distance from the mean. Each arrow connects
+    an individual to the sample mean. Squaring and averaging these lengths
+    gives the variance.
+  }
+  \label{fig:variance-as-distance}
+\end{figure}
+
+Why $n-1$ in the denominator rather than $n$? This is Bessel's correction,
+which makes the sample variance an unbiased estimator of the population
+variance. The geometric reason: the deviations $z_i - \bar{z}$ are
+constrained to sum to zero (by definition of the mean), so only $n-1$ of
+them are free to vary. We are averaging over $n-1$ independent pieces of
+information, not $n$.
+
+\section{Variance in two traits: the covariance matrix\index[subject]{covariance matrix} appears}
+
+With two traits, each individual is a point in the plane. The mean is now a
+point $(\bar{x}, \bar{y})$, and each individual's deviation is a vector:
+\[
+  \vect{d}_i =
+  \begin{pmatrix}
+    x_i - \bar{x} \\
+    y_i - \bar{y}
+  \end{pmatrix}.
+\]
+
+The squared distance from individual $i$ to the mean is
+\[
+  \|\vect{d}_i\|^2 = (x_i - \bar{x})^2 + (y_i - \bar{y})^2.
+\]
+
+If we average these squared distances, we get a single number---the total
+variance, summed across traits. But this discards information. It does not
+tell us whether the cloud is elongated, or in which direction.
+
+To capture the shape of the cloud, we need to keep track of more than just
+the sum of squares. We need the individual squared deviations in each trait
+\emph{and} the cross-products between traits. This leads to the covariance
+matrix:
+\[
+  \mat{S} =
+  \frac{1}{n-1}
+  \sum_{i=1}^{n}
+  \vect{d}_i \vect{d}_i^\top
+  =
+  \frac{1}{n-1}
+  \sum_{i=1}^{n}
+  \begin{pmatrix}
+    (x_i - \bar{x})^2 & (x_i - \bar{x})(y_i - \bar{y}) \\
+    (x_i - \bar{x})(y_i - \bar{y}) & (y_i - \bar{y})^2
+  \end{pmatrix}.
+\]
+
+The diagonal entries are the variances of each trait. The off-diagonal
+entries are the covariances---they measure how the two traits vary together.
+
+\begin{keyidea}
+The covariance matrix\index[subject]{covariance matrix} packages the variances and covariances into a single
+object. It captures not just how spread out the data are, but the shape and
+orientation of the cloud.
+\end{keyidea}
+
+Notice the construction: each deviation vector $\vect{d}_i$ is multiplied by
+its own transpose to form a $2 \times 2$ matrix, and these matrices are
+averaged. This is the multivariate generalisation of ``average of squared
+deviations.''
+
+\section{A worked example}
+
+Consider five individuals measured on two traits:
+
+\begin{center}
+\begin{tabular}{ccc}
+  \hline
+  Individual & Trait 1 ($x$) & Trait 2 ($y$) \\
+  \hline
+  1 & 2 & 3 \\
+  2 & 4 & 5 \\
+  3 & 3 & 4 \\
+  4 & 5 & 7 \\
+  5 & 6 & 6 \\
+  \hline
+\end{tabular}
+\end{center}
+
+The means are $\bar{x} = 4$ and $\bar{y} = 5$. The deviations are:
+
+\begin{center}
+\begin{tabular}{ccc}
+  \hline
+  Individual & $x_i - \bar{x}$ & $y_i - \bar{y}$ \\
+  \hline
+  1 & $-2$ & $-2$ \\
+  2 & $0$ & $0$ \\
+  3 & $-1$ & $-1$ \\
+  4 & $1$ & $2$ \\
+  5 & $2$ & $1$ \\
+  \hline
+\end{tabular}
+\end{center}
+
+The sums of squares and cross-products are:
+\begin{align*}
+  \sum (x_i - \bar{x})^2 &= 4 + 0 + 1 + 1 + 4 = 10, \\
+  \sum (y_i - \bar{y})^2 &= 4 + 0 + 1 + 4 + 1 = 10, \\
+  \sum (x_i - \bar{x})(y_i - \bar{y}) &= 4 + 0 + 1 + 2 + 2 = 9.
+\end{align*}
+
+Dividing by $n - 1 = 4$:
+\[
+  \mat{S} =
+  \begin{pmatrix}
+    2.5 & 2.25 \\
+    2.25 & 2.5
+  \end{pmatrix}.
+\]
+
+The variances are equal (2.5 each), and the covariance is positive (2.25),
+indicating that the traits tend to increase together. The cloud is elongated
+along a diagonal.
+
+\section{The covariance matrix\index[subject]{covariance matrix} as a shape}
+
+The covariance matrix\index[subject]{covariance matrix} $\mat{S}$ is symmetric: the $(1,2)$ entry equals the
+$(2,1)$ entry. From Chapter~2, we know that symmetric matrices describe
+shapes---ellipses in two dimensions, ellipsoids in higher dimensions.
+
+What shape does $\mat{S}$ describe? Consider the set of all points
+$\vect{z}$ satisfying
+\[
+  (\vect{z} - \bar{\vect{z}})^\top \mat{S}^{-1} (\vect{z} - \bar{\vect{z}}) = c
+\]
+for some constant $c$. This is an ellipse centred at the mean
+(\cref{fig:covariance-ellipse}).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\textwidth]{fig10_covariance_ellipse.png}
+  \caption[The covariance ellipse]{
+    The covariance matrix\index[subject]{covariance matrix} defines an ellipse. Points on the ellipse are
+    equidistant from the mean in a sense we will make precise. The
+    orientation and elongation of the ellipse encode the correlations
+    between traits.
+  }
+  \label{fig:covariance-ellipse}
+\end{figure}
+
+The eigenvalue\index[subject]{eigenvalue}s of $\mat{S}$ determine the lengths of the ellipse's axes.
+The eigenvector\index[subject]{eigenvector}s determine the directions of those axes. If the eigenvalue\index[subject]{eigenvalue}s
+are equal, the ellipse is a circle. If they are very different, the ellipse
+is elongated.
+
+We will develop this connection fully in Chapter~12. For now, the key point
+is that squaring gives us access to this geometric structure. The covariance
+matrix is not just a table of numbers; it is a description of shape.
+
+\section{What squared distance assumes}
+
+Euclidean distance\index[subject]{distance!Euclidean} distance treats all traits equally. One unit of body length counts
+the same as one unit of wing span, regardless of how variable each trait is
+or how they correlate.
+
+This assumption is often unreasonable:
+
+\begin{itemize}
+  \item If body length varies over a range of 10 units and wing span varies
+        over 0.1 units, a difference of 1 unit in body length is tiny
+        (within normal variation), while a difference of 1 unit in wing span
+        is enormous (ten times the typical range).
+  \item If body length and wing span are positively correlated, an individual
+        with large body and small wings is unusual not because either trait
+        is extreme, but because the \emph{combination} is rare.
+\end{itemize}
+
+Euclidean distance\index[subject]{distance!Euclidean} distance ignores both issues. It can badly misrepresent how
+``different'' two phenotypes really are.
+
+\begin{keyidea}
+Euclidean distance\index[subject]{distance!Euclidean} distance assumes all traits are measured on comparable scales and
+are uncorrelated. When these assumptions fail, we need a better metric.
+\end{keyidea}
+
+This sets up the problem that the next chapter will solve.
+
+\section{Summary}
+
+In this chapter we have:
+
+\begin{itemize}
+  \item Motivated distance as a fundamental biological quantity---the answer
+        to ``how different are these phenotypes?''
+  \item Derived the Pythagorean formula and connected it to
+        $\vect{v}^\top\vect{v}$.
+  \item Explained why we square: geometry demands it for straight-line
+        distance; algebra rewards it with additive decomposition; calculus
+        prefers the smoothness.
+  \item Reframed variance as mean squared distance from the mean.
+  \item Introduced the covariance matrix\index[subject]{covariance matrix} as a summary of spread that captures
+        shape, not just magnitude.
+  \item Noted that Euclidean distance\index[subject]{distance!Euclidean} distance assumes comparable scales and no
+        correlation---assumptions that often fail.
+\end{itemize}
+
+The stage is set. In the next chapter, we will see concrete examples where
+Euclidean distance\index[subject]{distance!Euclidean} distance gives misleading answers, and we will introduce the
+Mahalanobis distance\index[subject]{distance!Mahalanobis} distance as the remedy. The covariance matrix\index[subject]{covariance matrix} will move from
+being a summary statistic to being a tool for measuring distance itself.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHAPTER 10: DISTANCE AND WHY WE SQUARE IT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Exercises}
+
+\paragraph{Exercise 10.1 (Euclidean distance).}
+Compute the Euclidean distance between:
+\begin{enumerate}
+  \item $(0, 0)$ and $(3, 4)$
+  \item $(1, 2)$ and $(4, 6)$
+  \item $(0, 0, 0)$ and $(1, 2, 2)$
+  \item $(1, 1, 1, 1)$ and $(2, 2, 2, 2)$
+\end{enumerate}
+
+\paragraph{Exercise 10.2 (Variance as mean squared distance).}
+Consider the data set $\{2, 4, 6, 8, 10\}$.
+
+\begin{enumerate}
+  \item Compute the mean.
+  \item Compute each observation's deviation from the mean.
+  \item Square these deviations and compute their average. This is the
+        variance.
+  \item Verify using the formula $\Var(X) = \E[X^2] - (\E[X])^2$.
+\end{enumerate}
+
+\paragraph{Exercise 10.3 (Why squaring?).}
+Suppose we defined ``variance'' using absolute deviations instead of
+squared deviations: $\text{MAD} = \frac{1}{n}\sum_i |x_i - \bar{x}|$.
+
+\begin{enumerate}
+  \item Compute MAD for the data $\{2, 4, 6, 8, 10\}$.
+  \item The function $f(x) = |x|$ has a corner at $x = 0$. Why does this
+        make calculus difficult?
+  \item The function $g(x) = x^2$ is smooth everywhere. Why does this
+        matter for optimisation?
+  \item Give one advantage and one disadvantage of using squared
+        deviations.
+\end{enumerate}
+
+\paragraph{Exercise 10.4 (The mean minimises squared distance).}
+Consider three points on a line: $x_1 = 1$, $x_2 = 3$, $x_3 = 5$.
+
+\begin{enumerate}
+  \item Compute the sum of squared distances from each point to $c = 2$:
+        $\sum_i (x_i - 2)^2$.
+  \item Compute the sum of squared distances from each point to $c = 3$
+        (the mean).
+  \item Compute the sum of squared distances from each point to $c = 4$.
+  \item Which value of $c$ minimises the sum of squared distances?
+  \item (Challenge) For general data $x_1, \ldots, x_n$, use calculus to
+        show that the sum of squared distances is minimised when $c = \bar{x}$.
+\end{enumerate}
+
+\paragraph{Exercise 10.5 (Distance in trait space).}
+Two birds are measured:
+\begin{itemize}
+  \item Bird A: wing = 10 cm, tarsus = 2 cm
+  \item Bird B: wing = 12 cm, tarsus = 2.5 cm
+\end{itemize}
+
+\begin{enumerate}
+  \item Compute the Euclidean distance between them.
+  \item Now express wing in mm instead of cm. Recompute the distance.
+  \item Why did the distance change? What does this tell us about using
+        raw Euclidean distance for traits measured on different scales?
+\end{enumerate}

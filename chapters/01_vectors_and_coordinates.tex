@@ -1,0 +1,296 @@
+\chapter{Vectors, Coordinates, and Angles}
+
+In the previous chapter we met vectors as arrows in trait space: they have
+direction and length and can be added and scaled. In this chapter we make
+their algebra a bit more precise. We introduce
+
+\begin{itemize}
+  \item coordinates for vectors;
+  \item the dot product (inner product);
+  \item the idea of an angle between two vectors;
+  \item distance between phenotypes written in vector notation.
+\end{itemize}
+
+\section{Column vectors and coordinates}
+
+Suppose we measure $p$ traits on each individual. A phenotype is then a
+point in a $p$-dimensional trait space. When we choose axes (one per trait),
+we can record the position of that point as a list of $p$ numbers.
+
+It is convenient to write this list as a column vector:
+\[
+  \vect{z}
+    =
+  \begin{pmatrix}
+    z_1 \\
+    z_2 \\
+    \vdots \\
+    z_p
+  \end{pmatrix},
+\]
+where $z_1$ is trait~1, $z_2$ is trait~2, and so on.
+
+A change in phenotype is also a vector. If an evolutionary process moves the
+mean phenotype by $\Delta z_1$ units in trait~1, $\Delta z_2$ in trait~2,
+and so on, we can record this as
+\[
+  \Delta\vect{z}
+    =
+  \begin{pmatrix}
+    \Delta z_1 \\
+    \Delta z_2 \\
+    \vdots \\
+    \Delta z_p
+  \end{pmatrix}.
+\]
+
+\begin{keyidea}
+Writing vectors as columns of numbers does not change what they are. It is
+a compact way to store ``change in each trait'' and to perform calculations.
+\end{keyidea}
+
+\section{Unit vectors and decomposing changes}
+
+In two traits, define
+\[
+  \vect{e}_1 =
+  \begin{pmatrix}
+    1 \\ 0
+  \end{pmatrix},
+  \qquad
+  \vect{e}_2 =
+  \begin{pmatrix}
+    0 \\ 1
+  \end{pmatrix}.
+\]
+
+Geometrically, $\vect{e}_1$ is a step of length~1 along trait~1, and
+$\vect{e}_2$ is a step of length~1 along trait~2. Any change in phenotype
+can be written as a combination of these unit steps. For example,
+\[
+  \begin{pmatrix}
+    2 \\ -1
+  \end{pmatrix}
+  = 2\,\vect{e}_1 - 1\,\vect{e}_2.
+\]
+
+In $p$ traits, we have $p$ unit vectors, and any vector can be written as
+\[
+  \vect{v}
+    = v_1 \vect{e}_1 + v_2 \vect{e}_2 + \dots + v_p \vect{e}_p.
+\]
+
+This just says that the components $v_1, \dots, v_p$ are the coordinates of
+the vector along the trait axes.
+
+\section{Lengths written in vector notation}
+
+Previously we defined the length of a vector in $p$ traits as
+\[
+  \|\vect{v}\|
+    = \sqrt{
+        v_1^2 + v_2^2 + \dots + v_p^2
+      }.
+\]
+
+If we form the transpose $\vect{v}^\top$,
+\[
+  \vect{v}^\top
+    =
+  \begin{pmatrix}
+    v_1 & v_2 & \dots & v_p
+  \end{pmatrix},
+\]
+then
+\[
+  \vect{v}^\top\vect{v}
+    =
+  \begin{pmatrix}
+    v_1 & v_2 & \dots & v_p
+  \end{pmatrix}
+  \begin{pmatrix}
+    v_1 \\ v_2 \\ \vdots \\ v_p
+  \end{pmatrix}
+  = v_1^2 + v_2^2 + \dots + v_p^2.
+\]
+
+\begin{keyidea}
+The squared length of a vector can be written compactly as
+\[
+  \|\vect{v}\|^2 = \vect{v}^\top \vect{v}.
+\]
+\end{keyidea}
+
+This is our first piece of matrix notation. For now, it is just a compact
+way to write a sum of squares.
+
+\section{The dot product and angles}
+
+For two vectors $\vect{v}$ and $\vect{w}$, the dot product is
+\[
+  \vect{v}^\top\vect{w}
+    = v_1 w_1 + v_2 w_2 + \dots + v_p w_p.
+\]
+
+When $\vect{v} = \vect{w}$ we recover the squared length. More generally,
+if $\theta$ is the angle between $\vect{v}$ and $\vect{w}$, then
+\[
+  \vect{v}^\top\vect{w}
+    = \|\vect{v}\|\,\|\vect{w}\|\cos\theta.
+\]
+
+So:
+
+\begin{itemize}
+  \item if $\vect{v}$ and $\vect{w}$ point in the same direction,
+        $\theta \approx 0$ and the dot product is large and positive;
+  \item if they are at right angles, $\theta = \pi/2$ and the dot product is
+        zero;
+  \item if they point in opposite directions, the dot product is negative.
+\end{itemize}
+
+\begin{keyidea}
+The dot product measures how much two vectors point in the same direction.
+\end{keyidea}
+
+This will let us talk about selection along a particular trait combination,
+or response along a given direction.
+
+\section{Projections onto a direction}
+
+Take a non-zero vector $\vect{u}$ and make the unit vector in its direction:
+\[
+  \hat{\vect{u}} = \frac{\vect{u}}{\|\vect{u}\|}.
+\]
+
+For any vector $\vect{v}$, the quantity $\hat{\vect{u}}^\top \vect{v}$
+measures the component of $\vect{v}$ along $\hat{\vect{u}}$. It is the
+length of the ``shadow'' of $\vect{v}$ when projected onto that direction.
+
+In evolutionary terms, if $\hat{\vect{u}}$ represents a particular trait
+combination (say, an eigenvector\index[subject]{eigenvector} of $G$), then $\hat{\vect{u}}^\top
+\boldsymbol{\beta}$ measures how strong selection is along that combination.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/fig_ch2_projection.pdf}
+    \caption{\textbf{Projection as shadow.} The projection of $\vect{v}$ onto 
+    direction $\hat{\vect{u}}$ is the component of $\vect{v}$ lying along 
+    $\hat{\vect{u}}$. The dashed line shows the perpendicular (residual) 
+    component. The length of the projection is $\vect{v}^\top\hat{\vect{u}} = 
+    \|\vect{v}\| \cos \theta$. In evolutionary terms, if $\hat{\vect{u}}$ is 
+    an eigenvector of $\mat{G}$, then $\boldsymbol{\beta}^\top\hat{\vect{u}}$ 
+    measures how strongly selection aligns with that genetic axis.}
+    \label{fig:projection}
+\end{figure}
+
+\section{Distances between phenotypes}
+
+Let $\vect{z}_i$ and $\vect{z}_j$ be the phenotypes of individuals $i$ and
+$j$. The difference between them is
+\[
+  \vect{z}_j - \vect{z}_i,
+\]
+and the squared Euclidean distance\index[subject]{distance!Euclidean} distance is
+\[
+  d_{\text{Euc}}^2(i, j)
+    = \|\vect{z}_j - \vect{z}_i\|^2
+    = (\vect{z}_j - \vect{z}_i)^\top (\vect{z}_j - \vect{z}_i).
+\]
+
+\begin{keyidea}
+Euclidean distance\index[subject]{distance!Euclidean} squared distance between two phenotypes can be written as
+\[
+  d_{\text{Euc}}^2(i, j)
+    = (\vect{z}_j - \vect{z}_i)^\top (\vect{z}_j - \vect{z}_i).
+\]
+\end{keyidea}
+
+Later, when we introduce covariance matrices, a matrix will appear between
+the transpose and the vector. The pattern ``row $\times$ matrix $\times$
+column'' will keep returning.
+
+\section{Summary}
+
+In this chapter we have:
+
+\begin{itemize}
+  \item written vectors as columns of trait values or changes;
+  \item introduced unit vectors and decomposed vectors into components;
+  \item defined the dot product and linked it to angles between directions;
+  \item expressed squared lengths and distances using $\vect{v}^\top\vect{v}$
+        and $(\vect{z}_j - \vect{z}_i)^\top(\vect{z}_j - \vect{z}_i)$;
+  \item introduced projections onto chosen directions.
+\end{itemize}
+
+We now have enough language to connect variance to squared distances from a
+mean, and to see what changes when multiple traits interact. That is the
+next step.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHAPTER 01: VECTORS AND COORDINATES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Exercises}
+
+\paragraph{Exercise 1.1 (Vector length).}
+Compute the length (magnitude) of each vector:
+\begin{enumerate}
+  \item $\vect{a} = (3, 4)$
+  \item $\vect{b} = (1, 1, 1)$
+  \item $\vect{c} = (2, -2, 1)$
+  \item $\vect{d} = (1, 0, 0, 0, 1)$
+\end{enumerate}
+
+\paragraph{Exercise 1.2 (Normalising vectors).}
+A unit vector has length 1. For each vector below, find the unit vector
+pointing in the same direction:
+\begin{enumerate}
+  \item $(3, 4)$
+  \item $(1, 1)$
+  \item $(5, 0)$
+  \item $(1, 2, 2)$
+\end{enumerate}
+
+\paragraph{Exercise 1.3 (Dot product and angles).}
+The dot product of $\vect{a}$ and $\vect{b}$ is
+$\vect{a} \cdot \vect{b} = \|\vect{a}\| \|\vect{b}\| \cos\theta$,
+where $\theta$ is the angle between them.
+
+\begin{enumerate}
+  \item Compute the dot product of $(1, 0)$ and $(1, 1)$.
+  \item Find the angle between these vectors.
+  \item Compute the dot product of $(1, 2)$ and $(-2, 1)$. What does
+        this tell you about the angle between them?
+  \item Two vectors are orthogonal if their dot product is zero. Find
+        a vector orthogonal to $(3, 4)$.
+\end{enumerate}
+
+\paragraph{Exercise 1.4 (Projection).}
+The projection of $\vect{a}$ onto $\vect{b}$ is the ``shadow'' of
+$\vect{a}$ in the direction of $\vect{b}$:
+\[
+  \text{proj}_{\vect{b}}(\vect{a}) = 
+    \frac{\vect{a} \cdot \vect{b}}{\vect{b} \cdot \vect{b}} \vect{b}.
+\]
+
+\begin{enumerate}
+  \item Project $(3, 4)$ onto $(1, 0)$. Interpret geometrically.
+  \item Project $(3, 4)$ onto $(1, 1)$.
+  \item Project $(3, 4)$ onto $(0, 1)$.
+  \item What is the projection of any vector onto itself?
+\end{enumerate}
+
+\paragraph{Exercise 1.5 (Biological interpretation).}
+In a two-trait system, the vector $(1, 1)/\sqrt{2}$ represents the
+direction where both traits increase equally.
+
+\begin{enumerate}
+  \item What direction does $(1, -1)/\sqrt{2}$ represent?
+  \item If selection acts in the direction $(0.8, 0.6)$, is it favouring
+        both traits equally? Which trait is favoured more?
+  \item A population's mean breeding value shifts by $\Delta\bar{\vect{z}} = (0.5, 0.3)$.
+        What is the magnitude of this response? What is its direction?
+\end{enumerate}

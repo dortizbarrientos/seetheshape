@@ -1,0 +1,170 @@
+% =============================================================================
+% MEDIUM-PRIORITY FIGURE PLACEHOLDERS
+% For: "Seeing the Shape: A Geometric Introduction to Multivariate 
+%       Quantitative Genetics" by Daniel Ortiz-Barrientos
+% =============================================================================
+%
+% INSTRUCTIONS FOR OVERLEAF:
+% 1. Create a folder called "figures" in your project (if not already present)
+% 2. Upload the 6 PDF files to the figures folder
+% 3. Copy each \begin{figure}...\end{figure} block to the appropriate chapter
+% 4. Adjust paths if your figures folder has a different name
+%
+% Files to upload:
+%   - fig_ch1_vector_addition.pdf
+%   - fig_ch3_quadratic_form.pdf
+%   - fig_ch6_whitening_steps.pdf
+%   - fig_ch8_h2_distribution.pdf
+%   - fig_ch11_cca_geometry.pdf
+%   - fig_ch12_worked_example.pdf
+%
+% =============================================================================
+
+
+% =============================================================================
+% FIGURE 1: Vector Addition (Head-to-Tail)
+% Chapter 1, Section 1.4: Adding and stretching arrows
+% =============================================================================
+% Place after the paragraph: "Imagine one change that goes from phenotype A to 
+% phenotype B, and another change that goes from phenotype B to phenotype C."
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch1_vector_addition.pdf}
+    \caption{Vector addition by the head-to-tail method. (a) Two vectors 
+    $\mathbf{u}$ and $\mathbf{v}$ originating from the origin, representing 
+    independent changes in phenotype. (b) Head-to-tail construction: the tail 
+    of $\mathbf{v}$ is placed at the head of $\mathbf{u}$. (c) The resulting 
+    sum vector $\mathbf{u} + \mathbf{v}$ connects the origin to the endpoint.
+    This construction underlies how selection differentials accumulate across 
+    episodes of selection and how evolutionary responses combine across 
+    generations.}
+    \label{fig:vector_addition}
+\end{figure}
+
+
+% =============================================================================
+% FIGURE 2: Quadratic Form as Surface Height
+% Chapter 3, Section 3.9: Preview: the quadratic form
+% =============================================================================
+% Place after the sentence: "Understanding the quadratic form geometrically—as 
+% measuring how much a vector aligns with the axes of stretch encoded by the 
+% matrix—is the key to reading these expressions fluently."
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch3_quadratic_form.pdf}
+    \caption{The quadratic form $\mathbf{x}^\top \mathbf{A} \mathbf{x}$ as a 
+    surface over trait space. (a) Three-dimensional view showing the paraboloid 
+    surface; the height at any point $\mathbf{x}$ equals the quadratic form 
+    value. The red point illustrates how a specific phenotype maps to a scalar 
+    value. (b) Top-down view showing level curves, which are ellipses whose 
+    axes align with the eigenvectors of $\mathbf{A}$. The eigenvalues determine 
+    how steeply the surface rises along each principal direction. For covariance 
+    matrices, this surface represents variance; for selection matrices $\gamma$, 
+    it represents fitness curvature.}
+    \label{fig:quadratic_form_surface}
+\end{figure}
+
+
+% =============================================================================
+% FIGURE 3: Step-by-Step Whitening Transformation
+% Chapter 6, Section 6.8: The Mahalanobis distance as a transformation
+% (or Chapter 8, Section 8.4: The whitening transformation)
+% =============================================================================
+% Place after explaining that P^{-1/2} transforms space so covariance becomes 
+% identity.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch6_whitening_steps.pdf}
+    \caption{The whitening transformation step by step. (a) Original data with 
+    correlated traits; the covariance ellipse ($\mathbf{P}$) is tilted. 
+    (b) After rotation by $\mathbf{V}^\top$: data align with eigenvector axes; 
+    covariance is now diagonal ($\boldsymbol{\Lambda}$). (c) After scaling by 
+    $\boldsymbol{\Lambda}^{-1/2}$: variances are equalized; covariance becomes 
+    identity. (d) The full transformation $\mathbf{P}^{-1/2}\mathbf{z}$ produces 
+    spherical data. In this whitened space, the $\mathbf{P}$-sphere becomes 
+    the unit circle, and Mahalanobis distance equals Euclidean distance.}
+    \label{fig:whitening_steps}
+\end{figure}
+
+
+% =============================================================================
+% FIGURE 4: Distribution of Directional Heritability
+% Chapter 8, Section 8.6: The distribution of directional heritability
+% (or Chapter 13, Section 13.1: From eigenvalues to distributions)
+% =============================================================================
+% Place after introducing the formula for the variance of directional 
+% heritability.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch8_h2_distribution.pdf}
+    \caption{Distribution of directional heritability $h^2(\boldsymbol{\beta})$ 
+    across directions. (a) The $\mathbf{G}^*$ ellipse (magenta) inside the 
+    $\mathbf{P}$-sphere (green) in whitened space. Arrows indicate directions 
+    of maximum and minimum heritability, which are the eigenvectors of 
+    $\mathbf{G}^*$. (b) Histogram of $h^2$ values from 10,000 random directions 
+    sampled uniformly from the $\mathbf{P}$-sphere. The shaded region indicates 
+    the ``constraint trap zone'' where heritability is well below average. 
+    (c) Heritability as a continuous function of direction angle, showing the 
+    180° periodicity (opposite directions have identical $h^2$). The eigenvalues 
+    of $\mathbf{G}^*$ bound the distribution.}
+    \label{fig:h2_distribution}
+\end{figure}
+
+
+% =============================================================================
+% FIGURE 5: Canonical Correlation Analysis Geometry
+% Chapter 11, Section 11.5: Canonical Correlation Analysis (CCA)
+% =============================================================================
+% Place after introducing the CCA problem and before discussing biological 
+% applications.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch11_cca_geometry.pdf}
+    \caption{Geometry of Canonical Correlation Analysis (CCA). (a) The 
+    $\mathbf{X}$ variable set (e.g., morphological traits) with its covariance 
+    ellipse and first canonical direction $\mathbf{a}_1$. (b) The $\mathbf{Y}$ 
+    variable set (e.g., performance traits) with its covariance ellipse and 
+    corresponding canonical direction $\mathbf{b}_1$. (c) First canonical 
+    variate pair: projections onto $\mathbf{a}_1$ and $\mathbf{b}_1$ achieve 
+    maximum correlation ($r_1$). (d) Second canonical variate pair: orthogonal 
+    to the first, capturing residual correlation ($r_2$). CCA finds linear 
+    combinations of each variable set that are maximally correlated, revealing 
+    the underlying dimensions linking morphology to performance, or genotype 
+    to phenotype.}
+    \label{fig:cca_geometry}
+\end{figure}
+
+
+% =============================================================================
+% FIGURE 6: Worked Example - Complete G-P Analysis
+% Chapter 12, Section 12.1: Example 1: Two-trait G matrix analysis
+% =============================================================================
+% Place at the end of Section 12.1, after the worked calculations, as a 
+% comprehensive summary figure.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch12_worked_example.pdf}
+    \caption{Complete analysis of the two-trait worked example. (a) Genetic 
+    ($\mathbf{G}$, blue) and phenotypic ($\mathbf{P}$, green) ellipses in 
+    original trait space, with $\mathbf{g}_{\max}$ and $\mathbf{g}_{\min}$ 
+    marked. (b) The whitened view: $\mathbf{G}^*$ ellipse inside the 
+    $\mathbf{P}$-sphere, showing directions of extreme heritability. 
+    (c) Directional heritability $h^2(\theta)$ as a function of direction, 
+    ranging from 0.42 to 0.62. (d) Summary statistics from the analysis. 
+    (e) The breeder's equation in action: selection gradient $\boldsymbol{\beta}$ 
+    is deflected toward $\mathbf{g}_{\max}$ in the response $\Delta\bar{\mathbf{z}}$. 
+    (f) Variance decomposition by direction, showing the gap between phenotypic 
+    and genetic variance (environmental variance) varies with direction.}
+    \label{fig:worked_example}
+\end{figure}
+
+
+% =============================================================================
+% END OF MEDIUM-PRIORITY FIGURES
+% =============================================================================

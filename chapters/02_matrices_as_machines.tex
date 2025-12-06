@@ -1,0 +1,564 @@
+\chapter{Matrices as Machines That Move Vectors}
+
+In the previous chapters we represented phenotypes as points in trait space
+and changes in phenotype as vectors. We learned to measure lengths and angles
+using dot products. Now we need a language for transformations---rules that
+take one vector and return another.
+
+This chapter introduces matrices as such rules. The key insight is
+geometric: a matrix does not merely store numbers in a rectangular array; it
+describes a transformation of space. Once you see this, covariance matrices,
+genetic variance matrices, and selection gradients all become visualisable.
+
+\section{A motivating example: scaling traits differently}
+
+Suppose we measure body size in centimetres and wing length in millimetres.
+A fly with body size 0.3\,cm and wing length 2.5\,mm sits at the point
+$(0.3, 2.5)$ in our trait space.
+
+Now imagine we want to convert both measurements to the same units---say,
+millimetres. Body size must be multiplied by 10; wing length stays as it is.
+The new coordinates are $(3.0, 2.5)$.
+
+We can write this conversion as a rule:
+\[
+  \begin{pmatrix}
+    z_1' \\ z_2'
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    10 \cdot z_1 + 0 \cdot z_2 \\
+    0 \cdot z_1 + 1 \cdot z_2
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    10 & 0 \\
+    0 & 1
+  \end{pmatrix}
+  \begin{pmatrix}
+    z_1 \\ z_2
+  \end{pmatrix}.
+\]
+
+The array of numbers in the middle is a \emph{matrix}. It encodes the rule:
+``multiply trait~1 by 10, leave trait~2 alone.'' When we apply this rule to
+every point in trait space, the entire cloud of phenotypes stretches
+horizontally by a factor of 10 while remaining unchanged vertically.
+
+This is the central idea: a matrix is a machine that moves vectors.
+
+\section{Matrix--vector multiplication}
+
+Let us make the rule precise. A $2 \times 2$ matrix $\mat{A}$ has four
+entries arranged in two rows and two columns:
+\[
+  \mat{A}
+  =
+  \begin{pmatrix}
+    a_{11} & a_{12} \\
+    a_{21} & a_{22}
+  \end{pmatrix}.
+\]
+
+When we multiply $\mat{A}$ by a column vector $\vect{v}$, we obtain a new
+vector $\vect{w} = \mat{A}\vect{v}$:
+\[
+  \begin{pmatrix}
+    w_1 \\ w_2
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    a_{11} & a_{12} \\
+    a_{21} & a_{22}
+  \end{pmatrix}
+  \begin{pmatrix}
+    v_1 \\ v_2
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    a_{11} v_1 + a_{12} v_2 \\
+    a_{21} v_1 + a_{22} v_2
+  \end{pmatrix}.
+\]
+
+Each entry of the output is a dot product: row~$i$ of the matrix dotted with
+the input vector gives entry~$i$ of the output.
+
+In words: the matrix takes each input component, weights it according to its
+entries, and combines those weighted contributions to produce each output
+component. This is a \emph{linear combination}---no squares, no products of
+different components, just weighted sums.
+
+\begin{keyidea}
+Matrix--vector multiplication produces a new vector whose components are
+linear combinations of the original components. The matrix entries are the
+weights.
+\end{keyidea}
+
+\section{What happens to the unit vectors?}
+
+A powerful way to understand any matrix is to ask: what does it do to the
+standard unit vectors?
+
+Recall from Chapter~1 that in two dimensions the unit vectors are
+\[
+  \vect{e}_1 =
+  \begin{pmatrix}
+    1 \\ 0
+  \end{pmatrix},
+  \qquad
+  \vect{e}_2 =
+  \begin{pmatrix}
+    0 \\ 1
+  \end{pmatrix}.
+\]
+
+Apply the matrix $\mat{A}$ to $\vect{e}_1$:
+\[
+  \mat{A}\vect{e}_1
+  =
+  \begin{pmatrix}
+    a_{11} & a_{12} \\
+    a_{21} & a_{22}
+  \end{pmatrix}
+  \begin{pmatrix}
+    1 \\ 0
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    a_{11} \\ a_{21}
+  \end{pmatrix}.
+\]
+
+This is simply the first column of $\mat{A}$. Similarly,
+\[
+  \mat{A}\vect{e}_2
+  =
+  \begin{pmatrix}
+    a_{12} \\ a_{22}
+  \end{pmatrix},
+\]
+the second column.
+
+\begin{keyidea}
+The columns of a matrix are the images of the unit vectors. Column~$j$ tells
+you where $\vect{e}_j$ lands after the transformation.
+\end{keyidea}
+
+This observation is the key to visualising what any matrix does. If you know
+where the coordinate axes go, you know everything---because every other
+vector is a combination of those axes.
+
+\section{Geometric vocabulary: stretch, rotate, shear}
+
+Different matrices produce different geometric effects. Here are the main
+types, illustrated in two dimensions.
+
+\paragraph{Scaling (stretching or compressing).}
+A diagonal matrix stretches each axis independently:
+\[
+  \begin{pmatrix}
+    3 & 0 \\
+    0 & 2
+  \end{pmatrix}
+\]
+stretches trait~1 by a factor of 3 and trait~2 by a factor of 2. A circle
+of points becomes an ellipse aligned with the axes. If one diagonal entry
+is less than 1, that axis is compressed rather than stretched.
+
+\paragraph{Rotation.}
+The matrix
+\[
+  \begin{pmatrix}
+    \cos\theta & -\sin\theta \\
+    \sin\theta & \cos\theta
+  \end{pmatrix}
+\]
+rotates every vector by angle $\theta$ anticlockwise. A circle remains a
+circle; only its orientation changes. Lengths and angles between vectors
+are preserved.
+
+\paragraph{Shear.}
+The matrix
+\[
+  \begin{pmatrix}
+    1 & k \\
+    0 & 1
+  \end{pmatrix}
+\]
+slides points horizontally in proportion to their vertical coordinate. A
+square becomes a parallelogram. Trait~1 gains a contribution from trait~2,
+but not vice versa.
+
+\paragraph{Reflection.}
+The matrix
+\[
+  \begin{pmatrix}
+    -1 & 0 \\
+    0 & 1
+  \end{pmatrix}
+\]
+flips points across the vertical axis. Reflections reverse orientation:
+a clockwise path around a triangle becomes anticlockwise after reflection.
+
+Most matrices combine several of these effects. The covariance matrices we
+will meet shortly turn out to be pure stretches along rotated axes---no
+shear, no reflection. That special structure is what makes them
+diagonalisable.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch3_four_transformations.pdf}
+    \caption{\textbf{The four basic linear transformations.} Each panel shows 
+    the unit square (dashed gray) and its image (solid colour) under a different 
+    transformation. (a)~\textbf{Scaling} stretches each axis independently. 
+    (b)~\textbf{Rotation} preserves lengths and angles. (c)~\textbf{Shear} 
+    slides points parallel to one axis---note the parallelogram. 
+    (d)~\textbf{Reflection} reverses orientation. Covariance matrices, being 
+    symmetric and positive definite, produce only scaling along rotated 
+    axes---no shear or reflection.}
+    \label{fig:four-transformations}
+\end{figure}
+
+
+
+\section{Linearity: the defining property}
+
+Matrix transformations have a crucial property: they are \emph{linear}. This
+means two things hold for any matrix $\mat{A}$ and any vectors $\vect{u}$,
+$\vect{v}$:
+
+\begin{enumerate}
+  \item \textbf{Additivity.} $\mat{A}(\vect{u} + \vect{v}) = \mat{A}\vect{u}
+        + \mat{A}\vect{v}$.
+  \item \textbf{Scaling.} $\mat{A}(c\,\vect{v}) = c\,(\mat{A}\vect{v})$ for
+        any scalar $c$.
+\end{enumerate}
+
+In plain language: if you transform two vectors and then add them, you get
+the same result as adding first and then transforming. And scaling a vector
+before or after the transformation gives the same answer.
+
+Why does this matter biologically? Selection gradients, breeding values, and
+responses to selection are all defined as linear combinations of underlying
+quantities. The machinery of quantitative genetics is built on linearity.
+When nonlinear effects enter---epistasis, dominance, genotype-by-environment
+interaction---the linear framework becomes an approximation, and we must ask
+how good that approximation is. That question will occupy us in later
+chapters.
+
+\section{Composing transformations: matrix multiplication}
+
+Suppose we apply one transformation $\mat{A}$ and then another $\mat{B}$.
+What is the combined effect?
+
+Start with a vector $\vect{v}$. After $\mat{A}$, we have $\mat{A}\vect{v}$.
+After $\mat{B}$, we have $\mat{B}(\mat{A}\vect{v})$.
+
+It turns out this combined transformation is itself a matrix, written
+$\mat{B}\mat{A}$ (note the order: $\mat{A}$ acts first, then $\mat{B}$). The
+entries of the product matrix are computed by the row-times-column rule:
+\[
+  (\mat{B}\mat{A})_{ij} = \sum_k B_{ik} A_{kj}.
+\]
+
+We will not dwell on the mechanics of matrix multiplication here. The
+conceptual point is that composing linear transformations yields another
+linear transformation. This is why matrix algebra is so powerful: complex
+sequences of operations can be encoded as single matrices.
+
+\begin{keyidea}
+The product $\mat{B}\mat{A}$ represents ``first $\mat{A}$, then $\mat{B}$.''
+Order matters: in general, $\mat{A}\mat{B} \neq \mat{B}\mat{A}$.
+\end{keyidea}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch3_columns_unit_vectors.pdf}
+    \caption{\textbf{The columns of a matrix are the images of the unit 
+    vectors.} Left: The standard unit vectors $\vect{e}_1$ and $\vect{e}_2$. 
+    Right: Their images under the matrix $\mat{A}$. Notice that 
+    $\mat{A}\vect{e}_1 = (2,1)^\top$ is exactly the first column of $\mat{A}$ 
+    (red), and $\mat{A}\vect{e}_2 = (1,3)^\top$ is the second column (blue). 
+    This is always true: column~$j$ tells you where $\vect{e}_j$ lands.}
+    \label{fig:columns-unit-vectors}
+\end{figure}
+
+\section{The identity and inverse}
+
+Some matrices do nothing at all. The \emph{identity matrix}
+\[
+  \mat{I} =
+  \begin{pmatrix}
+    1 & 0 \\
+    0 & 1
+  \end{pmatrix}
+\]
+sends every vector to itself: $\mat{I}\vect{v} = \vect{v}$. It stretches
+each axis by a factor of 1---that is, it leaves everything unchanged.
+
+If a matrix $\mat{A}$ has an \emph{inverse} $\mat{A}^{-1}$, then applying
+$\mat{A}$ followed by $\mat{A}^{-1}$ returns every vector to its starting
+point:
+\[
+  \mat{A}^{-1}\mat{A} = \mat{I}.
+\]
+
+Geometrically, $\mat{A}^{-1}$ undoes whatever $\mat{A}$ did. If $\mat{A}$
+stretches trait~1 by 3, then $\mat{A}^{-1}$ compresses it by $1/3$. If
+$\mat{A}$ rotates by $30°$, then $\mat{A}^{-1}$ rotates by $-30°$.
+
+Not every matrix has an inverse. A matrix that collapses the plane onto a
+line, for instance, loses information and cannot be undone. Such matrices
+are called \emph{singular}. In evolutionary applications, singular
+covariance matrices indicate that some trait combinations have zero
+variance---the population has no variation in those directions.
+
+\section{Symmetric matrices: a special and important case}
+
+A matrix is \emph{symmetric} if it equals its own transpose:
+\[
+  \mat{A} = \mat{A}^\top,
+\]
+which means $a_{ij} = a_{ji}$ for all $i$ and $j$. The matrix is unchanged
+when you reflect it across its main diagonal.
+
+Symmetric matrices have remarkable properties that we will exploit
+throughout these notes:
+
+\begin{enumerate}
+  \item Their eigenvalue\index[subject]{eigenvalue}s (stretching factors along special directions) are
+        always real numbers, never complex.
+  \item Their eigenvector\index[subject]{eigenvector}s (those special directions) are always
+        perpendicular to one another.
+  \item They can always be diagonalised by a rotation---no shear is needed.
+\end{enumerate}
+
+These properties mean that a symmetric matrix describes a pure stretch along
+a set of perpendicular axes. In two dimensions, this is an ellipse aligned
+with those axes. In three dimensions, an ellipsoid.
+
+Covariance matrices are symmetric by construction: the covariance of trait~1
+with trait~2 equals the covariance of trait~2 with trait~1. This is why
+ellipses appear everywhere in multivariate statistics and why
+diagonalisation is the natural tool for understanding them.
+
+\begin{keyidea}
+Symmetric matrices describe shapes---ellipses in 2D, ellipsoids in higher
+dimensions. The eigenvalue\index[subject]{eigenvalue}s give the lengths of the principal axes; the
+eigenvector\index[subject]{eigenvector}s give their directions.
+\end{keyidea}
+
+We are not yet ready to define eigenvalue\index[subject]{eigenvalue}s and eigenvector\index[subject]{eigenvector}s formally. For
+now, hold onto the geometric picture: a symmetric matrix stretches space
+along perpendicular axes, and the amount of stretch along each axis is what
+we will call an eigenvalue\index[subject]{eigenvalue}.
+
+\section{Preview: the quadratic form\index[subject]{quadratic form}}
+
+There is one more construction we need before connecting matrices to
+variance. Given a symmetric matrix $\mat{A}$ and a vector $\vect{v}$, the
+quantity
+\[
+  \vect{v}^\top \mat{A} \vect{v}
+\]
+is called a \emph{quadratic form\index[subject]{quadratic form}}. It takes a vector and returns a single
+number.
+
+Let us unpack this in two dimensions. If
+\[
+  \mat{A} =
+  \begin{pmatrix}
+    a & b \\
+    b & c
+  \end{pmatrix},
+  \qquad
+  \vect{v} =
+  \begin{pmatrix}
+    v_1 \\ v_2
+  \end{pmatrix},
+\]
+then
+\[
+  \vect{v}^\top \mat{A} \vect{v}
+  = a\, v_1^2 + 2b\, v_1 v_2 + c\, v_2^2.
+\]
+
+This is a weighted sum of squared terms and cross-products. When $\mat{A}$
+is a covariance matrix\index[subject]{covariance matrix}, this quadratic form\index[subject]{quadratic form} will give us the variance of a
+linear combination of traits. When $\mat{A}$ is a selection matrix, it will
+give us the curvature of the fitness surface.
+
+The pattern ``row vector $\times$ matrix $\times$ column vector'' will
+appear repeatedly:
+
+\begin{itemize}
+  \item Variance of a trait combination: $\vect{a}^\top{\Sigma}
+        \vect{a}$
+  \item Mahalanobis distance\index[subject]{distance!Mahalanobis} distance: $(\vect{z} - \boldsymbol{\mu})^\top
+        {\Sigma}^{-1} (\vect{z} - \boldsymbol{\mu})$
+  \item Quadratic selection: $\vect{z}^\top \boldsymbol{\gamma} \vect{z}$
+\end{itemize}
+
+Understanding the quadratic form\index[subject]{quadratic form} geometrically---as measuring how much a
+vector aligns with the axes of stretch encoded by the matrix---is the key to
+reading these expressions fluently.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch3_quadratic_form.pdf}
+    \caption{The quadratic form $\mathbf{x}^\top \mathbf{A} \mathbf{x}$ as a 
+    surface over trait space. (a) Three-dimensional view showing the paraboloid 
+    surface; the height at any point $\mathbf{x}$ equals the quadratic form 
+    value. The red point illustrates how a specific phenotype maps to a scalar 
+    value. (b) Top-down view showing level curves, which are ellipses whose 
+    axes align with the eigenvectors of $\mathbf{A}$. The eigenvalues determine 
+    how steeply the surface rises along each principal direction. For covariance 
+    matrices, this surface represents variance; for selection matrices $\gamma$, 
+    it represents fitness curvature.}
+    \label{fig:quadratic_form_surface}
+\end{figure}
+
+\section{A biological example: the G matrix as a transformation}
+
+To make these ideas concrete, consider the additive genetic covariance
+matrix $\mat{G}$. In two traits,
+\[
+  \mat{G} =
+  \begin{pmatrix}
+    V_{A1} & \text{Cov}_{A}(z_1, z_2) \\
+    \text{Cov}_{A}(z_1, z_2) & V_{A2}
+  \end{pmatrix}.
+\]
+
+What does $\mat{G}$ do when we treat it as a transformation?
+
+Take the selection gradient $\boldsymbol{\beta}$, which points in the
+direction of steepest fitness increase. The response to selection is
+\[
+  \Delta\bar{\vect{z}} = \mat{G}\boldsymbol{\beta}.
+\]
+
+This is the multivariate breeder's equation\index[subject]{breeder's equation} equation. The matrix $\mat{G}$
+transforms the direction of selection into the direction of evolutionary
+response.
+
+Geometrically: $\boldsymbol{\beta}$ tells you where selection wants to go;
+$\mat{G}$ tells you where genetic variation allows you to go. The response
+$\mat{G}\boldsymbol{\beta}$ is a compromise between these.
+
+If $\mat{G}$ is a diagonal matrix (no genetic correlations), the response is
+parallel to selection---you go where selection pushes. If $\mat{G}$ has
+strong off-diagonal elements (genetic correlations), the response is
+deflected toward the direction of greatest genetic variance.
+
+This deflection is not a bug; it is the central phenomenon of multivariate
+evolution. Understanding it requires understanding what $\mat{G}$ does as a
+transformation, which in turn requires the diagonalisation\index[subject]{diagonalisation} tools we will
+develop in Part~III.
+
+\section{Summary}
+
+In this chapter we have introduced matrices as rules that transform vectors.
+The main ideas are:
+
+\begin{itemize}
+  \item A matrix acts on a vector to produce a new vector, with each output
+        component being a linear combination of the input components.
+  \item The columns of a matrix are the images of the unit vectors; they
+        tell you where the coordinate axes go.
+  \item Common transformations include scaling, rotation, shear, and
+        reflection. Most matrices combine several of these.
+  \item Symmetric matrices are special: they describe pure stretches along
+        perpendicular axes, producing elliptical shapes.
+  \item The quadratic form\index[subject]{quadratic form} $\vect{v}^\top\mat{A}\vect{v}$ measures how a
+        vector interacts with the shape encoded by a symmetric matrix.
+  \item The $\mat{G}$ matrix transforms selection gradients into
+        evolutionary responses, making it a concrete biological example of
+        matrix-as-machine.
+\end{itemize}
+
+We now have the vocabulary to ask precise questions about distance and
+shape. In Part~II, we will see why the usual Euclidean distance\index[subject]{distance!Euclidean} distance fails when
+traits are correlated, and how the covariance matrix\index[subject]{covariance matrix} provides a remedy.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CHAPTER 02: MATRICES AS MACHINES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section*{Exercises}
+
+\paragraph{Exercise 2.1 (Stretching).}
+Consider the matrix
+\[
+  \mat{A} = \begin{pmatrix} 2 & 0 \\ 0 & 1 \end{pmatrix}.
+\]
+
+\begin{enumerate}
+  \item Apply $\mat{A}$ to the vectors $(1, 0)$, $(0, 1)$, and $(1, 1)$.
+  \item Describe in words what $\mat{A}$ does to any vector.
+  \item Sketch the unit circle and its image under $\mat{A}$. What shape
+        results?
+  \item Find a matrix that stretches by 3 in the $x$-direction and by 2
+        in the $y$-direction.
+\end{enumerate}
+
+\paragraph{Exercise 2.2 (Rotation).}
+The matrix
+\[
+  \mat{R} = \begin{pmatrix} 0 & -1 \\ 1 & 0 \end{pmatrix}
+\]
+represents a rotation.
+
+\begin{enumerate}
+  \item Apply $\mat{R}$ to $(1, 0)$. Where does it go?
+  \item Apply $\mat{R}$ to $(0, 1)$. Where does it go?
+  \item By what angle does $\mat{R}$ rotate vectors?
+  \item Apply $\mat{R}$ twice (compute $\mat{R}^2 = \mat{R}\mat{R}$).
+        What transformation is $\mat{R}^2$?
+\end{enumerate}
+
+\paragraph{Exercise 2.3 (Shearing).}
+Consider the shear matrix
+\[
+  \mat{S} = \begin{pmatrix} 1 & 1 \\ 0 & 1 \end{pmatrix}.
+\]
+
+\begin{enumerate}
+  \item Apply $\mat{S}$ to $(1, 0)$, $(0, 1)$, and $(1, 1)$.
+  \item Sketch the unit square with corners at $(0,0)$, $(1,0)$, $(0,1)$,
+        $(1,1)$. Then sketch its image under $\mat{S}$.
+  \item Compute $\mat{S}^2$. How does the shear accumulate?
+  \item Is $\mat{S}$ symmetric? Does it change lengths?
+\end{enumerate}
+
+\paragraph{Exercise 2.4 (Matrix multiplication).}
+Let
+\[
+  \mat{A} = \begin{pmatrix} 2 & 0 \\ 0 & 3 \end{pmatrix}, \quad
+  \mat{B} = \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}.
+\]
+
+\begin{enumerate}
+  \item Compute $\mat{A}\mat{B}$ and $\mat{B}\mat{A}$. Are they equal?
+  \item $\mat{B}$ swaps the two coordinates. Describe what $\mat{A}\mat{B}$
+        does (first $\mat{B}$, then $\mat{A}$).
+  \item Describe what $\mat{B}\mat{A}$ does (first $\mat{A}$, then $\mat{B}$).
+  \item Find the inverse of $\mat{A}$. Verify by computing $\mat{A}\mat{A}^{-1}$.
+\end{enumerate}
+
+\paragraph{Exercise 2.5 (Symmetric matrices).}
+A symmetric matrix satisfies $\mat{M} = \mat{M}^\top$.
+
+\begin{enumerate}
+  \item Which of the following are symmetric?
+        \[
+          \begin{pmatrix} 1 & 2 \\ 2 & 3 \end{pmatrix}, \quad
+          \begin{pmatrix} 1 & 2 \\ 3 & 4 \end{pmatrix}, \quad
+          \begin{pmatrix} 5 & 0 \\ 0 & 5 \end{pmatrix}
+        \]
+  \item If $\mat{M}$ is any matrix, show that $\mat{M}^\top\mat{M}$ is
+        symmetric.
+  \item Covariance matrices are always symmetric. Why does this make
+        biological sense?
+\end{enumerate}

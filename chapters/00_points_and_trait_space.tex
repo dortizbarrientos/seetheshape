@@ -1,0 +1,324 @@
+\chapter{Points and Trait Space}
+
+These notes will use pictures of points, arrows, and clouds in space
+throughout. Before we mention vectors or matrices, we need a clear picture
+of what the space is and what it means to move around in it.
+
+\section{Traits as axes, individuals as points}
+
+Start with a single quantitative trait, such as body length. We can draw a
+line and mark each individual on that line according to its measured value.
+This is the usual number line from school (\cref{fig:two-points}).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\textwidth]{fig01_two_points.png}
+  \caption[Two points on a number line]{
+    Distance begins with two points. On a single trait axis, the distance
+    between individuals A and B is the absolute difference of their values.
+  }
+  \label{fig:two-points}
+\end{figure}
+
+Now take two traits, for example body length and wing span. Instead of a
+single line, we draw a horizontal axis for body length and a vertical axis
+for wing span. Every individual is now a point in the resulting plane. If
+individual $i$ has body length $x_i$ and wing span $y_i$, we draw it at the
+point $(x_i, y_i)$.
+
+With three traits, we would have three axes and each individual would be a
+point in three-dimensional space. We cannot draw that easily on paper, but
+the idea is the same. In general, if we measure $p$ traits on each
+individual, then each individual is a point in a $p$-dimensional
+\emph{trait space}.
+
+\begin{keyidea}
+A multivariate phenotype is a point in trait space. The number of
+dimensions equals the number of traits.
+\end{keyidea}
+
+This is our basic mental model: a sample is a cloud of points in trait
+space. Much of quantitative genetics is about describing the shape of this
+cloud and how it moves under selection, drift, and other processes.
+
+\section{Differences between individuals as arrows}
+
+We often care about how two individuals differ. On a single trait, the
+difference between individuals $i$ and $j$ is just
+\[
+  x_j - x_i,
+\]
+a signed distance along the line. When we have a reference point, every
+individual can be described by its displacement from that reference
+(\cref{fig:reference-point}).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\textwidth]{fig02_reference_point.png}
+  \caption[Distance from a reference point]{
+    Choosing a reference point lets us describe each individual by its
+    displacement. Here, individual A sits 2 units from the reference,
+    B sits 7 units away. The distance between A and B is still $|7-2|=5$.
+  }
+  \label{fig:reference-point}
+\end{figure}
+
+In two traits, the situation is similar but now differences have two
+components. If individual $i$ is at $(x_i, y_i)$ and individual $j$ is at
+$(x_j, y_j)$, then the difference between them can be drawn as an arrow
+from $i$ to $j$.
+
+To construct this arrow, we subtract coordinates:
+\[
+  \text{change in body length} = x_j - x_i,
+\]
+\[
+  \text{change in wing span} = y_j - y_i.
+\]
+
+The arrow itself records two pieces of information:
+
+\begin{itemize}
+  \item a \emph{direction} in the plane (where you would walk if you were
+        trying to go from individual $i$ to individual $j$);
+  \item a \emph{length} (how far you would need to walk).
+\end{itemize}
+
+We can describe the same arrow in words:
+
+\begin{quote}
+  ``Starting at individual $i$, add $(x_j - x_i)$ units of body length and
+  $(y_j - y_i)$ units of wing span.''
+\end{quote}
+
+In coordinates, we might write this as
+\[
+  \begin{pmatrix}
+    x_j - x_i \\
+    y_j - y_i
+  \end{pmatrix}.
+\]
+
+At this stage we do not need any new jargon. The important point is that
+these arrows behave in a regular way.
+
+\section{The mean as natural reference}
+
+In statistics, we typically use the sample mean as our reference point
+(\cref{fig:mean-reference}). This choice is not arbitrary: measuring
+deviations from the mean is the foundation of variance.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\textwidth]{fig03_mean_as_reference.png}
+  \caption[The mean as reference]{
+    Using the mean as reference point. Each individual's position is now
+    a deviation from the mean. The sum of all deviations (with signs) is
+    zero---this is a defining property of the mean.
+  }
+  \label{fig:mean-reference}
+\end{figure}
+
+When we summarise a sample, we face a problem: how do we reduce many
+individual deviations to a single number that captures the ``spread'' of
+the cloud? (\cref{fig:summarizing-problem})
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.7\textwidth]{fig04_summarizing_problem.png}
+  \caption[The summarising problem]{
+    Many individuals, many deviations. We need a single number to describe
+    how spread out the cloud is. Simply averaging the deviations will not
+    work---positive and negative values cancel.
+  }
+  \label{fig:summarizing-problem}
+\end{figure}
+
+\section{Adding and stretching arrows}
+
+If arrows represent changes in phenotype, then we can combine changes.
+
+Imagine one change that goes from phenotype A to phenotype B, and another
+change that goes from phenotype B to phenotype C. If we draw both arrows
+head-to-tail, the overall change from A to C is the arrow from the start of
+the first to the end of the second.
+
+Algebraically, if the first change has components $(\Delta x_1, \Delta y_1)$
+and the second has components $(\Delta x_2, \Delta y_2)$, then the combined
+change has components
+\[
+  (\Delta x_1 + \Delta x_2,\; \Delta y_1 + \Delta y_2).
+\]
+
+Similarly, we can stretch or shrink an arrow. If a change in phenotype is
+described by $(\Delta x, \Delta y)$, then half that change is
+$(\tfrac{1}{2}\Delta x, \tfrac{1}{2}\Delta y)$, and twice that change is
+$(2\Delta x, 2\Delta y)$.
+
+\begin{keyidea}
+Changes in phenotype can be added and scaled. Geometrically, this means we
+can join arrows head-to-tail and stretch or shrink them. Algebraically, this
+corresponds to adding and scaling their coordinate pairs.
+\end{keyidea}
+
+This simple behaviour is what makes these objects so useful. It is the
+reason we will eventually give them a special name.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch1_vector_addition.pdf}
+    \caption{Vector addition by the head-to-tail method. (a) Two vectors 
+    $\mathbf{u}$ and $\mathbf{v}$ originating from the origin, representing 
+    independent changes in phenotype. (b) Head-to-tail construction: the tail 
+    of $\mathbf{v}$ is placed at the head of $\mathbf{u}$. (c) The resulting 
+    sum vector $\mathbf{u} + \mathbf{v}$ connects the origin to the endpoint.
+    This construction underlies how selection differentials accumulate across 
+    episodes of selection and how evolutionary responses combine across 
+    generations.}
+    \label{fig:vector_addition}
+\end{figure}
+
+\section{From arrows to vectors}
+
+We are now ready to introduce the word ``vector''.
+
+\begin{definition}
+A \emph{vector} in trait space is a quantity that has both direction and
+length and that can be added and scaled in the way just described.
+\end{definition}
+
+The difference between two phenotypes is a vector. A selection gradient is
+also a vector: it points in the direction of steepest increase in fitness in
+trait space. A response to selection is a vector: it describes how the mean
+phenotype moves.
+
+Each vector can be viewed in three equivalent ways:
+
+\begin{itemize}
+  \item as an arrow in trait space;
+  \item as a verbal instruction for how to change each trait;
+  \item as a list of numbers, one for each trait.
+\end{itemize}
+
+For example, in two traits we might write
+\[
+  \vect{v}
+    =
+  \begin{pmatrix}
+    2 \\
+    -1
+  \end{pmatrix}
+\]
+to represent the change ``add 2 units of trait 1 and subtract 1 unit of
+trait 2''. In three traits, a vector would have three components, and so
+on.
+
+When you see a bold symbol like $\vect{z}$ or $\boldsymbol{\beta}$ in later
+chapters, it will always stand for such an arrow in trait space.
+
+\section{Distances and lengths of vectors}
+
+Once we have arrows, it is natural to ask how long they are. For a vector
+with components $(\Delta x, \Delta y)$, the length is given by the
+Pythagorean theorem:
+\[
+  \|\vect{v}\|
+    = \sqrt{(\Delta x)^2 + (\Delta y)^2}.
+\]
+
+We can also use this to define the distance between two phenotypes:
+draw the arrow from one to the other and take its length. This recovers
+the usual Euclidean distance\index[subject]{distance!Euclidean} distance in the plane.
+
+In higher dimensions, the same idea applies. If a vector has components
+$(\Delta x_1, \Delta x_2, \dots, \Delta x_p)$, then its length is
+\[
+  \|\vect{v}\|
+    = \sqrt{
+        (\Delta x_1)^2 + (\Delta x_2)^2 + \dots + (\Delta x_p)^2
+      }.
+\]
+
+The square of this length,
+\[
+  \|\vect{v}\|^2
+    = (\Delta x_1)^2 + (\Delta x_2)^2 + \dots + (\Delta x_p)^2,
+\]
+is a sum of squared components. This will connect directly to variance
+and, later, to matrix notation.
+
+\section{Summary}
+
+In this chapter we have:
+
+\begin{itemize}
+  \item represented multivariate phenotypes as points in trait space;
+  \item represented differences as arrows, and named them vectors;
+  \item linked vector length to sums of squared components;
+  \item shown how to generate a simple trait space plot with code.
+\end{itemize}
+
+In the next chapters we will move from these arrows to distances from a
+mean, and from there to variance and covariance.
+
+\section*{Exercises}
+
+\paragraph{Exercise 0.1 (Plotting a phenotype cloud).}
+Five plants are measured for leaf length (cm) and leaf width (cm):
+
+\begin{center}
+\begin{tabular}{ccc}
+\hline
+Plant & Length & Width \\
+\hline
+A & 4.2 & 2.1 \\
+B & 5.1 & 2.8 \\
+C & 3.8 & 1.9 \\
+D & 4.7 & 2.4 \\
+E & 4.2 & 2.3 \\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{enumerate}
+  \item Plot these five individuals as points in a two-dimensional trait space.
+  \item Estimate the centroid (mean phenotype) by eye from your plot.
+  \item Calculate the centroid exactly. How close was your estimate?
+  \item A sixth plant F has measurements (6.0, 3.5). Add it to your plot.
+        How does the centroid shift?
+\end{enumerate}
+
+\paragraph{Exercise 0.2 (Trait space dimensions).}
+A bird ecologist measures wing length, tarsus length, bill depth, and body
+mass on each individual.
+
+\begin{enumerate}
+  \item How many dimensions does this trait space have?
+  \item Can you visualise this space directly? If not, what strategies
+        might help you understand the distribution of individuals?
+  \item If you added bill width as a fifth trait, how would the
+        dimensionality change?
+\end{enumerate}
+
+\paragraph{Exercise 0.3 (Phenotype as position).}
+Consider two fish: Fish 1 has length 15 cm and mass 50 g; Fish 2 has
+length 20 cm and mass 80 g.
+
+\begin{enumerate}
+  \item Represent each fish as a point in (length, mass) space.
+  \item Draw the arrow from Fish 1 to Fish 2. What does this arrow
+        represent biologically?
+  \item If a third fish lies exactly halfway along this arrow, what are
+        its length and mass?
+\end{enumerate}
+
+\paragraph{Exercise 0.4 (The meaning of ``distance'' in trait space).}
+Two flowers differ in petal length by 2 mm and in petal width by 3 mm.
+
+\begin{enumerate}
+  \item What is the straight-line (Euclidean) distance between them in
+        trait space?
+  \item Does this number have a direct biological interpretation?
+  \item What might make two flowers ``far apart'' in trait space but
+        similar in fitness?
+\end{enumerate}

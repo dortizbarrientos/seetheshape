@@ -1,0 +1,402 @@
+\chapter{Whitening and the P-sphere\index[subject]{P-sphere}}
+
+In the previous chapter we learned to diagonalise symmetric matrices and
+interpret eigenvalues geometrically. Now we apply these tools to a specific
+problem: how do we compare genetic and phenotypic variation across
+directions in trait space?
+
+This chapter introduces the whitening\index[subject]{whitening transformation} transformation and the concept of the
+P-sphere\index[subject]{P-sphere}. These ideas unify several threads from earlier chapters and set
+the stage for understanding directional heritability and evolutionary
+constraint.
+
+\section{The problem: comparing G and P}
+
+Quantitative genetics gives us two fundamental matrices:
+
+\begin{itemize}
+  \item The genetic covariance matrix\index[subject]{covariance matrix} $\mat{G}$, describing heritable
+        variation.
+  \item The phenotypic covariance matrix\index[subject]{covariance matrix} $\mat{P}$, describing total
+        observed variation (genetic plus environmental).
+\end{itemize}
+
+For a single trait, heritability\index[subject]{heritability} is the ratio $h^2 = V_G / V_P$. But with
+multiple traits, both $\mat{G}$ and $\mat{P}$ are matrices, not scalars.
+How do we generalise heritability\index[subject]{heritability} to multiple dimensions?
+
+One approach is to pick a direction $\boldsymbol{\beta}$ in trait space and
+ask: what fraction of phenotypic variance in that direction is genetic?
+This gives us the \textbf{directional heritability\index[subject]{heritability}}:
+\[
+  h^2(\boldsymbol{\beta}) 
+    = \frac{\boldsymbol{\beta}^\top \mat{G} \boldsymbol{\beta}}
+           {\boldsymbol{\beta}^\top \mat{P} \boldsymbol{\beta}}.
+\]
+
+The numerator is the genetic variance in direction $\boldsymbol{\beta}$;
+the denominator is the phenotypic variance in the same direction. Their
+ratio is a number between 0 and 1 (assuming $\mat{G}$ and $\mat{P}$ are
+properly estimated).
+
+\begin{keyidea}
+Directional heritability\index[subject]{heritability} $h^2(\boldsymbol{\beta})$ measures what fraction
+of phenotypic variance is genetic along a specific direction in trait
+space. It generalises the scalar heritability\index[subject]{heritability} $h^2 = V_G/V_P$ to multiple
+traits.
+\end{keyidea}
+
+But here is the difficulty: the value of $h^2(\boldsymbol{\beta})$ depends
+on which direction we choose. Some directions may have high heritability\index[subject]{heritability}
+(most variation is genetic), while others have low heritability\index[subject]{heritability} (most
+variation is environmental). How do we summarise this variation across
+directions? And how do we sample directions ``fairly''?
+
+\section{The naive approach and its problem}
+
+A natural idea is to sample directions uniformly from the unit sphere---all
+directions equally likely---and compute $h^2(\boldsymbol{\beta})$ for each.
+
+But ``uniform on the unit sphere'' is ambiguous when traits have different
+scales. Consider two traits: body mass in kilograms and wing length in
+millimetres. A ``uniform'' sample in the original coordinates would be
+dominated by directions that emphasise the trait with larger numerical
+values.
+
+Even after standardising each trait to have unit variance, there is still
+a problem. If traits are correlated, the phenotypic covariance matrix\index[subject]{covariance matrix}
+$\mat{P}$ is not the identity. The directions that ``look uniform'' in
+Euclidean distance\index[subject]{distance!Euclidean} space are not uniform with respect to phenotypic variation.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig21_sphere_vs_psphere.png}
+  \caption[The Euclidean distance\index[subject]{distance!Euclidean} sphere versus the P-sphere\index[subject]{P-sphere}]{
+    Left: The unit sphere in original coordinates. Uniform sampling here
+    ignores the correlation\index[subject]{correlation}structure. Right: The P-sphere\index[subject]{P-sphere}, where points
+    are equidistant in Mahalanobis distance\index[subject]{distance!Mahalanobis} distance. Uniform sampling on the
+    P-sphere\index[subject]{P-sphere} respects the phenotypic covariance structure.
+  }
+  \label{fig:sphere-vs-psphere}
+\end{figure}
+
+\section{The P-sphere\index[subject]{P-sphere}: uniform with respect to phenotype}
+
+The solution is to define ``uniform'' with respect to the phenotypic
+covariance matrix\index[subject]{covariance matrix}. Instead of the Euclidean distance\index[subject]{distance!Euclidean} unit sphere
+\[
+  \{ \boldsymbol{\beta} : \|\boldsymbol{\beta}\|^2 = 1 \}
+    = \{ \boldsymbol{\beta} : \boldsymbol{\beta}^\top \boldsymbol{\beta} = 1 \},
+\]
+we use the \textbf{P-sphere\index[subject]{P-sphere}}:
+\[
+  \{ \boldsymbol{\beta} : \boldsymbol{\beta}^\top \mat{P} \boldsymbol{\beta} = 1 \}.
+\]
+
+Points on the P-sphere\index[subject]{P-sphere} all have unit phenotypic variance. This is the
+natural normalisation for comparing directions: we are asking ``per unit
+of phenotypic variance, how much is genetic?''
+
+The P-sphere\index[subject]{P-sphere} is an ellipsoid in the original coordinate system, but it
+becomes a true sphere after the whitening\index[subject]{whitening transformation} transformation.
+
+\begin{keyidea}
+The P-sphere\index[subject]{P-sphere} is the set of all directions with unit phenotypic variance.
+Sampling uniformly from the P-sphere\index[subject]{P-sphere} means treating all phenotypically
+equivalent directions equally.
+\end{keyidea}
+
+\section{The whitening\index[subject]{whitening transformation} transformation}
+
+In Chapter~12 we saw that the Mahalanobis distance\index[subject]{distance!Mahalanobis} distance can be understood as
+Euclidean distance\index[subject]{distance!Euclidean} distance after a whitening\index[subject]{whitening transformation} transformation. Now we develop this
+idea systematically.
+
+The whitening\index[subject]{whitening transformation} transformation uses the matrix square root of $\mat{P}^{-1}$.
+Define
+\[
+  \mat{P}^{-1/2} = \mat{V}_P {\Lambda}_P^{-1/2} \mat{V}_P^\top,
+\]
+where $\mat{V}_P$ contains the eigenvectors of $\mat{P}$ and
+${\Lambda}_P$ is the diagonal matrix of eigenvalue\index[subject]{eigenvalue}s. The matrix
+${\Lambda}_P^{-1/2}$ has entries $1/\sqrt{\lambda_i}$ on the diagonal.
+
+Apply this transformation to both the genetic and phenotypic matrices:
+\begin{align*}
+  \mat{P}^* &= \mat{P}^{-1/2} \mat{P} \mat{P}^{-1/2} = \mat{I}, \\
+  \mat{G}^* &= \mat{P}^{-1/2} \mat{G} \mat{P}^{-1/2}.
+\end{align*}
+
+The phenotypic matrix becomes the identity---this is what ``whitening\index[subject]{whitening transformation}''
+means. The genetic matrix becomes $\mat{G}^*$, sometimes called the
+\textbf{P-standardised genetic matrix} or the \textbf{G-P matrix}.
+
+\begin{keyidea}
+whitening\index[subject]{whitening transformation} by $\mat{P}^{-1/2}$ transforms the phenotypic matrix to the
+identity. In whitened space, the P-sphere\index[subject]{P-sphere} becomes the ordinary unit sphere,
+and uniform sampling is straightforward.
+\end{keyidea}
+
+\section{A remarkable fact: eigenvalue\index[subject]{eigenvalue}s of G* are directional heritabilities}
+
+Here is the key result. In whitened coordinates, let
+$\boldsymbol{\beta}^*$ be a unit vector (on the ordinary sphere, which is
+now also the P-sphere\index[subject]{P-sphere}). The directional heritability\index[subject]{heritability} is
+\begin{align*}
+  h^2(\boldsymbol{\beta}^*)
+    &= \frac{(\boldsymbol{\beta}^*)^\top \mat{G}^* \boldsymbol{\beta}^*}
+            {(\boldsymbol{\beta}^*)^\top \mat{I} \boldsymbol{\beta}^*} \\
+    &= (\boldsymbol{\beta}^*)^\top \mat{G}^* \boldsymbol{\beta}^*.
+\end{align*}
+
+This is a quadratic form\index[subject]{quadratic form} in $\mat{G}^*$. From Chapter~20, we know that:
+\begin{itemize}
+  \item The maximum value is the largest eigenvalue\index[subject]{eigenvalue} of $\mat{G}^*$.
+  \item The minimum value is the smallest eigenvalue\index[subject]{eigenvalue} of $\mat{G}^*$.
+  \item The eigenvector\index[subject]{eigenvector}s of $\mat{G}^*$ are the directions that achieve
+        these extremes.
+\end{itemize}
+
+\begin{keyidea}
+The eigenvalue\index[subject]{eigenvalue}s of $\mat{G}^* = \mat{P}^{-1/2}\mat{G}\mat{P}^{-1/2}$ are
+the maximum and minimum directional heritabilities. The eigenvector\index[subject]{eigenvector}s are
+the directions that achieve them.
+\end{keyidea}
+
+This is a powerful result. It tells us that to understand the range of
+possible directional heritabilities, we need only diagonalise $\mat{G}^*$.
+The eigenvalue\index[subject]{eigenvalue}s give us the bounds; the eigenvector\index[subject]{eigenvector}s tell us where those
+bounds are achieved.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ch8_h2_distribution.pdf}
+    \caption{Distribution of directional heritability $h^2(\boldsymbol{\beta})$ 
+    across directions. (a) The $\mathbf{G}^*$ ellipse (magenta) inside the 
+    $\mathbf{P}$-sphere (green) in whitened space. Arrows indicate directions 
+    of maximum and minimum heritability, which are the eigenvectors of 
+    $\mathbf{G}^*$. (b) Histogram of $h^2$ values from 10,000 random directions 
+    sampled uniformly from the $\mathbf{P}$-sphere. The shaded region indicates 
+    the ``constraint trap zone'' where heritability is well below average. 
+    (c) Heritability as a continuous function of direction angle, showing the 
+    180° periodicity (opposite directions have identical $h^2$). The eigenvalues 
+    of $\mathbf{G}^*$ bound the distribution.}
+    \label{fig:h2_distribution}
+\end{figure}
+
+\section{The distribution of directional heritability\index[subject]{heritability}}
+
+If we sample directions uniformly from the P-sphere\index[subject]{P-sphere} (equivalently, the
+unit sphere in whitened space), what distribution of $h^2$ values do we
+get?
+
+From Chapter~20, the quadratic form\index[subject]{quadratic form}
+$(\boldsymbol{\beta}^*)^\top \mat{G}^* \boldsymbol{\beta}^*$
+is a weighted average of the eigenvalue\index[subject]{eigenvalue}s $\lambda_i^*$ of $\mat{G}^*$,
+with weights given by squared projections onto the eigenvector\index[subject]{eigenvector}s.
+
+For uniform random directions on the sphere, there is a known formula
+for the variance of this quadratic form\index[subject]{quadratic form}:
+\[
+  \Var[h^2(\boldsymbol{\beta})] 
+    = \frac{2}{p+2} \cdot \Var(\lambda^*),
+\]
+where $\Var(\lambda^*)$ is the variance of the eigenvalue\index[subject]{eigenvalue}s of $\mat{G}^*$,
+and $p$ is the number of traits.
+
+The coefficient of variation of directional heritability\index[subject]{heritability} is therefore
+\[
+  \text{CV}[h^2] = \sqrt{\frac{2}{p+2} \cdot V_{\text{rel}}(\mat{G}^*)},
+\]
+where $V_{\text{rel}}(\mat{G}^*) = \Var(\lambda^*) / \bar{\lambda}^{*2}$
+is the relative variance of the eigenvalue\index[subject]{eigenvalue}s.
+
+\begin{keyidea}
+The variability of directional heritability\index[subject]{heritability} across directions depends on
+two factors:
+\begin{enumerate}
+  \item The relative variance of the eigenvalue\index[subject]{eigenvalue}s of $\mat{G}^*$---how
+        eccentric is the P-standardised genetic ellipsoid?
+  \item The number of traits $p$---more traits mean more ``averaging''
+        and less variability.
+\end{enumerate}
+\end{keyidea}
+
+\section{Constraint traps}
+
+A \textbf{constraint trap} occurs when a direction has low heritability\index[subject]{heritability}
+despite having substantial phenotypic variance. Selection in that direction
+produces little evolutionary response because the genetic variance is low
+relative to environmental variance.
+
+In the G* framework, constraint traps correspond to directions near the
+eigenvector\index[subject]{eigenvector}s of $\mat{G}^*$ with small eigenvalue\index[subject]{eigenvalue}s. These are directions
+where:
+\begin{itemize}
+  \item The phenotypic variance is typical (by construction, we are on the
+        P-sphere\index[subject]{P-sphere}).
+  \item The genetic variance is unusually low.
+  \item The heritability\index[subject]{heritability} $h^2(\boldsymbol{\beta})$ is near its minimum.
+\end{itemize}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.8\textwidth]{fig21_constraint_trap.png}
+  \caption[Constraint traps]{
+    In whitened space, the G* ellipse sits inside the P-sphere\index[subject]{P-sphere} (which is
+    now the unit circle). Directions where G* is thin relative to the
+    sphere are constraint traps: plenty of phenotypic variance, but little
+    genetic variance.
+  }
+  \label{fig:constraint-trap}
+\end{figure}
+
+The danger is subtle. A breeder or natural selection might target a
+direction with plenty of phenotypic variation, expecting a response. But
+if that direction happens to be a constraint trap, the response will be
+disappointing---the variation is mostly environmental, not genetic.
+
+\section{Visualising G inside P}
+
+A useful visualisation is to plot the G ellipse and P ellipse together,
+centred at the same point. In two dimensions:
+
+\begin{itemize}
+  \item The P ellipse shows where phenotypic variation extends.
+  \item The G ellipse shows where genetic variation extends.
+  \item Directions where G is thin relative to P are low-heritability\index[subject]{heritability}
+        directions.
+  \item Directions where G nearly fills P are high-heritability\index[subject]{heritability} directions.
+\end{itemize}
+
+After whitening\index[subject]{whitening transformation}, P becomes the unit circle. The G* ellipse sits inside it
+(assuming $h^2 \le 1$ in all directions). The shape of G* relative to the
+circle reveals the constraint structure.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\textwidth]{fig21_g_inside_p.png}
+  \caption[G inside P]{
+    Left: In original coordinates, both G and P are ellipses. Right: After
+    whitening\index[subject]{whitening transformation}, P becomes the unit circle, and G* reveals where heritability\index[subject]{heritability}
+    is high (G* close to the circle) or low (G* far inside).
+  }
+  \label{fig:g-inside-p}
+\end{figure}
+
+\section{Connection to the breeder's equation\index[subject]{breeder's equation} equation}
+
+Recall the multivariate breeder's equation\index[subject]{breeder's equation} equation:
+\[
+  \Delta\bar{\vect{z}} = \mat{G}\mat{P}^{-1}\vect{S} = \mat{G}\boldsymbol{\beta},
+\]
+where $\vect{S}$ is the selection differential and
+$\boldsymbol{\beta} = \mat{P}^{-1}\vect{S}$ is the selection gradient.
+
+The response to selection depends on both $\mat{G}$ and the direction of
+$\boldsymbol{\beta}$. If $\boldsymbol{\beta}$ points in a high-heritability\index[subject]{heritability}
+direction (large $\boldsymbol{\beta}^\top\mat{G}\boldsymbol{\beta}$ relative
+to $\boldsymbol{\beta}^\top\mat{P}\boldsymbol{\beta}$), the response is
+strong. If it points in a constraint trap, the response is weak.
+
+The P-whitening\index[subject]{whitening transformation} framework makes this explicit. In whitened coordinates:
+\[
+  \Delta\bar{\vect{z}}^* = \mat{G}^* \boldsymbol{\beta}^*.
+\]
+
+The response in whitened space is simply $\mat{G}^*$ acting on the
+whitened selection gradient. The eigenstructure of $\mat{G}^*$ directly
+determines how selection translates to response.
+
+\section{Computing G* in practice}
+
+Given estimates of $\mat{G}$ and $\mat{P}$, here is how to compute
+$\mat{G}^*$:
+
+\paragraph{Step 1: Eigendecompose P.}
+\[
+  \mat{P} = \mat{V}_P{\Lambda}_P \mat{V}_P^\top.
+\]
+
+\paragraph{Step 2: Compute $\mat{P}^{-1/2}$.}
+\[
+  \mat{P}^{-1/2} = \mat{V}_P {\Lambda}_P^{-1/2} \mat{V}_P^\top,
+\]
+where ${\Lambda}_P^{-1/2}$ has diagonal entries $1/\sqrt{\lambda_i}$.
+
+\paragraph{Step 3: Transform G.}
+\[
+  \mat{G}^* = \mat{P}^{-1/2} \mat{G} \mat{P}^{-1/2}.
+\]
+
+\paragraph{Step 4: Eigendecompose G*.}
+The eigenvalue\index[subject]{eigenvalue}\index[subject]{eigenvalue}s of $\mat{G}^*$ are the directional heritabilities along
+the principal axes. The eigenvector\index[subject]{eigenvector}s (transformed back to original
+coordinates by $\mat{P}^{1/2}$) are those principal axes.
+
+In R:
+\begin{verbatim}
+# Eigendecompose P
+eig_P <- eigen(P)
+V_P <- eig_P$vectors
+Lambda_P <- diag(eig_P$values)
+
+# Compute P^{-1/2}
+P_inv_sqrt <- V_P %*% diag(1/sqrt(eig_P$values)) %*% t(V_P)
+
+# Transform G
+G_star <- P_inv_sqrt %*% G %*% P_inv_sqrt
+
+# Eigendecompose G*
+eig_Gstar <- eigen(G_star)
+# eig_Gstar$values are directional heritabilities
+\end{verbatim}
+
+\section{Why whitening\index[subject]{whitening transformation} matters}
+
+The whitening\index[subject]{whitening transformation} transformation is not just a mathematical convenience. It
+changes how we think about constraint.
+
+Without whitening\index[subject]{whitening transformation}, we might compare directions using Euclidean distance\index[subject]{distance!Euclidean} angles and
+conclude that a direction is ``close to $\mathbf{g}_{\max}$'' when it is
+actually far from it in phenotypic terms. whitening\index[subject]{whitening transformation} ensures that our
+notion of ``close'' respects the phenotypic covariance structure.
+
+It also simplifies sampling. To study the distribution of heritability\index[subject]{heritability}
+across directions, we can sample uniformly from the ordinary sphere in
+whitened space, which is easy. Sampling uniformly from the P-sphere\index[subject]{P-sphere} in
+original coordinates would require accounting for the elliptical geometry.
+
+\begin{keyidea}
+whitening\index[subject]{whitening transformation} by $\mat{P}$ is the multivariate generalisation of dividing by
+the phenotypic standard deviation. It puts all directions on an equal
+footing, so that comparisons are fair.
+\end{keyidea}
+
+\section{Summary}
+
+In this chapter we have:
+
+\begin{itemize}
+  \item Introduced directional heritability\index[subject]{heritability} $h^2(\boldsymbol{\beta})$ as
+        the ratio of genetic to phenotypic variance in a given direction.
+  \item Defined the P-sphere\index[subject]{P-sphere} as the set of directions with unit phenotypic
+        variance, and explained why sampling uniformly from the P-sphere\index[subject]{P-sphere}
+        is the right notion of ``uniform.''
+  \item Developed the whitening\index[subject]{whitening transformation} transformation using $\mat{P}^{-1/2}$,
+        which converts the P-sphere\index[subject]{P-sphere} to the ordinary unit sphere.
+  \item Shown that the eigenvalue\index[subject]{eigenvalue}s of $\mat{G}^* = \mat{P}^{-1/2}\mat{G}\mat{P}^{-1/2}$
+        are the extreme directional heritabilities, and the eigenvector\index[subject]{eigenvector}s
+        are the directions that achieve them.
+  \item Connected the variance of directional heritability\index[subject]{heritability} to the relative
+        variance of the eigenvalue\index[subject]{eigenvalue}s of $\mat{G}^*$.
+  \item Defined constraint traps as directions where phenotypic variance
+        is normal but genetic variance (and hence heritability\index[subject]{heritability}) is low.
+  \item Provided practical code for computing $\mat{G}^*$ from estimates
+        of $\mat{G}$ and $\mat{P}$.
+\end{itemize}
+
+The whitening\index[subject]{whitening transformation} framework unifies the geometry of G and P into a single
+picture. In Part~IV, we will apply these ideas to real biological
+questions: the G matrix and its eigenstructure, fitness surfaces, and
+the analysis of selection and response.
