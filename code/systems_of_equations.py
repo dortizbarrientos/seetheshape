@@ -10,7 +10,7 @@ A system of linear equations can be viewed THREE ways:
 
 All three give the same answer, but reveal different geometric insights.
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 Date: December 2024
 """
 
