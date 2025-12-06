@@ -14,7 +14,7 @@ School of the Environment, The University of Queensland
 
 ## 📖 About This Repository
 
-This repository contains annotated code in **Python** and **R** that accompanies each chapter of *Seeing the Shape*. The code is designed to be pedagogical: each script explains not just *how* to perform calculations, but *why* they work geometrically and biologically.
+This repository contains annotated code in **Python** that accompanies each chapter of *Seeing the Shape*. The code is designed to be pedagogical: each script explains not just *how* to perform calculations, but *why* they work geometrically and biologically.
 
 The guiding philosophy mirrors that of the book:
 
@@ -26,27 +26,20 @@ The guiding philosophy mirrors that of the book:
 seeing-the-shape-code/
 ├── README.md                 # This file
 ├── python/                   # Python implementations
-│   ├── requirements.txt      # Dependencies
-│   ├── ch01_points_trait_space.py
-│   ├── ch02_vectors_coordinates.py
-│   ├── ch03_matrices_transformations.py
-│   ├── ch04_distance_variance.py
-│   ├── ch05_euclidean_fails.py
-│   ├── ch06_mahalanobis.py
-│   ├── ch07_eigendecomposition.py
-│   ├── ch08_whitening_psphere.py
-│   ├── ch09_g_matrix.py
-│   ├── ch10_fitness_gamma.py
-│   ├── ch11_pca_manova.py
-│   ├── ch12_worked_examples.py
-│   └── ch13_directional_heritability.py
-├── R/                        # R implementations
-│   ├── ch01_points_trait_space.R
-│   ├── ...
-│   └── ch13_directional_heritability.R
-└── figures/                  # Figure generation scripts
-    ├── README.md
-    └── generate_all_figures.py
+   ├── requirements.txt      # Dependencies
+   ├── ch01_points_trait_space.py
+   ├── ch02_vectors_coordinates.py
+   ├── ch03_matrices_transformations.py
+   ├── ch04_distance_variance.py
+   ├── ch05_euclidean_fails.py
+   ├── ch06_mahalanobis.py
+   ├── ch07_eigendecomposition.py
+   ├── ch08_whitening_psphere.py
+   ├── ch09_g_matrix.py
+   ├── ch10_fitness_gamma.py
+   ├── ch11_pca_manova.py
+   ├── ch12_worked_examples.py
+   └── ch13_directional_heritability.py
 ```
 
 ## 🚀 Quick Start
@@ -67,16 +60,6 @@ pip install -r requirements.txt
 
 # Run a chapter script
 python ch01_points_trait_space.py
-```
-
-### R
-
-```r
-# Install required packages
-install.packages(c("MASS", "Matrix", "ggplot2", "ellipse", "mvtnorm"))
-
-# Source a chapter script
-source("R/ch01_points_trait_space.R")
 ```
 
 ## 📚 Chapter Guide
