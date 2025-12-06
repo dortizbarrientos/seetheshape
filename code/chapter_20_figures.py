@@ -8,7 +8,7 @@ Generates:
 - fig20_ellipse_axes.png: Covariance ellipse with eigenvector axes
 - fig20_gmax.png: G matrix with g_max direction highlighted
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 """
 
 import numpy as np
