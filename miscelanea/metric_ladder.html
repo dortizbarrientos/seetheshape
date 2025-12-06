@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Metric Ladder: From 1D to Many Dimensions</title>
+    <style>
+        :root {
+            --color-1d: #2E86AB;
+            --color-2d: #06D6A0;
+            --color-3d: '#762A83;
+            --color-pd: #E63946;
+            --color-G: #2E86AB;
+            --color-P: #06D6A0;
+            --color-accent: #F18F01;
+            --color-highlight: #C73E1D;
+            --color-bg: #FAFAFA;
+            --color-card: #FFFFFF;
+            --color-text: #333333;
+            --color-muted: #666666;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #2E86AB, #06D6A0);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.4em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        
+        .intro-section {
+            background: var(--color-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .intro-section h2 {
+            color: var(--color-G);
+            margin-bottom: 15px;
+        }
+        
+        .key-concept {
+            background: linear-gradient(135deg, rgba(46,134,171,0.1), rgba(6,214,160,0.1));
+            border-left: 4px solid var(--color-G);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .key-concept h3 {
+            color: var(--color-G);
+            margin-bottom: 10px;
+        }
+        
+        .dimension-section {
+            background: var(--color-card);
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .dimension-header {
+            padding: 20px 30px;
+            color: white;
+            font-size: 1.4em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .dimension-header .dim-badge {
+            background: rgba(255,255,255,0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+        }
+        
+        .dim-1d { background: linear-gradient(135deg, #2E86AB, #1a5f7a); }
+        .dim-2d { background: linear-gradient(135deg, #06D6A0, #04a57c); }
+        .dim-3d { background: linear-gradient(135deg, #762A83, #5a1f64); }
+        .dim-pd { background: linear-gradient(135deg, #E63946, #b82d38); }
+        
+        .dimension-content {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .dimension-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .viz-panel {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+        }
+        
+        .viz-panel canvas {
+            display: block;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .info-panel h3 {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .info-panel p {
+            margin-bottom: 15px;
+            color: var(--color-muted);
+        }
+        
+        .formula-box {
+            background: #f0f4f8;
+            border-left: 4px solid var(--color-G);
+            padding: 15px 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        .formula-box.highlight {
+            background: #fff8e1;
+            border-color: var(--color-accent);
+        }
+        
+        .insight-box {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .insight-box strong {
+            color: #2e7d32;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .comparison-table tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .interactive-controls {
+            background: #f0f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .interactive-controls label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .interactive-controls input[type="range"] {
+            width: 100%;
+            margin: 5px 0;
+        }
+        
+        .value-display {
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: var(--color-muted);
+            margin-top: 5px;
+        }
+        
+        .slider-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .slider-row > div {
+            flex: 1;
+        }
+        
+        .unified-section {
+            background: linear-gradient(135deg, rgba(46,134,171,0.15), rgba(6,214,160,0.15));
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .unified-section h2 {
+            text-align: center;
+            color: var(--color-G);
+            margin-bottom: 30px;
+        }
+        
+        .ladder-visual {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .ladder-step {
+            text-align: center;
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+            min-width: 150px;
+        }
+        
+        .ladder-step.step-1d { background: #2E86AB; height: 100px; }
+        .ladder-step.step-2d { background: #06D6A0; height: 150px; }
+        .ladder-step.step-3d { background: #762A83; height: 200px; }
+        .ladder-step.step-pd { background: #E63946; height: 250px; }
+        
+        .ladder-step h4 {
+            font-size: 1.3em;
+            margin-bottom: 5px;
+        }
+        
+        .ladder-step p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .genetics-section {
+            background: var(--color-card);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .genetics-section h2 {
+            color: #1B7837;
+            margin-bottom: 20px;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 700px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .metric-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid;
+        }
+        
+        .metric-card.g-matrix {
+            border-color: var(--color-G);
+        }
+        
+        .metric-card.p-matrix {
+            border-color: var(--color-P);
+        }
+        
+        .metric-card h4 {
+            margin-bottom: 10px;
+        }
+        
+        .big-formula {
+            text-align: center;
+            font-size: 1.4em;
+            font-family: 'Courier New', monospace;
+            padding: 25px;
+            background: linear-gradient(135deg, #667eea22, #764ba222);
+            border-radius: 12px;
+            margin: 25px 0;
+            border: 2px solid var(--color-accent);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 800px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .summary-card .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--color-G);
+        }
+        
+        .summary-card .label {
+            font-size: 0.9em;
+            color: var(--color-muted);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--color-muted);
+        }
+        
+        .tab-container {
+            margin-top: 20px;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #e0e0e0;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: var(--color-G);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: white;
+            border-radius: 0 8px 8px 8px;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .equation-steps {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .equation-steps .step {
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .equation-steps .step:last-child {
+            border-bottom: none;
+        }
+        
+        .equation-steps .step-num {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background: var(--color-G);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            font-size: 0.8em;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📐 The Metric Ladder</h1>
+            <p>Building Geometric Intuition from 1D to Many Dimensions</p>
+        </header>
+        
+        <!-- Introduction -->
+        <div class="intro-section">
+            <h2>Covariance Matrices as Rulers</h2>
+            <p>A covariance matrix is not just a table of numbers — it's a <strong>way to measure length</strong> that varies with direction. This guide builds your geometric intuition step by step, from the simplest case (1D) where there's no geometry, through 2D where ellipses reveal everything, to arbitrary dimensions where algebra handles what eyes cannot see.</p>
+            
+            <div class="key-concept">
+                <h3>The Central Insight</h3>
+                <p>For a covariance matrix Σ, the quadratic form <strong>β'Σβ</strong> measures the "length" of direction β using Σ as a ruler. Different directions get different lengths — and this directional variation is the heart of evolutionary constraint.</p>
+                <p style="margin-top: 10px; font-family: monospace; font-size: 1.1em;">
+                    β'Σβ = Σᵢ λᵢ (β·vᵢ)² — a weighted average of eigenvalues
+                </p>
+            </div>
+        </div>
+        
+        <!-- DIMENSION 1: THE 1D CASE -->
+        <div class="dimension-section">
+            <div class="dimension-header dim-1d">
+                <span class="dim-badge">p = 1</span>
+                The 1D Case: Where It All Begins
+            </div>
+            <div class="dimension-content">
+                <div class="viz-panel">
+                    <canvas id="canvas1D" width="380" height="280"></canvas>
+                    <div class="interactive-controls">
+                        <label>Variance σ²:</label>
+                        <input type="range" id="variance1D" min="0.5" max="3" step="0.1" value="1.5">
+                        <div class="value-display" id="var1DValue">σ² = 1.50</div>
+                    </div>
+                </div>
+                <div class="info-panel">
+                    <h3>No Geometry Yet — Just a Number</h3>
+                    <p>In one dimension, the "covariance matrix" is just a single number: the variance σ². There's only one direction (positive or negative along the line), so there's no directional dependence to speak of.</p>
+                    
+                    <div class="formula-box">
+                        <strong>The metric in 1D:</strong><br>
+                        Σ = [σ²] (a 1×1 "matrix")<br><br>
+                        <strong>Length of β:</strong><br>
+                        β'Σβ = σ² · β² = σ² (for unit β = ±1)
+                    </div>
+                    
+                    <div class="formula-box highlight">
+                        <strong>Heritability in 1D:</strong><br>
+                        h² = σ²_G / σ²_P<br><br>
+                        Just a ratio of two numbers!<br>
+                        No directional variation possible.
+                    </div>
+                    
+                    <div class="insight-box">
+                        <strong>Key Point:</strong> In 1D, heritability is a single number. The complexity of directional heritability only emerges when we have multiple traits.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DIMENSION 2: THE 2D CASE -->
+        <div class="dimension-section">
+            <div class="dimension-header dim-2d">
+                <span class="dim-badge">p = 2</span>
+                The 2D Case: Ellipses Reveal Everything
+            </div>
+            <div class="dimension-content">
+                <div class="viz-panel">
+                    <canvas id="canvas2D" width="380" height="300"></canvas>
+                    <div class="interactive-controls">
+                        <div class="slider-row">
+                            <div>
+                                <label>λ₁ (small):</label>
+                                <input type="range" id="lambda1_2D" min="0.2" max="1" step="0.05" value="0.4">
+                            </div>
+                            <div>
+                                <label>λ₂ (large):</label>
+                                <input type="range" id="lambda2_2D" min="1" max="3" step="0.05" value="1.6">
+                            </div>
+                        </div>
+                        <label>Direction β (angle):</label>
+                        <input type="range" id="beta2D" min="0" max="360" step="1" value="30">
+                        <div class="value-display" id="val2DDisplay">λ₁=0.40, λ₂=1.60, θ=30°, β'Σβ=0.70</div>
+                    </div>
+                </div>
+                <div class="info-panel">
+                    <h3>The Ellipse: Your New Best Friend</h3>
+                    <p>In 2D, the covariance matrix defines an <strong>ellipse</strong>. The eigenvalues are the squared lengths of the semi-axes, and the eigenvectors point along those axes.</p>
+                    
+                    <div class="formula-box">
+                        <strong>The ellipse equation:</strong><br>
+                        x'Σ⁻¹x = 1 (unit ball of Σ-metric)<br><br>
+                        <strong>Semi-axis lengths:</strong><br>
+                        √λ₁ along v₁, √λ₂ along v₂
+                    </div>
+                    
+                    <div class="formula-box highlight">
+                        <strong>Directional variance:</strong><br>
+                        β'Σβ = λ₁(β·v₁)² + λ₂(β·v₂)²<br><br>
+                        Minimum = λ₁ (along v₁)<br>
+                        Maximum = λ₂ (along v₂)<br>
+                        All other directions: interpolate!
+                    </div>
+                    
+                    <div class="insight-box">
+                        <strong>Key Point:</strong> The ellipse encodes ALL directional information. Once you understand 2D, the intuition transfers directly to any dimension — you just can't draw it anymore.
+                    </div>
+                    
+                    <p><strong>V_rel</strong> (relative eigenvalue variance) measures how "eccentric" the ellipse is:</p>
+                    <div class="formula-box">
+                        V_rel = Var(λ) / Mean(λ)²<br>
+                        Circle: V_rel = 0 (all directions equal)<br>
+                        Cigar: V_rel → large (directions very unequal)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DIMENSION 3: THE 3D CASE -->
+        <div class="dimension-section">
+            <div class="dimension-header dim-3d">
+                <span class="dim-badge">p = 3</span>
+                The 3D Case: Same Pattern, One More Axis
+            </div>
+            <div class="dimension-content">
+                <div class="viz-panel">
+                    <canvas id="canvas3D" width="380" height="300"></canvas>
+                    <div class="interactive-controls">
+                        <div class="slider-row">
+                            <div>
+                                <label>λ₁:</label>
+                                <input type="range" id="lambda1_3D" min="0.2" max="0.8" step="0.05" value="0.3">
+                            </div>
+                            <div>
+                                <label>λ₂:</label>
+                                <input type="range" id="lambda2_3D" min="0.5" max="1.2" step="0.05" value="0.7">
+                            </div>
+                            <div>
+                                <label>λ₃:</label>
+                                <input type="range" id="lambda3_3D" min="1" max="2" step="0.05" value="1.5">
+                            </div>
+                        </div>
+                        <label>Rotation:</label>
+                        <input type="range" id="rotation3D" min="0" max="360" step="1" value="30">
+                        <div class="value-display" id="val3DDisplay">λ=[0.30, 0.70, 1.50], V_rel=0.43</div>
+                    </div>
+                </div>
+                <div class="info-panel">
+                    <h3>An Ellipsoid in 3D Space</h3>
+                    <p>The 2D ellipse becomes a 3D <strong>ellipsoid</strong>. Now we have three eigenvalues (three axis lengths) and three eigenvectors (mutually perpendicular axes).</p>
+                    
+                    <div class="formula-box">
+                        <strong>Three eigenvalues:</strong><br>
+                        λ₁ ≤ λ₂ ≤ λ₃<br><br>
+                        <strong>Directional variance:</strong><br>
+                        β'Σβ = λ₁(β·v₁)² + λ₂(β·v₂)² + λ₃(β·v₃)²
+                    </div>
+                    
+                    <p>Everything works exactly as in 2D:</p>
+                    <ul style="margin-left: 20px; color: var(--color-muted);">
+                        <li>β'Σβ is still a weighted average of eigenvalues</li>
+                        <li>Minimum along v₁, maximum along v₃</li>
+                        <li>V_rel still measures eigenvalue spread</li>
+                    </ul>
+                    
+                    <div class="formula-box highlight">
+                        <strong>CV² formula still works:</strong><br>
+                        CV²(β'Σβ) = (2/(p+2)) × V_rel<br><br>
+                        For p=3: CV² = (2/5) × V_rel = 0.4 × V_rel
+                    </div>
+                    
+                    <div class="insight-box">
+                        <strong>Key Point:</strong> 3D is conceptually identical to 2D — just one more axis. The formulas don't change, only the number of eigenvalues. This is our last dimension we can visualize!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DIMENSION p: THE GENERAL CASE -->
+        <div class="dimension-section">
+            <div class="dimension-header dim-pd">
+                <span class="dim-badge">p = any</span>
+                The General Case: Algebra Handles What Eyes Cannot See
+            </div>
+            <div class="dimension-content">
+                <div class="viz-panel">
+                    <canvas id="canvasPD" width="380" height="300"></canvas>
+                    <div class="interactive-controls">
+                        <label>Number of dimensions (p):</label>
+                        <input type="range" id="numDims" min="2" max="20" step="1" value="5">
+                        <label>Eigenvalue spread (V_rel):</label>
+                        <input type="range" id="vrelPD" min="0" max="1" step="0.05" value="0.3">
+                        <div class="value-display" id="valPDDisplay">p=5, V_rel=0.30, CV(β'Σβ)=0.293</div>
+                    </div>
+                </div>
+                <div class="info-panel">
+                    <h3>Beyond Visualization</h3>
+                    <p>For p > 3 dimensions, we cannot draw the ellipsoid. But <strong>nothing conceptually changes</strong>. The same formulas work, just with more eigenvalues.</p>
+                    
+                    <div class="formula-box">
+                        <strong>p eigenvalues:</strong><br>
+                        λ₁ ≤ λ₂ ≤ ... ≤ λₚ<br><br>
+                        <strong>Directional variance:</strong><br>
+                        β'Σβ = Σᵢ λᵢ (β·vᵢ)²<br><br>
+                        Same formula, more terms!
+                    </div>
+                    
+                    <div class="formula-box highlight">
+                        <strong>The Universal CV² Formula:</strong><br><br>
+                        CV²(β'Σβ) = (2/(p+2)) × V_rel<br><br>
+                        Works for ANY dimension p!
+                    </div>
+                    
+                    <h4 style="margin-top: 20px;">The Curse of Dimensionality</h4>
+                    <p>As dimensions increase, something remarkable happens: <strong>most directions become "bad"</strong>.</p>
+                    
+                    <div class="insight-box">
+                        <strong>Probability of alignment with g_max:</strong><br>
+                        • 2D: ~25% within 45° of g_max<br>
+                        • 5D: ~5% within 45°<br>
+                        • 10D: ~1% within 45°<br>
+                        • 20D: ~0.1% within 45°<br><br>
+                        In high dimensions, random selection directions almost always miss the "good" directions!
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- UNIFIED VIEW: THE LADDER -->
+        <div class="unified-section">
+            <h2>🪜 The Dimensional Ladder</h2>
+            
+            <div class="ladder-visual">
+                <div class="ladder-step step-1d">
+                    <h4>1D</h4>
+                    <p>Interval</p>
+                    <p>1 eigenvalue</p>
+                    <p>No geometry</p>
+                </div>
+                <div class="ladder-step step-2d">
+                    <h4>2D</h4>
+                    <p>Ellipse</p>
+                    <p>2 eigenvalues</p>
+                    <p>Full intuition</p>
+                </div>
+                <div class="ladder-step step-3d">
+                    <h4>3D</h4>
+                    <p>Ellipsoid</p>
+                    <p>3 eigenvalues</p>
+                    <p>Last visual</p>
+                </div>
+                <div class="ladder-step step-pd">
+                    <h4>pD</h4>
+                    <p>Hyperellipsoid</p>
+                    <p>p eigenvalues</p>
+                    <p>Trust algebra</p>
+                </div>
+            </div>
+            
+            <h3 style="text-align: center; margin: 30px 0 20px;">What Stays the Same Across All Dimensions</h3>
+            
+            <table class="comparison-table">
+                <tr>
+                    <th>Concept</th>
+                    <th>Formula</th>
+                    <th>Meaning</th>
+                </tr>
+                <tr>
+                    <td><strong>Eigenvalues</strong></td>
+                    <td>λ₁, λ₂, ..., λₚ</td>
+                    <td>Squared lengths along principal axes</td>
+                </tr>
+                <tr>
+                    <td><strong>Directional variance</strong></td>
+                    <td>β'Σβ = Σᵢ λᵢ(β·vᵢ)²</td>
+                    <td>Weighted average of eigenvalues</td>
+                </tr>
+                <tr>
+                    <td><strong>Mean</strong></td>
+                    <td>E[β'Σβ] = tr(Σ)/p</td>
+                    <td>Average eigenvalue</td>
+                </tr>
+                <tr>
+                    <td><strong>Variance</strong></td>
+                    <td>Var[β'Σβ] = (2/(p+2))·Var(λ)</td>
+                    <td>Spread depends on eigenvalue spread</td>
+                </tr>
+                <tr>
+                    <td><strong>CV²</strong></td>
+                    <td>CV² = (2/(p+2)) × V_rel</td>
+                    <td>Universal formula for any p</td>
+                </tr>
+                <tr>
+                    <td><strong>Range</strong></td>
+                    <td>λ_min ≤ β'Σβ ≤ λ_max</td>
+                    <td>Always bounded by extreme eigenvalues</td>
+                </tr>
+            </table>
+            
+            <div class="big-formula">
+                CV²(h²) = (2/(p+2)) × V_rel(G*)<br>
+                <span style="font-size: 0.7em; color: var(--color-muted);">where G* = P⁻¹/²GP⁻¹/² is the P-whitened G matrix</span>
+            </div>
+        </div>
+        
+        <!-- GENETICS CONNECTION -->
+        <div class="genetics-section">
+            <h2>🧬 Connection to Evolutionary Genetics</h2>
+            
+            <div class="two-column">
+                <div class="metric-card g-matrix">
+                    <h4>G Matrix (Genetic)</h4>
+                    <p>The G-ruler measures <strong>genetic variance</strong> in each direction.</p>
+                    <ul style="margin-left: 20px; color: var(--color-muted);">
+                        <li>β'Gβ = additive genetic variance in direction β</li>
+                        <li>Eigenvalues = genetic variances along principal components</li>
+                        <li>g_max = direction of maximum genetic variance</li>
+                    </ul>
+                </div>
+                <div class="metric-card p-matrix">
+                    <h4>P Matrix (Phenotypic)</h4>
+                    <p>The P-ruler measures <strong>total phenotypic variance</strong> in each direction.</p>
+                    <ul style="margin-left: 20px; color: var(--color-muted);">
+                        <li>β'Pβ = phenotypic variance in direction β</li>
+                        <li>P = G + E (genetic + environmental)</li>
+                        <li>Always ≥ G (P ellipse contains G ellipse)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 30px;">Directional Heritability: The Ratio of Two Rulers</h3>
+            
+            <div class="big-formula">
+                h²(β) = β'Gβ / β'Pβ
+            </div>
+            
+            <p style="text-align: center; color: var(--color-muted);">How much of the phenotypic variance in direction β is genetic?</p>
+            
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="showTab2('intuition')">Geometric Intuition</button>
+                    <button class="tab-btn" onclick="showTab2('constraint')">Constraint Traps</button>
+                    <button class="tab-btn" onclick="showTab2('pwhitening')">P-Whitening</button>
+                </div>
+                
+                <div id="intuition" class="tab-content active">
+                    <h4>Two Rulers, Same Direction</h4>
+                    <p>Imagine measuring the same stick with two different rulers:</p>
+                    <ul style="margin: 15px 0 15px 20px;">
+                        <li><strong>G-ruler:</strong> Gives length β'Gβ (genetic variance)</li>
+                        <li><strong>P-ruler:</strong> Gives length β'Pβ (phenotypic variance)</li>
+                        <li><strong>h²(β):</strong> The ratio of these measurements</li>
+                    </ul>
+                    <p>If both rulers give similar readings in direction β, h² is high. If the G-ruler gives a much shorter reading, h² is low — <em>that direction is a constraint trap!</em></p>
+                    
+                    <div class="insight-box">
+                        <strong>The ellipse comparison:</strong> Where the G-ellipse is thin relative to the P-ellipse, heritability is low. Where they're similar in thickness, heritability is high.
+                    </div>
+                </div>
+                
+                <div id="constraint" class="tab-content">
+                    <h4>What Creates Constraint Traps?</h4>
+                    <p>A constraint trap occurs when:</p>
+                    <ol style="margin: 15px 0 15px 20px;">
+                        <li>Selection pushes in direction β</li>
+                        <li>β'Gβ is small (low genetic variance)</li>
+                        <li>β'Pβ is not small (phenotypic variation exists)</li>
+                        <li>Result: h²(β) is low → slow evolutionary response</li>
+                    </ol>
+                    
+                    <div class="formula-box">
+                        <strong>Trap conditions:</strong><br>
+                        • β misaligned with g_max<br>
+                        • High environmental variance in direction β<br>
+                        • High V_rel(G*) → large CV(h²) → many trap directions
+                    </div>
+                    
+                    <div class="insight-box">
+                        <strong>The paradox:</strong> Phenotypic variation can be abundant, but if it's mostly environmental, selection cannot act effectively. The G-ruler sees a short stick; the P-ruler sees a long one.
+                    </div>
+                </div>
+                
+                <div id="pwhitening" class="tab-content">
+                    <h4>P-Whitening: Making Rulers Comparable</h4>
+                    <p>To study h²(β) properly, we need to sample directions uniformly with respect to P, not Euclidean space. This is P-whitening.</p>
+                    
+                    <div class="equation-steps">
+                        <div class="step">
+                            <span class="step-num">1</span>
+                            Transform: G* = P⁻¹/²GP⁻¹/²
+                        </div>
+                        <div class="step">
+                            <span class="step-num">2</span>
+                            Eigenvalues of G* ARE directional heritabilities
+                        </div>
+                        <div class="step">
+                            <span class="step-num">3</span>
+                            V_rel(G*) controls CV(h²)
+                        </div>
+                    </div>
+                    
+                    <div class="formula-box highlight">
+                        <strong>After P-whitening:</strong><br>
+                        h²(β) = β'G*β (for P-unit vectors β'Pβ = 1)<br><br>
+                        The eigenvalues λ*ᵢ of G* satisfy:<br>
+                        λ*_min ≤ h²(β) ≤ λ*_max
+                    </div>
+                    
+                    <p>P-whitening ensures we're asking: "Of the phenotypically important directions, which have high/low heritability?"</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SUMMARY STATISTICS -->
+        <div class="intro-section">
+            <h2>📊 Quick Reference</h2>
+            
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="number">β'Σβ</div>
+                    <div class="label">Directional variance<br>(metric measurement)</div>
+                </div>
+                <div class="summary-card">
+                    <div class="number">λᵢ</div>
+                    <div class="label">Eigenvalue = length²<br>along axis i</div>
+                </div>
+                <div class="summary-card">
+                    <div class="number">V_rel</div>
+                    <div class="label">Eigenvalue spread<br>(eccentricity)</div>
+                </div>
+                <div class="summary-card">
+                    <div class="number">2/(p+2)</div>
+                    <div class="label">Dimensional factor<br>in CV² formula</div>
+                </div>
+            </div>
+            
+            <h3 style="margin: 30px 0 15px;">The Master Formulas</h3>
+            
+            <div class="two-column">
+                <div class="formula-box">
+                    <strong>Directional Variance:</strong><br>
+                    β'Σβ = Σᵢ λᵢ (β·vᵢ)²<br><br>
+                    <strong>Mean:</strong><br>
+                    E[β'Σβ] = (λ₁ + λ₂ + ... + λₚ)/p<br><br>
+                    <strong>Variance:</strong><br>
+                    Var[β'Σβ] = (2/(p+2)) × Var(λ)
+                </div>
+                <div class="formula-box">
+                    <strong>Coefficient of Variation:</strong><br>
+                    CV²(β'Σβ) = (2/(p+2)) × V_rel<br><br>
+                    <strong>Directional Heritability:</strong><br>
+                    h²(β) = β'Gβ / β'Pβ<br><br>
+                    <strong>CV of Heritability:</strong><br>
+                    CV(h²) = √[(2/(p+2)) × V_rel(G*)]
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created by Daniel Ortiz-Barrientos & Claude | The Geometry of Evolvability Project</p>
+            <p>Download this file and open in any browser to use offline.</p>
+        </footer>
+    </div>
+    
+    <script>
+        // ===================================================================
+        // HELPER FUNCTIONS
+        // ===================================================================
+        
+        function drawArrow(ctx, fromX, fromY, toX, toY, color, lineWidth = 2) {
+            const headLen = 8;
+            const dx = toX - fromX;
+            const dy = toY - fromY;
+            const angle = Math.atan2(dy, dx);
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+            
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(toX - headLen * Math.cos(angle - Math.PI / 6), 
+                      toY - headLen * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(toX - headLen * Math.cos(angle + Math.PI / 6), 
+                      toY - headLen * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        // ===================================================================
+        // 1D VISUALIZATION
+        // ===================================================================
+        
+        function draw1D() {
+            const canvas = document.getElementById('canvas1D');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            
+            const variance = parseFloat(document.getElementById('variance1D').value);
+            document.getElementById('var1DValue').textContent = `σ² = ${variance.toFixed(2)}`;
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            const centerY = h / 2;
+            const centerX = w / 2;
+            const scale = 60;
+            
+            // Draw axis
+            ctx.strokeStyle = '#ccc';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(30, centerY);
+            ctx.lineTo(w - 30, centerY);
+            ctx.stroke();
+            
+            // Draw tick marks
+            for (let i = -2; i <= 2; i++) {
+                const x = centerX + i * scale;
+                ctx.beginPath();
+                ctx.moveTo(x, centerY - 5);
+                ctx.lineTo(x, centerY + 5);
+                ctx.stroke();
+                ctx.fillStyle = '#666';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(i.toString(), x, centerY + 20);
+            }
+            
+            // Draw the "unit ball" interval: from -sqrt(σ²) to +sqrt(σ²)
+            const halfWidth = Math.sqrt(variance) * scale;
+            
+            ctx.fillStyle = 'rgba(46, 134, 171, 0.3)';
+            ctx.fillRect(centerX - halfWidth, centerY - 25, halfWidth * 2, 50);
+            
+            ctx.strokeStyle = '#2E86AB';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(centerX - halfWidth, centerY);
+            ctx.lineTo(centerX + halfWidth, centerY);
+            ctx.stroke();
+            
+            // Endpoints
+            ctx.fillStyle = '#2E86AB';
+            ctx.beginPath();
+            ctx.arc(centerX - halfWidth, centerY, 6, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(centerX + halfWidth, centerY, 6, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Labels
+            ctx.fillStyle = '#2E86AB';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(`-√σ² = ${(-Math.sqrt(variance)).toFixed(2)}`, centerX - halfWidth, centerY - 35);
+            ctx.fillText(`+√σ² = ${Math.sqrt(variance).toFixed(2)}`, centerX + halfWidth, centerY - 35);
+            
+            ctx.fillStyle = '#333';
+            ctx.font = '14px sans-serif';
+            ctx.fillText('The "unit ball" in 1D is just an interval', centerX, 40);
+            ctx.fillText(`Length = 2√σ² = ${(2*Math.sqrt(variance)).toFixed(2)}`, centerX, h - 30);
+        }
+        
+        document.getElementById('variance1D').addEventListener('input', draw1D);
+        
+        // ===================================================================
+        // 2D VISUALIZATION
+        // ===================================================================
+        
+        function draw2D() {
+            const canvas = document.getElementById('canvas2D');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            
+            const lambda1 = parseFloat(document.getElementById('lambda1_2D').value);
+            const lambda2 = parseFloat(document.getElementById('lambda2_2D').value);
+            const betaAngle = parseFloat(document.getElementById('beta2D').value);
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            const centerX = w / 2;
+            const centerY = h / 2;
+            const scale = 70;
+            
+            // Compute β'Σβ for diagonal matrix
+            const betaRad = betaAngle * Math.PI / 180;
+            const bx = Math.cos(betaRad);
+            const by = Math.sin(betaRad);
+            const betaSigmaBeta = lambda1 * bx * bx + lambda2 * by * by;
+            
+            // Update display
+            document.getElementById('val2DDisplay').textContent = 
+                `λ₁=${lambda1.toFixed(2)}, λ₂=${lambda2.toFixed(2)}, θ=${betaAngle}°, β'Σβ=${betaSigmaBeta.toFixed(2)}`;
+            
+            // Draw axes
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(30, centerY);
+            ctx.lineTo(w - 30, centerY);
+            ctx.moveTo(centerX, 30);
+            ctx.lineTo(centerX, h - 30);
+            ctx.stroke();
+            
+            // Draw unit circle for reference
+            ctx.strokeStyle = '#eee';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, scale, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Draw ellipse (axes aligned with coordinate axes for simplicity)
+            ctx.strokeStyle = '#2E86AB';
+            ctx.fillStyle = 'rgba(46, 134, 171, 0.2)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.ellipse(centerX, centerY, Math.sqrt(lambda2) * scale, Math.sqrt(lambda1) * scale, 0, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Draw eigenvector axes
+            const ev1Len = Math.sqrt(lambda1) * scale;
+            const ev2Len = Math.sqrt(lambda2) * scale;
+            
+            drawArrow(ctx, centerX, centerY, centerX + ev2Len, centerY, '#06D6A0', 2);
+            drawArrow(ctx, centerX, centerY, centerX, centerY - ev1Len, '#E63946', 2);
+            
+            // Draw β direction
+            const betaLen = scale * 1.5;
+            drawArrow(ctx, centerX, centerY, 
+                     centerX + bx * betaLen, centerY - by * betaLen, 
+                     '#F18F01', 3);
+            
+            // Draw the "measured length" on the ellipse
+            const ellipseR = Math.sqrt(betaSigmaBeta) * scale;
+            ctx.fillStyle = '#F18F01';
+            ctx.beginPath();
+            ctx.arc(centerX + bx * ellipseR, centerY - by * ellipseR, 5, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Labels
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillStyle = '#06D6A0';
+            ctx.fillText(`λ₂=${lambda2.toFixed(2)}`, centerX + ev2Len + 5, centerY - 5);
+            ctx.fillStyle = '#E63946';
+            ctx.fillText(`λ₁=${lambda1.toFixed(2)}`, centerX + 5, centerY - ev1Len - 5);
+            ctx.fillStyle = '#F18F01';
+            ctx.fillText('β', centerX + bx * betaLen + 10, centerY - by * betaLen);
+            
+            ctx.font = '12px sans-serif';
+            ctx.fillStyle = '#666';
+            ctx.textAlign = 'center';
+            ctx.fillText('Ellipse: eigenvalues determine axis lengths', centerX, h - 10);
+        }
+        
+        document.getElementById('lambda1_2D').addEventListener('input', draw2D);
+        document.getElementById('lambda2_2D').addEventListener('input', draw2D);
+        document.getElementById('beta2D').addEventListener('input', draw2D);
+        
+        // ===================================================================
+        // 3D VISUALIZATION (isometric projection)
+        // ===================================================================
+        
+        function draw3D() {
+            const canvas = document.getElementById('canvas3D');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            
+            const lambda1 = parseFloat(document.getElementById('lambda1_3D').value);
+            const lambda2 = parseFloat(document.getElementById('lambda2_3D').value);
+            const lambda3 = parseFloat(document.getElementById('lambda3_3D').value);
+            const rotation = parseFloat(document.getElementById('rotation3D').value);
+            
+            // Compute V_rel
+            const lambdas = [lambda1, lambda2, lambda3];
+            const mean = (lambda1 + lambda2 + lambda3) / 3;
+            const variance = lambdas.reduce((s, l) => s + (l - mean) ** 2, 0) / 3;
+            const Vrel = variance / (mean * mean);
+            
+            document.getElementById('val3DDisplay').textContent = 
+                `λ=[${lambda1.toFixed(2)}, ${lambda2.toFixed(2)}, ${lambda3.toFixed(2)}], V_rel=${Vrel.toFixed(2)}`;
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            const centerX = w / 2;
+            const centerY = h / 2 + 20;
+            const scale = 80;
+            
+            // Isometric projection angles
+            const rotRad = rotation * Math.PI / 180;
+            const isoAngle = Math.PI / 6;
+            
+            function project(x, y, z) {
+                // Rotate around z-axis
+                const xr = x * Math.cos(rotRad) - y * Math.sin(rotRad);
+                const yr = x * Math.sin(rotRad) + y * Math.cos(rotRad);
+                const zr = z;
+                
+                // Isometric projection
+                const px = (xr - yr) * Math.cos(isoAngle);
+                const py = -zr + (xr + yr) * Math.sin(isoAngle) * 0.5;
+                
+                return [centerX + px * scale, centerY + py * scale];
+            }
+            
+            // Draw axes
+            ctx.strokeStyle = '#ccc';
+            ctx.lineWidth = 1;
+            const [ox, oy] = project(0, 0, 0);
+            const [ax, ay] = project(2, 0, 0);
+            const [bx, by] = project(0, 2, 0);
+            const [cx, cy] = project(0, 0, 2);
+            
+            ctx.beginPath();
+            ctx.moveTo(ox, oy); ctx.lineTo(ax, ay);
+            ctx.moveTo(ox, oy); ctx.lineTo(bx, by);
+            ctx.moveTo(ox, oy); ctx.lineTo(cx, cy);
+            ctx.stroke();
+            
+            // Draw ellipsoid wireframe
+            ctx.strokeStyle = '#2E86AB';
+            ctx.lineWidth = 2;
+            
+            // Draw three principal ellipses
+            const numPoints = 50;
+            
+            // XY plane (z=0)
+            ctx.beginPath();
+            for (let i = 0; i <= numPoints; i++) {
+                const theta = (i / numPoints) * 2 * Math.PI;
+                const x = Math.sqrt(lambda3) * Math.cos(theta);
+                const y = Math.sqrt(lambda2) * Math.sin(theta);
+                const [px, py] = project(x, y, 0);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+            
+            // XZ plane (y=0)
+            ctx.strokeStyle = '#06D6A0';
+            ctx.beginPath();
+            for (let i = 0; i <= numPoints; i++) {
+                const theta = (i / numPoints) * 2 * Math.PI;
+                const x = Math.sqrt(lambda3) * Math.cos(theta);
+                const z = Math.sqrt(lambda1) * Math.sin(theta);
+                const [px, py] = project(x, 0, z);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+            
+            // YZ plane (x=0)
+            ctx.strokeStyle = '#E63946';
+            ctx.beginPath();
+            for (let i = 0; i <= numPoints; i++) {
+                const theta = (i / numPoints) * 2 * Math.PI;
+                const y = Math.sqrt(lambda2) * Math.cos(theta);
+                const z = Math.sqrt(lambda1) * Math.sin(theta);
+                const [px, py] = project(0, y, z);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+            
+            // Labels
+            ctx.font = 'bold 11px sans-serif';
+            ctx.fillStyle = '#2E86AB';
+            ctx.fillText(`λ₃=${lambda3.toFixed(2)}`, ax + 5, ay);
+            ctx.fillStyle = '#06D6A0';
+            ctx.fillText(`λ₂=${lambda2.toFixed(2)}`, bx + 5, by);
+            ctx.fillStyle = '#E63946';
+            ctx.fillText(`λ₁=${lambda1.toFixed(2)}`, cx + 5, cy - 10);
+            
+            ctx.font = '12px sans-serif';
+            ctx.fillStyle = '#666';
+            ctx.textAlign = 'center';
+            ctx.fillText('3D ellipsoid: three principal axes', centerX, h - 10);
+        }
+        
+        document.getElementById('lambda1_3D').addEventListener('input', draw3D);
+        document.getElementById('lambda2_3D').addEventListener('input', draw3D);
+        document.getElementById('lambda3_3D').addEventListener('input', draw3D);
+        document.getElementById('rotation3D').addEventListener('input', draw3D);
+        
+        // ===================================================================
+        // pD VISUALIZATION
+        // ===================================================================
+        
+        function drawPD() {
+            const canvas = document.getElementById('canvasPD');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            
+            const p = parseInt(document.getElementById('numDims').value);
+            const Vrel = parseFloat(document.getElementById('vrelPD').value);
+            
+            // Compute CV
+            const CV = Math.sqrt((2 / (p + 2)) * Vrel);
+            
+            document.getElementById('valPDDisplay').textContent = 
+                `p=${p}, V_rel=${Vrel.toFixed(2)}, CV(β'Σβ)=${CV.toFixed(3)}`;
+            
+            ctx.clearRect(0, 0, w, h);
+            
+            // Left panel: eigenvalue spectrum
+            const barWidth = 15;
+            const maxBarHeight = 150;
+            const startX = 30;
+            const baseY = h - 50;
+            
+            // Generate eigenvalues with given V_rel
+            // Use a simple model: λ_i = mean * (1 + spread * (2*i/(p-1) - 1))
+            const mean = 1;
+            const spread = Math.sqrt(3 * Vrel); // Approximate
+            
+            const lambdas = [];
+            for (let i = 0; i < p; i++) {
+                const t = p > 1 ? (2 * i / (p - 1) - 1) : 0;
+                lambdas.push(Math.max(0.1, mean * (1 + spread * t)));
+            }
+            
+            // Normalize so mean = 1
+            const actualMean = lambdas.reduce((a, b) => a + b, 0) / p;
+            for (let i = 0; i < p; i++) {
+                lambdas[i] /= actualMean;
+            }
+            
+            const maxLambda = Math.max(...lambdas);
+            
+            // Draw bars
+            const totalWidth = p * barWidth + (p - 1) * 3;
+            const barStartX = (w / 2 - 50) - totalWidth / 2;
+            
+            for (let i = 0; i < p; i++) {
+                const barHeight = (lambdas[i] / maxLambda) * maxBarHeight;
+                const x = barStartX + i * (barWidth + 3);
+                
+                // Color gradient from blue to red
+                const t = i / (p - 1 || 1);
+                const r = Math.round(46 + t * (230 - 46));
+                const g = Math.round(134 - t * (134 - 57));
+                const b = Math.round(171 - t * (171 - 70));
+                
+                ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                ctx.fillRect(x, baseY - barHeight, barWidth, barHeight);
+            }
+            
+            // Axis
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(barStartX - 10, baseY);
+            ctx.lineTo(barStartX + totalWidth + 10, baseY);
+            ctx.stroke();
+            
+            // Labels
+            ctx.fillStyle = '#333';
+            ctx.font = '11px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Eigenvalue spectrum', barStartX + totalWidth / 2, baseY + 25);
+            ctx.fillText(`(${p} eigenvalues)`, barStartX + totalWidth / 2, baseY + 40);
+            
+            // Right panel: CV formula visualization
+            const rightX = w / 2 + 50;
+            const graphWidth = 150;
+            const graphHeight = 120;
+            const graphY = 50;
+            
+            // Draw CV vs p curve for fixed V_rel
+            ctx.strokeStyle = '#2E86AB';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let dim = 2; dim <= 20; dim++) {
+                const cvVal = Math.sqrt((2 / (dim + 2)) * Vrel);
+                const x = rightX + ((dim - 2) / 18) * graphWidth;
+                const y = graphY + graphHeight - cvVal * graphHeight * 2;
+                if (dim === 2) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            
+            // Mark current point
+            const currentX = rightX + ((p - 2) / 18) * graphWidth;
+            const currentY = graphY + graphHeight - CV * graphHeight * 2;
+            ctx.fillStyle = '#F18F01';
+            ctx.beginPath();
+            ctx.arc(currentX, currentY, 6, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Axes
+            ctx.strokeStyle = '#999';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(rightX, graphY + graphHeight);
+            ctx.lineTo(rightX + graphWidth, graphY + graphHeight);
+            ctx.moveTo(rightX, graphY + graphHeight);
+            ctx.lineTo(rightX, graphY);
+            ctx.stroke();
+            
+            // Labels
+            ctx.fillStyle = '#666';
+            ctx.font = '10px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('p (dimensions)', rightX + graphWidth / 2, graphY + graphHeight + 15);
+            ctx.save();
+            ctx.translate(rightX - 15, graphY + graphHeight / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('CV', 0, 0);
+            ctx.restore();
+            
+            ctx.font = '11px sans-serif';
+            ctx.fillStyle = '#333';
+            ctx.fillText('CV decreases with p', rightX + graphWidth / 2, graphY - 10);
+            ctx.fillText('(for fixed V_rel)', rightX + graphWidth / 2, graphY + 5);
+            
+            // Formula reminder
+            ctx.fillStyle = '#2E86AB';
+            ctx.font = 'bold 12px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`CV² = (2/${p+2}) × ${Vrel.toFixed(2)}`, w / 2, h - 15);
+        }
+        
+        document.getElementById('numDims').addEventListener('input', drawPD);
+        document.getElementById('vrelPD').addEventListener('input', drawPD);
+        
+        // ===================================================================
+        // TAB FUNCTIONALITY
+        // ===================================================================
+        
+        function showTab2(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // ===================================================================
+        // INITIALIZE
+        // ===================================================================
+        
+        window.onload = function() {
+            draw1D();
+            draw2D();
+            draw3D();
+            drawPD();
+        };
+    </script>
+</body>
+</html>
