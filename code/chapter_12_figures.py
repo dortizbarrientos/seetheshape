@@ -7,7 +7,7 @@ Generates:
 - fig12_inverse_geometry.png: How the inverse reshapes distance contours
 - fig12_worked_example.png: Three points with different Mahalanobis distances
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 """
 
 import numpy as np
