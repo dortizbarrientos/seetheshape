@@ -11,7 +11,7 @@ These figures are designed for empiricists who want to:
 
 Uses the manuscript color palette for consistency.
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 Date: December 2024
 """
 
