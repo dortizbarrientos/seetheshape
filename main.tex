@@ -40,7 +40,7 @@
 \graphicspath{{figures/}}  % Look for figures in this subdirectory
 
 % --------------------------------------------------
-% Code listings (corrected)
+% Code listings
 % --------------------------------------------------
 \usepackage{listings}
 
@@ -60,7 +60,6 @@
   breakatwhitespace=true,
 }
 
-% Use lstnewenvironment instead of newenvironment for listings
 \lstnewenvironment{pycode}[1][]
   {\lstset{style=pythonstyle,numbers=left,numberstyle=\tiny,#1}}
   {}
@@ -107,6 +106,7 @@
 \setlength{\epigraphwidth}{0.85\textwidth}
 \renewcommand{\epigraphflush}{center}
 \renewcommand{\sourceflush}{center}
+
 % --------------------------------------------------
 % Title and author
 % --------------------------------------------------
@@ -209,7 +209,7 @@ analyses from data to interpretation.
 
 \subsection*{How this book is organised}
 
-This book is written for biologists who want to understand the geometry behind quantitative genetics. It is organised in four parts that build on each other: we start with pictures of trait space, move to distance and covariance, then to natural axes and whitening, and finally to genetic and fitness objects such as the $\mathbf{G}$ matrix and curved fitness surfaces.
+This book is written for biologists who want to understand the geometry behind quantitative genetics. It is organised in four parts that build on each other: we start with pictures of trait space, move to distance and covariance, then to natural axes and whitening, and finally to genetic and fitness objects such as the $\mat{G}$ matrix and curved fitness surfaces.:contentReference[oaicite:1]{index=1}
 
 \medskip
 
@@ -217,11 +217,11 @@ This book is written for biologists who want to understand the geometry behind q
 
 The first part introduces the basic geometric language.
 
-In \textbf{Chapter 0: Points and trait space} we learn to see individual phenotypes as points in a trait space, samples as clouds of points, and trait differences as arrows between points. 
+In \textbf{Chapter 1: Points and Trait Space} we learn to see individual phenotypes as points in a trait space, samples as clouds of points, and trait differences as arrows between points. 
 
-In \textbf{Chapter 1: Vectors and coordinates} we put coordinates on this space, introduce vectors as directed differences, and use the dot product to talk about lengths and angles between trait combinations. 
+In \textbf{Chapter 2: Vectors, Coordinates, and Angles} we put coordinates on this space, introduce vectors as directed differences, and use the dot product to talk about lengths and angles between trait combinations. 
 
-In \textbf{Chapter 2: Matrices as machines} we treat matrices as machines that move vectors, and we see how simple matrices can stretch, rotate, and shear trait space in ways that we will later use to describe variance, covariance, and selection.
+In \textbf{Chapter 3: Matrices as Machines That Move Vectors} we treat matrices as machines that move vectors, and we see how simple matrices can stretch, rotate, and shear trait space in ways that we will later use to describe variance, covariance, and selection.
 
 \medskip
 
@@ -229,11 +229,11 @@ In \textbf{Chapter 2: Matrices as machines} we treat matrices as machines that m
 
 The second part explains why distance matters for variation and why simple Euclidean distance is sometimes misleading.
 
-In \textbf{Chapter 10: Distance and why we square it} we link straight-line distance to Pythagoras’ theorem, show how squaring distance leads naturally to variance as “average squared distance from the mean”, and connect this idea to the familiar one-dimensional formulas used in statistics. 
+In \textbf{Chapter 4: Distance and Why We Square It} we link straight-line distance to Pythagoras’ theorem, show how squaring distance leads naturally to variance as “average squared distance from the mean”, and connect this idea to the familiar one-dimensional formulas used in statistics. 
 
-In \textbf{Chapter 11: When Euclidean distance fails} we see concrete examples where Euclidean distance ignores scale differences between traits, misses correlations between traits, and does not match the probability structure of our data, motivating the need for a more flexible metric. 
+In \textbf{Chapter 5: When Euclidean Distance Fails} we see concrete examples where Euclidean distance ignores scale differences between traits, misses correlations between traits, and does not match the probability structure of our data, motivating the need for a more flexible metric. 
 
-In \textbf{Chapter 12: Covariance and Mahalanobis distance} we introduce the covariance matrix as a shape that summarises how traits vary together and define Mahalanobis distance by placing this matrix between two vectors, leading to ellipses (and ellipsoids) that match the spread and correlation of the data.
+In \textbf{Chapter 6: Covariance and Mahalanobis Distance} we introduce the covariance matrix as a shape that summarises how traits vary together and define Mahalanobis distance by placing this matrix between two vectors, leading to ellipses (and ellipsoids) that match the spread and correlation of the data.
 
 \medskip
 
@@ -241,9 +241,9 @@ In \textbf{Chapter 12: Covariance and Mahalanobis distance} we introduce the cov
 
 The third part shows how to find natural axes of variation and how to rescale trait space so that phenotypic variance looks spherical.
 
-In \textbf{Chapter 20: Diagonalisation and natural axes} we introduce eigenvalues and eigenvectors as directions in which a matrix only stretches and does not rotate, and we relate these natural axes to principal components and to the shape of covariance ellipses. 
+In \textbf{Chapter 7: Diagonalisation and Natural Axes} we introduce eigenvalues and eigenvectors as directions in which a matrix only stretches and does not rotate, and we relate these natural axes to principal components and to the shape of covariance ellipses. 
 
-In \textbf{Chapter 21: Whitening and the P-sphere} we transform trait space using the phenotypic covariance matrix $\mathbf{P}$ so that phenotypic variation becomes a sphere (the P-sphere), and in this whitened space we see how a transformed genetic matrix $\mathbf{G}^\ast$ encodes directional heritability along different directions of trait change.
+In \textbf{Chapter 8: Whitening and the P-sphere} we transform trait space using the phenotypic covariance matrix $\mat{P}$ so that phenotypic variation becomes a sphere (the P-sphere), and in this whitened space we see how a transformed genetic matrix $\mat{G}^\ast$ encodes directional heritability along different directions of trait change.
 
 \medskip
 
@@ -251,13 +251,42 @@ In \textbf{Chapter 21: Whitening and the P-sphere} we transform trait space usin
 
 The final part applies these geometric tools to genetic and fitness objects.
 
-In \textbf{Chapter 30: The $\mathbf{G}$ matrix and the genetic ellipsoid} we describe the additive genetic covariance matrix $\mathbf{G}$ as an ellipsoid that channels evolutionary change, introduce key quantities such as the leading eigenvector (often called $g_{\max}$), and connect this geometric view to evolvability, constraint, and effective dimensionality. 
+In \textbf{Chapter 9: The $\mat{G}$ Matrix and the Genetic Ellipsoid} we describe the additive genetic covariance matrix $\mat{G}$ as an ellipsoid that channels evolutionary change, introduce key quantities such as the leading eigenvector (often called $g_{\max}$), and connect this geometric view to evolvability, constraint, and effective dimensionality. 
 
-In \textbf{Chapter 31: Fitness surfaces and curvature} we represent local fitness surfaces as curved (paraboloid) shapes over trait space, introduce the curvature matrix $\boldsymbol{\gamma}$, and explain how curvature interacts with genetic variation to influence the paths and limits of evolutionary change.
+In \textbf{Chapter 10: The Fitness Surface and $\boldsymbol{\gamma}$} we represent local fitness surfaces as curved (paraboloid) shapes over trait space, introduce the curvature matrix $\boldsymbol{\gamma}$, and explain how curvature interacts with genetic variation to influence the paths and limits of evolutionary change.
+
+In \textbf{Chapter 11: PCA, MANOVA, and Projections} we connect the geometric picture to standard multivariate methods, showing how eigenstructure underlies PCA, MANOVA, discriminant analysis, and related projection techniques.
 
 \medskip
 
-A final chapter collects references and suggestions for further reading. Later chapters and online material include worked examples, figures, and code that mirror the ideas in the text, so readers can move back and forth between pictures, algebra, and data analysis.
+\textbf{Part V: Practice and extensions}
+
+In \textbf{Chapter 12: Worked Examples: Complete Analyses} we walk through complete analyses from raw data to biological interpretation, combining $\mat{G}$, $\mat{P}$, $\boldsymbol{\beta}$, and $\boldsymbol{\gamma}$.
+
+In \textbf{Chapter 13: Directional Heritability and the Geometry of Constraint} we develop the distributional view of directional heritability, link it to the eigenstructure of $\mat{G}^\ast$, and discuss constraint heterogeneity and its implications for evolution and breeding.
+
+A final epilogue reflects on the geometric perspective, and the back matter collects references, the mathematical appendix, and hints for selected exercises.
+
+\subsection*{Code companion and reproducibility}
+
+All code used to generate figures and worked examples is available in a companion repository:
+
+\begin{center}
+\url{https://github.com/dortizbarrientos/seetheshape}
+\end{center}
+
+The repository contains parallel \texttt{python/} and \texttt{R/} directories with annotated scripts organised by chapter, together with figure-generation scripts in \texttt{figures/}. The naming convention matches the chapter numbering in this book:
+
+\begin{itemize}
+  \item Chapter 1 (\emph{Points and Trait Space}) corresponds to files such as \texttt{python/ch01\_points\_trait\_space.py} and \texttt{R/ch01\_points\_trait\_space.R}.
+  \item Chapter 2 (\emph{Vectors, Coordinates, and Angles}) to \texttt{ch02\_vectors\_coordinates.*}.
+  \item \dots
+  \item Chapter 13 (\emph{Directional Heritability and the Geometry of Constraint}) to \texttt{ch13\_directional\_heritability.*}.
+\end{itemize}
+
+Each script mirrors the structure of the corresponding chapter: it implements the algebra, reproduces the main figures, and includes additional comments and small exercises. The top-level \texttt{README.md} in the repository summarises the directory layout and lists the main functions provided for each chapter.
+
+Readers who prefer to learn by doing are encouraged to keep the book and the code side by side: read a section, run the matching code, and adjust parameters or trait combinations to see how the geometry changes.
 
 \subsection*{Notation used in this book}
 
@@ -290,11 +319,11 @@ $\vect{e}_i$       & Unit vector along trait $i$ (1 in position $i$, 0 elsewhere
 \hline
 $\mat{A}, \mat{B}$ & General matrices (linear transformations) \\
 $\mat{I}$          & Identity matrix (leaves every vector unchanged) \\
-${\Sigma}$     & Generic covariance matrix \\
+${\Sigma}$         & Generic covariance matrix \\
 $\mat{P}$          & Phenotypic covariance matrix \\
 $\mat{G}$          & Additive genetic covariance matrix \\
 $\mat{G}^\ast$     & Whitened genetic matrix: $\mat{P}^{-1/2} \mat{G} \mat{P}^{-1/2}$ \\
-${\Lambda}$    & Diagonal matrix of eigenvalues \\
+${\Lambda}$        & Diagonal matrix of eigenvalues \\
 $\mat{Q}$          & Matrix whose columns are eigenvectors \\
 \hline
 $\vect{x}^\top$    & Transpose of $\vect{x}$ (row vector) \\
@@ -332,8 +361,6 @@ role is to give you a quick reminder of the main objects that appear
 throughout the book: vectors and matrices for traits, the key covariance
 matrices $\mat{P}$ and $\mat{G}$, and the quantities used to describe
 selection, response, and fitness.
-
-
 
 \tableofcontents
 
