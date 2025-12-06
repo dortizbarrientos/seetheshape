@@ -11,7 +11,7 @@ with the simplest possible case (1D) and systematically adding complexity.
 3D: A metric is an ellipsoid
 pD: A metric is a hyperellipsoid (but the math is identical!)
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 Date: December 2024
 """
 
