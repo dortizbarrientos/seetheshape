@@ -8,7 +8,7 @@ quantitative genetics starting from geometric intuition, not algebra.
 
 The core message: Everything is about measuring length with different rulers.
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 Date: December 2024
 """
 
