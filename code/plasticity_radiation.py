@@ -9,7 +9,7 @@ This script explores Daniel's insight:
 3. This creates a positive feedback that generates more buffering traps
 4. In adaptive radiations, g_max and β misalignment becomes likely
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 Date: December 2024
 """
 
