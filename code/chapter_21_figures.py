@@ -8,7 +8,7 @@ Generates:
 - fig21_constraint_trap.png: Constraint trap in whitened space
 - fig21_g_inside_p.png: G ellipse inside P ellipse, before and after whitening
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 """
 
 import numpy as np
