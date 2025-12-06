@@ -8,7 +8,7 @@ Generates:
 - fig31_curvature_types.png: Stabilising, flat, disruptive curvature
 - fig31_gaussian_surface.png: Gaussian fitness surface with elliptical contours
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 """
 
 import numpy as np
