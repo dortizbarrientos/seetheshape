@@ -8,7 +8,7 @@ Generates:
 - fig40_example2_four_trait.png: Four-trait G* analysis
 - fig40_example3_selection.png: Selection with G and gamma
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 """
 
 import numpy as np
