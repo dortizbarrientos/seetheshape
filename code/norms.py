@@ -15,7 +15,7 @@ Figure 5: Evolvability vs Directional Heritability
 Figure 6: Constraint Traps Revealed
 Figure 7: The Complete Picture
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 Date: December 2024
 """
 
