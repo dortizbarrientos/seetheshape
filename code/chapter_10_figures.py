@@ -8,7 +8,7 @@ Generates:
 - fig10_variance_as_distance.png: Variance as mean squared distance from mean
 - fig10_covariance_ellipse.png: The covariance matrix defines an ellipse
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 """
 
 import numpy as np
