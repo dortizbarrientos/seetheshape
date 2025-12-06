@@ -10,7 +10,7 @@ Level 2: Two traits → two heritabilities (one per trait)
 Level 3: Trait combinations → heritability depends on the mix
 Level 4: The full picture → ellipses show all directions at once
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 Date: December 2024
 """
 
