@@ -8,7 +8,7 @@ Generates:
 - fig41_constraint_severity.png: Constraint severity visualization
 - fig41_h2_distribution.png: Distribution of directional heritability
 
-Author: Daniel Ortiz-Barrientos & Claude
+Author: Daniel Ortiz-Barrientos
 """
 
 import numpy as np
